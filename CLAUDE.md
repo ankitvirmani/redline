@@ -1,22 +1,22 @@
 # Redline
 
-A web app where someone uploads a contract, lease, freelance agreement, or terms
-of service and finds out what they are actually signing.
+A web app where someone reading a take-it-or-leave-it document — terms of
+service, a subscription, a gym membership, an offer letter — finds out what
+signing costs them.
 
 ## What it does
 
 - Plain-English summary of the document.
 - Clauses that could hurt them, ranked by severity, each showing its exact source sentence.
-- A drafted counter-offer for each flagged clause.
 - A question box that answers only from the document.
-- An editable list of the user's own red lines, which drives the analysis.
+- An editable list of the reader's red lines, which promote matching clauses.
 - A saved library of their past documents.
 
 ## Settled — do not reopen
 
 - Next.js, Supabase for auth and database, deployed on Vercel.
 - Model calls go through OpenRouter.
-- The uploaded file is parsed in the browser. Only the extracted text is stored.
+- Documents are parsed in the browser. Only the extracted text is stored.
 
 ## The rule the product rests on
 
@@ -39,9 +39,10 @@ because a citation is worthless when the text it points at was misread.
 ## Undecided — stop and ask, do not pick one to stay unblocked
 
 - Which OpenRouter model. Read it from one env var; never hardcode a model id.
-- Which formats parse in the browser (paste, PDF, DOCX). Settles during the PRD.
 - Whether a Supabase project exists yet. Do not scaffold a throwaway project or
   mock auth to get past a missing key.
+
+Settled: input is pasted text and text-layer PDFs only (ADR 0006). No DOCX, no OCR.
 
 ## Standing rules
 
@@ -49,6 +50,8 @@ because a citation is worthless when the text it points at was misread.
   The GitHub repo is public, so a key is exposed the moment it is pushed and has
   to be rotated.
 - Ask before adding a dependency.
+- When grilling (`/mattpocock-skills:grilling`), put every question as
+  selectable options with a recommendation. Never make me type free text.
 
 ## Read when they matter
 

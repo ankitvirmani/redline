@@ -3,7 +3,7 @@
 ## Decision
 
 Every risk flag carries the exact sentence that produced it, quoted verbatim and
-shown to the reader — as do counter-offers and question-box answers. A flag whose
+shown to the reader — as do answers from the question box. A flag whose
 source cannot be shown is dropped before render and logged as a bug.
 
 ## Alternatives
