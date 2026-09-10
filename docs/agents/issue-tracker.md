@@ -1,11 +1,10 @@
 # Issue tracker: Local Markdown
 
-> **Scope: this repo.** Redline keeps tickets as local markdown, not GitHub Issues.
-> The repo is public and half-formed planning should not be, so the per-repo opt-in
-> to GitHub Issues is deliberately declined here.
+> **Scope: this repo.** Redline keeps tickets as local markdown, not GitHub Issues,
+> so specs and tickets version alongside the code they describe.
 >
-> `.scratch/` is gitignored in this repo, so tickets stay on disk and out of commits.
-> Do not ask whether to commit them.
+> `.scratch/` is tracked in this repo, so specs and tickets are committed like any
+> other file. The repo is public, so anything written there is publishable.
 >
 > All paths below are relative to the root of this repo.
 
