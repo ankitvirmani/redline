@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T17:50:27Z",
+  "title": "Design System: Redline",
+  "source": {
+    "artifact": [
+      "landing/index.html",
+      "landing/styles.css",
+      "landing/app.js",
+      "landing/fonts/archivo-latin.woff2",
+      "landing/fonts/archivo-latin-ext.woff2"
+    ],
+    "surfaces": [
+      ".impeccable/surfaces/landing-index-html.md",
+      ".impeccable/surfaces/app-shell.md"
+    ],
+    "seedKey": "184bd34d",
+    "note": "Recorded from the shipped artifact. Where the build and the direction contract disagree, the build is recorded."
+  },
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Contract Ink",
+        "canonical": "#0A0A0A",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(50% 0 0)",
+          "oklch(62% 0 0)",
+          "oklch(74% 0 0)",
+          "oklch(86% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "cyan": {
+        "role": "primary",
+        "displayName": "Signal Cyan",
+        "canonical": "#00B7FF",
+        "tonalRamp": [
+          "oklch(15% 0.16 235)",
+          "oklch(26% 0.16 235)",
+          "oklch(38% 0.16 235)",
+          "oklch(50% 0.16 235)",
+          "oklch(62% 0.16 235)",
+          "oklch(74% 0.16 235)",
+          "oklch(86% 0.16 235)",
+          "oklch(95% 0.16 235)"
+        ]
+      },
+      "magenta": {
+        "role": "secondary",
+        "displayName": "Redline Magenta",
+        "canonical": "#FF2DA1",
+        "tonalRamp": [
+          "oklch(15% 0.26 355)",
+          "oklch(26% 0.26 355)",
+          "oklch(38% 0.26 355)",
+          "oklch(50% 0.26 355)",
+          "oklch(62% 0.26 355)",
+          "oklch(74% 0.26 355)",
+          "oklch(86% 0.26 355)",
+          "oklch(95% 0.26 355)"
+        ]
+      },
+      "yellow": {
+        "role": "secondary",
+        "displayName": "Notice Yellow",
+        "canonical": "#FFD400",
+        "tonalRamp": [
+          "oklch(15% 0.18 96)",
+          "oklch(26% 0.18 96)",
+          "oklch(38% 0.18 96)",
+          "oklch(50% 0.18 96)",
+          "oklch(62% 0.18 96)",
+          "oklch(74% 0.18 96)",
+          "oklch(86% 0.18 96)",
+          "oklch(95% 0.18 96)"
+        ]
+      },
+      "green": {
+        "role": "tertiary",
+        "displayName": "Check Green",
+        "canonical": "#32D74B",
+        "tonalRamp": [
+          "oklch(15% 0.21 145)",
+          "oklch(26% 0.21 145)",
+          "oklch(38% 0.21 145)",
+          "oklch(50% 0.21 145)",
+          "oklch(62% 0.21 145)",
+          "oklch(74% 0.21 145)",
+          "oklch(86% 0.21 145)",
+          "oklch(95% 0.21 145)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Reading White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(50% 0 0)",
+          "oklch(62% 0 0)",
+          "oklch(74% 0 0)",
+          "oklch(86% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "cool-grey": {
+        "role": "neutral",
+        "displayName": "Cool Grey",
+        "canonical": "#E6E9EC",
+        "tonalRamp": [
+          "oklch(15% 0.006 240)",
+          "oklch(26% 0.006 240)",
+          "oklch(38% 0.006 240)",
+          "oklch(50% 0.006 240)",
+          "oklch(62% 0.006 240)",
+          "oklch(74% 0.006 240)",
+          "oklch(86% 0.006 240)",
+          "oklch(95% 0.006 240)"
+        ]
+      },
+      "grey-line": {
+        "role": "neutral",
+        "displayName": "Hairline Grey",
+        "canonical": "#C7CDD3",
+        "tonalRamp": [
+          "oklch(15% 0.011 245)",
+          "oklch(26% 0.011 245)",
+          "oklch(38% 0.011 245)",
+          "oklch(50% 0.011 245)",
+          "oklch(62% 0.011 245)",
+          "oklch(74% 0.011 245)",
+          "oklch(86% 0.011 245)",
+          "oklch(95% 0.011 245)"
+        ]
+      },
+      "grey-text": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#4A5259",
+        "tonalRamp": [
+          "oklch(15% 0.015 240)",
+          "oklch(26% 0.015 240)",
+          "oklch(38% 0.015 240)",
+          "oklch(50% 0.015 240)",
+          "oklch(62% 0.015 240)",
+          "oklch(74% 0.015 240)",
+          "oklch(86% 0.015 240)",
+          "oklch(95% 0.015 240)"
+        ]
+      },
+      "ink-hairline": {
+        "role": "neutral",
+        "displayName": "Inverted Hairline",
+        "canonical": "#2A2A2E",
+        "tonalRamp": [
+          "oklch(15% 0.004 280)",
+          "oklch(26% 0.004 280)",
+          "oklch(38% 0.004 280)",
+          "oklch(50% 0.004 280)",
+          "oklch(62% 0.004 280)",
+          "oklch(74% 0.004 280)",
+          "oklch(86% 0.004 280)",
+          "oklch(95% 0.004 280)"
+        ]
+      },
+      "yellow-field-text": {
+        "role": "neutral",
+        "displayName": "Yellow-Field Ink",
+        "canonical": "#5C4A00",
+        "tonalRamp": [
+          "oklch(15% 0.09 96)",
+          "oklch(26% 0.09 96)",
+          "oklch(38% 0.09 96)",
+          "oklch(50% 0.09 96)",
+          "oklch(62% 0.09 96)",
+          "oklch(74% 0.09 96)",
+          "oklch(86% 0.09 96)",
+          "oklch(95% 0.09 96)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The fold headline and the paste heading only. Weight 900, negative tracking, sub-1 line-height. Landing page only; the app shell does not go above the headline size."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, and the refusals list which is set at heading scale because the refusals are the copy."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Row headings inside a list: anatomy rows, severity bands, a question."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All prose, capped 52-74ch. Emphasis moves to weight 500-600 rather than a larger size."
+      },
+      "document": {
+        "displayName": "Document",
+        "purpose": "Quoted document text only. 0.9375rem on 1.72, justified and hyphenated, held at a 26rem measure so the contract reads small."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase 900 at 0.13-0.14em: rail section labels, severity words, field keys, the example-document chip. Always a real heading or key, never decoration."
+      },
+      "action": {
+        "displayName": "Action",
+        "purpose": "Buttons and the skip link. Uppercase 700 at 0.055em."
+      }
+    },
+    "shadows": [
+      {
+        "name": "left-edge-tab",
+        "value": "-0.35rem 0 0 #0A0A0A",
+        "purpose": "The only shadow in the system, and not elevation: a zero-blur zero-spread rectangle that draws the ink tab down the left edge of every line fragment of an active source sentence, where a border cannot follow box-decoration-break: clone. Transitions from transparent over 220ms."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-snap",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "The system's only easing curve. Exponential ease-out, used for the entrance and for every state transition."
+      },
+      {
+        "name": "duration-snap",
+        "value": "760ms",
+        "purpose": "The authored moment: a flag bar travels from -1.4deg / -1.25rem to true on load. Landing page only."
+      },
+      {
+        "name": "duration-scatter",
+        "value": "900ms",
+        "purpose": "Scattered fragments travel from a 1.5rem / -1rem offset to their placed position on load. Landing page only."
+      },
+      {
+        "name": "stagger-snap",
+        "value": "90ms + 110ms per bar",
+        "purpose": "Entrance stagger across the flag bars, cleared once the moment finishes."
+      },
+      {
+        "name": "duration-state",
+        "value": "170ms",
+        "purpose": "Button inversion to ink on hover."
+      },
+      {
+        "name": "duration-mark",
+        "value": "220ms",
+        "purpose": "Change-bar underline and tab, and the flag arrow rotation."
+      },
+      {
+        "name": "duration-skip",
+        "value": "160ms",
+        "purpose": "The skip link translating into view on focus."
+      },
+      {
+        "name": "app-shell-state-only",
+        "value": "150ms-250ms",
+        "purpose": "The Operate register. The app shell inherits the easing curve and this range and does NOT inherit the load-time snap or the scatter."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stage-collapse",
+        "value": "1100px"
+      },
+      {
+        "name": "rail-stack",
+        "value": "860px"
+      },
+      {
+        "name": "prose-unjustify",
+        "value": "520px"
+      }
+    ],
+    "browserSurfaces": [
+      {
+        "name": "selection",
+        "value": "background #FFD400; color #0A0A0A"
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline 3px solid #0A0A0A; outline-offset 3px (white inside the near-black refusals field)"
+      },
+      {
+        "name": "scrollbar",
+        "value": "thumb #0A0A0A on track #E6E9EC, 12px"
+      },
+      {
+        "name": "caret",
+        "value": "caret-color #00B7FF on the paste field"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action on the page. Cyan field, black label, arrow pushed to the far edge; inverts to ink on hover.",
+      "html": "<a class=\"ds-btn ds-btn-primary\" href=\"#paste\"><span>Paste a document</span><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"/></svg></a>",
+      "css": ".ds-btn{display:flex;align-items:center;justify-content:space-between;gap:1rem;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-weight:700;font-size:.9375rem;letter-spacing:.055em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:2px solid #0A0A0A;border-radius:0;padding:.875rem 1rem;transition:background 170ms cubic-bezier(.16,1,.3,1),color 170ms cubic-bezier(.16,1,.3,1)}.ds-btn svg{flex:none}.ds-btn-primary{background:#00B7FF;color:#0A0A0A}.ds-btn-primary:hover,.ds-btn-primary:active{background:#0A0A0A;color:#FFFFFF}.ds-btn-primary:focus-visible{outline:3px solid #0A0A0A;outline-offset:3px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action. Transparent field with the same 2px ink keyline, inverting to ink on hover. Defined in the stylesheet; the shipped landing page uses only the primary.",
+      "html": "<a class=\"ds-btn ds-btn-ghost\" href=\"#anatomy\"><span>See what a flag carries</span><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"/></svg></a>",
+      "css": ".ds-btn{display:flex;align-items:center;justify-content:space-between;gap:1rem;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-weight:700;font-size:.9375rem;letter-spacing:.055em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:2px solid #0A0A0A;border-radius:0;padding:.875rem 1rem;transition:background 170ms cubic-bezier(.16,1,.3,1),color 170ms cubic-bezier(.16,1,.3,1)}.ds-btn svg{flex:none}.ds-btn-ghost{background:transparent;color:#0A0A0A}.ds-btn-ghost:hover,.ds-btn-ghost:active{background:#0A0A0A;color:#FFFFFF}.ds-btn-ghost:focus-visible{outline:3px solid #0A0A0A;outline-offset:3px}"
+    },
+    {
+      "name": "Flag Bar",
+      "kind": "custom",
+      "refersTo": "flag-bar",
+      "description": "The signature module. An oversized bar in the flag's identity ink carrying rank, severity word and clause type, with the body opening beneath it inside a 2px ink keyline. Colour identifies the flag; severity is the word and the order.",
+      "html": "<article class=\"ds-flag ds-flag-magenta\"><button class=\"ds-flag-bar\" type=\"button\" aria-expanded=\"true\"><span class=\"ds-flag-rank\">1</span><span class=\"ds-flag-sev\">Critical</span><span class=\"ds-flag-type\">Arbitration and class-action waiver</span><svg class=\"ds-flag-arrow\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"/></svg></button><div class=\"ds-flag-body\"><p class=\"ds-flag-consequence\">You keep the contract and lose the courtroom. You cannot sue over this agreement, and you cannot join other members who were treated the same way.</p><p class=\"ds-flag-exit\"><span class=\"ds-flag-k\">The way out</span>None stated.</p><p class=\"ds-flag-code\">F-01</p></div></article>",
+      "css": ".ds-flag{--c:#FF2DA1;display:block;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;}.ds-flag-cyan{--c:#00B7FF}.ds-flag-yellow{--c:#FFD400}.ds-flag-bar{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:.875rem;width:100%;padding:1rem 1.125rem;border:0;border-radius:0;background:var(--c);color:#0A0A0A;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;text-align:left;cursor:pointer;transition:transform 760ms cubic-bezier(.16,1,.3,1)}.ds-flag-bar:focus-visible{outline:3px solid #0A0A0A;outline-offset:3px}.ds-flag-rank{display:grid;place-items:center;width:1.75rem;height:1.75rem;background:#0A0A0A;color:#FFFFFF;font-weight:900;font-size:1rem;font-variant-numeric:tabular-nums}.ds-flag-sev{font-size:.75rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.ds-flag-type{font-size:1rem;font-weight:700;line-height:1.2;letter-spacing:-.01em}.ds-flag-arrow{flex:none;transform:rotate(-90deg);transition:transform 220ms cubic-bezier(.16,1,.3,1)}.ds-flag-body{padding:.9375rem 1.125rem .8125rem;background:#FFFFFF;border:2px solid #0A0A0A;border-top:0}.ds-flag-body p{margin:0 0 .75rem}.ds-flag-consequence{font-size:1rem;line-height:1.45;font-weight:500}.ds-flag-exit{font-size:.875rem;line-height:1.45}.ds-flag-k{display:block;margin-bottom:.25rem;font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#4A5259}.ds-flag-code{margin:0;font-size:.6875rem;font-weight:800;letter-spacing:.13em;color:#4A5259;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Change Bar (source sentence)",
+      "kind": "custom",
+      "description": "The device the product rests on: a source sentence marked by a full-saturation 0.5rem underline in the flag's ink, an ink tab drawn down the left edge of every wrapped line fragment, and an inline code chip. At rest the underline drops to a 34-40 percent mix into white and the tab goes transparent.",
+      "html": "<p class=\"ds-doc-p\"><span class=\"ds-doc-n\">3.</span> <mark class=\"ds-src ds-src-active\" data-code=\"F-02\">We may modify these terms at any time, and your continued use of the facilities after the modified terms are posted constitutes your acceptance of them.</mark> Notice of modification may be given by posting the revised terms at the premises or on the member portal.</p>",
+      "css": ".ds-doc-p{max-width:26rem;margin:0;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-size:.9375rem;line-height:1.72;color:#0A0A0A;text-align:justify;hyphens:auto}.ds-doc-n{display:inline-block;min-width:1.5rem;font-weight:800;font-variant-numeric:tabular-nums}.ds-src{--c:#C7CDD3;background:transparent;color:#0A0A0A;border-bottom:.5rem solid var(--c);box-decoration-break:clone;-webkit-box-decoration-break:clone;padding-left:.4rem;margin-left:-.4rem;box-shadow:-.35rem 0 0 transparent;cursor:pointer;transition:border-color 220ms cubic-bezier(.16,1,.3,1),box-shadow 220ms cubic-bezier(.16,1,.3,1)}.ds-src:hover{--c:color-mix(in srgb,#00B7FF 34%,#FFFFFF)}.ds-src-active{--c:#00B7FF;box-shadow:-.35rem 0 0 #0A0A0A}.ds-src-active::after{content:attr(data-code);display:inline-block;margin-left:.4rem;padding:0 .3rem;background:#0A0A0A;color:#FFFFFF;font-size:.625rem;font-weight:800;letter-spacing:.1em;vertical-align:.18em;white-space:nowrap}"
+    },
+    {
+      "name": "Paste Field",
+      "kind": "input",
+      "refersTo": "textarea-paste",
+      "description": "The only input in the build. White, square, 2px ink keyline, always-visible uppercase label, cyan caret, and a 3px cyan focus outline at zero offset so the field edge never moves.",
+      "html": "<div class=\"ds-paste\"><label class=\"ds-paste-label\" for=\"ds-doc\">Paste your document</label><textarea class=\"ds-paste-area\" id=\"ds-doc\" rows=\"5\" placeholder=\"Paste a terms of service, a subscription agreement, a membership contract, or an offer letter.\"></textarea></div>",
+      "css": ".ds-paste{background:#FFD400;padding:1.5rem;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;}.ds-paste-label{display:block;margin-bottom:.625rem;font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#5C4A00}.ds-paste-area{display:block;width:100%;padding:1.125rem 1.25rem;border:2px solid #0A0A0A;border-radius:0;background:#FFFFFF;color:#0A0A0A;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-size:1rem;line-height:1.55;resize:vertical;caret-color:#00B7FF}.ds-paste-area::placeholder{color:#4A5259;opacity:1}.ds-paste-area:focus{outline:3px solid #00B7FF;outline-offset:0;border-color:#0A0A0A}"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "rail-surface",
+      "description": "The cool-grey left rail: ink square mark, wordmark at 0.11em, one-sentence lede, the primary action, then a hairline-ruled list whose items carry the bar motif at its smallest. Becomes a stacked top band below 860px.",
+      "html": "<header class=\"ds-rail\"><a class=\"ds-mark\" href=\"#\"><span class=\"ds-mark-box\" aria-hidden=\"true\">R</span><span class=\"ds-mark-word\">REDLINE</span></a><p class=\"ds-rail-lede\">A document you cannot negotiate, read back to you. Every risk quotes the sentence it came from.</p><div class=\"ds-rail-block\"><h2 class=\"ds-rail-label\">What it checks for</h2><ul class=\"ds-rail-checks\"><li>Arbitration and class-action waivers</li><li>Unilateral modification</li><li>Auto-renewal and negative-option billing</li></ul></div></header>",
+      "css": ".ds-rail{display:flex;flex-direction:column;gap:1.5rem;width:21rem;padding:2rem 1.75rem;background:#E6E9EC;border-right:1px solid #C7CDD3;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:#0A0A0A}.ds-mark{display:flex;align-items:center;gap:.625rem;text-decoration:none;color:inherit}.ds-mark-box{display:grid;place-items:center;width:2.25rem;height:2.25rem;background:#0A0A0A;color:#FFFFFF;font-weight:900;font-size:1.25rem;line-height:1}.ds-mark-word{font-weight:800;letter-spacing:.11em;font-size:1.0625rem}.ds-rail-lede{margin:0;font-size:1.0625rem;line-height:1.4;font-weight:500;max-width:24ch}.ds-rail-block{padding-top:1.5rem;border-top:1px solid #C7CDD3}.ds-rail-label{margin:0 0 .75rem;font-size:.6875rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4A5259}.ds-rail-checks{margin:0;padding:0;list-style:none}.ds-rail-checks li{position:relative;padding:.4375rem 0 .4375rem 1.125rem;font-size:.8125rem;line-height:1.3;font-weight:600;border-bottom:1px solid #C7CDD3}.ds-rail-checks li:first-child{border-top:1px solid #C7CDD3}.ds-rail-checks li::before{content:\"\";position:absolute;left:0;top:.8125rem;width:.5rem;height:.1875rem;background:#0A0A0A}"
+    },
+    {
+      "name": "Code Chip",
+      "kind": "chip",
+      "refersTo": "code-chip",
+      "description": "Ink field, white text, 900 weight, uppercase, square. Two uses only: the truth-guard label in the fold and the flag code appended to an active source sentence. A chip is a label, never interactive.",
+      "html": "<p class=\"ds-tag\"><span class=\"ds-chip\">Example document</span> Written for this page. It is not a real company’s contract.</p>",
+      "css": ".ds-tag{display:flex;flex-wrap:wrap;align-items:baseline;gap:.625rem;margin:0;max-width:58ch;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-size:1rem;line-height:1.4;font-weight:600;color:#0A0A0A}.ds-chip{padding:.1875rem .4375rem;background:#0A0A0A;color:#FFFFFF;border-radius:0;font-size:.75rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}"
+    },
+    {
+      "name": "Refusal Row",
+      "kind": "custom",
+      "description": "The inverted field: near-black, white text set at heading scale, each line preceded by an oversized bar in one of the inks. The only place white type appears, and the only place a hairline is #2A2A2E.",
+      "html": "<ul class=\"ds-refusals\"><li><span class=\"ds-refusals-bar ds-bar-magenta\" aria-hidden=\"true\"></span>It will not tell you whether to sign.</li><li><span class=\"ds-refusals-bar ds-bar-cyan\" aria-hidden=\"true\"></span>It will not tell you whether a clause holds where you live.</li><li><span class=\"ds-refusals-bar ds-bar-white\" aria-hidden=\"true\"></span>It will not show you a risk it cannot quote.</li></ul>",
+      "css": ".ds-refusals{margin:0;padding:2rem;list-style:none;display:flex;flex-direction:column;gap:.25rem;background:#0A0A0A;color:#FFFFFF;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;}.ds-refusals li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.5rem;align-items:center;padding:1.125rem 0;border-bottom:1px solid #2A2A2E;font-size:clamp(1.25rem,2.3vw,2rem);font-weight:800;line-height:1.14;letter-spacing:-.03em;text-wrap:pretty}.ds-refusals li:first-child{border-top:1px solid #2A2A2E}.ds-refusals-bar{display:block;width:clamp(2.5rem,6vw,5.5rem);height:1.25rem}.ds-bar-magenta{background:#FF2DA1}.ds-bar-cyan{background:#00B7FF}.ds-bar-yellow{background:#FFD400}.ds-bar-green{background:#32D74B}.ds-bar-white{background:#FFFFFF}"
+    },
+    {
+      "name": "Overprint Heading",
+      "kind": "custom",
+      "description": "A colour bar laid across heading letterforms with mix-blend-mode: multiply, so the glyphs stay black and the counters fill with ink. Tilted -1.2deg (magenta) or +1.4deg (cyan), overhanging the text box left and right.",
+      "html": "<h2 class=\"ds-section-h ds-struck-wrap\">What a flag carries<span class=\"ds-struck\" aria-hidden=\"true\"></span></h2>",
+      "css": ".ds-section-h{margin:0;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;color:#0A0A0A;text-wrap:balance}.ds-struck-wrap{position:relative;display:inline-block;isolation:isolate}.ds-struck{position:absolute;left:-.75rem;top:52%;width:calc(100% + 3.5rem);height:.875em;background:#FF2DA1;transform:translateY(-50%) rotate(-1.2deg);mix-blend-mode:multiply;z-index:1}.ds-struck-cyan{background:#00B7FF;transform:translateY(-50%) rotate(1.4deg)}"
+    },
+    {
+      "name": "Severity Band Row",
+      "kind": "card",
+      "refersTo": "band-row",
+      "description": "The nearest thing to a card in this system, and it is still a bar: an ink row with white type on a full-bleed cyan field, numbered by a CSS counter in tabular numerals.",
+      "html": "<div class=\"ds-bands\"><div class=\"ds-band\"><h3 class=\"ds-band-h\">Removes a lever outright</h3><p>Arbitration and class-action waivers. Unilateral modification. Non-competes.</p></div><div class=\"ds-band\"><h3 class=\"ds-band-h\">Removes a lever, with a deadline or a cost attached</h3><p>Auto-renewal. Limitation of liability. Indemnification.</p></div></div>",
+      "css": ".ds-bands{counter-reset:ds-band;display:flex;flex-direction:column;gap:.25rem;background:#00B7FF;padding:2rem;font-family:Archivo,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;}.ds-band{display:grid;grid-template-columns:auto minmax(0,22rem) minmax(0,1fr);gap:.25rem 1.75rem;align-items:baseline;padding:1.125rem 1.25rem;background:#0A0A0A;color:#FFFFFF;border-radius:0}.ds-band::before{content:counter(ds-band);counter-increment:ds-band;font-weight:900;font-size:1.1875rem;font-variant-numeric:tabular-nums;color:#FFFFFF}.ds-band-h{margin:0;font-size:1.1875rem;font-weight:900;letter-spacing:-.02em;line-height:1.16}.ds-band p{margin:0;font-size:1rem;line-height:1.45;font-weight:500;color:#E6E9EC}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Modular Bars",
+    "overview": "A contract is small, plain and businesslike; the warnings that land on it are enormous. The world is built out of one part: a hard-edged rectangle of flat ink. It is the flag bar in the margin, the underline beneath a source sentence, the tab at the head of a question, the marker beside a rail item, the bar in front of a refusal, and the rotated fragment scattered at the edge of a heading. Remove every word and the system is still recognisable by the bar alone.\n\nNothing here softens. No radius anywhere, no gradient, no glass, no elevation, no decorative shadow, no photography, no illustration, no icon font. The only two-dimensional trick in the build is a colour bar overprinted across heading letterforms with mix-blend-mode: multiply, so the glyphs stay black and the counters fill with ink. Structure is carried by a 2px ink keyline where a boundary matters and a 1px grey hairline where it merely separates.\n\nDensity is deliberately uneven, and the unevenness is the argument. Document prose is set at 0.9375rem on a 1.72 line-height at a 26rem measure, justified and hyphenated so it reads as the legal boilerplate it is. Display type runs up to 5.25rem at weight 900 with -0.045em tracking. The reader is meant to feel the size difference between the thing they were handed and the thing being said about it.",
+    "keyCharacteristics": [
+      "One family, Archivo variable 400-900, self-hosted, two subsets, font-display: swap, font-synthesis-weight: none.",
+      "Four flat inks plus ink black, cool grey and white. No tints in the palette; the sole mixture in the build is the resting state of a source-sentence underline.",
+      "Zero corner radius, zero elevation. Every edge is a cut.",
+      "Colour identifies; it never ranks.",
+      "Motion is one authored moment on load, and then the page is still.",
+      "Browser chrome is themed: yellow selection, ink scrollbar, ink focus ring, cyan caret."
+    ],
+    "rules": [
+      {
+        "name": "The Identity-Not-Severity Rule",
+        "body": "Colour tells one flag from another and never encodes how bad it is. Severity is carried by the word (\"Critical\", \"High\") and by list order. The page states this rule in its own copy and obeys it: flag 1 is magenta, flag 2 is cyan, flag 3 is yellow, and two of those three are Critical. This is also the WCAG 2.2 AA commitment in PRODUCT.md - severity must never be carried by colour alone. Audit test: recolour every bar at random; if the ranking survives, the rule holds.",
+        "section": "colors"
+      },
+      {
+        "name": "The Black-On-Every-Ink Rule",
+        "body": "Black text sits on cyan, magenta, yellow, green, cool grey and white. White text sits only on ink black. White on cyan fails contrast and does not appear in the build. There is no exception and no large-text exemption.",
+        "section": "colors"
+      },
+      {
+        "name": "The Unmixed Ink Rule",
+        "body": "Inks are used at full saturation, flat, never gradiented, never overlaid on each other, never given a transparent variant. The one mixture in the shipped build is deliberate and confined: a source-sentence underline rests at 34-40% ink mixed into white and goes to full saturation when its flag is selected, so the at-rest document does not shout. The direction contract said \"no tint\"; the build ships this one, scoped to that single state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Register Rule",
+        "body": "Type is either small and workmanlike (0.6875-1.125rem) or enormous (1.75rem and up at weight 800-900). The middle is empty on purpose. When a new element needs emphasis, move it to the other register or change weight; do not invent a 1.5rem heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The Measure Rule",
+        "body": "Quoted document text is held at 26rem no matter how wide the field gets, because the point is that a contract is small. Everything else caps between 52ch and 74ch.",
+        "section": "typography"
+      },
+      {
+        "name": "The Overhanging Bar Rule",
+        "body": "Above 1100px a flag bar breaks its own column by 7rem into the gutter. The bar is not contained by the grid; it lands on the page. Below 1100px it snaps flush, because an overhang with no gutter is just a broken layout.",
+        "section": "layout"
+      },
+      {
+        "name": "The Full-Bleed Section Rule",
+        "body": "A change of subject is a change of field colour or a 2px keyline across the full width. No section sits inside a centred max-width wrapper, and nothing is ever a card on a background.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-Field Rule",
+        "body": "No element in this system casts a shadow. box-shadow is permitted only with zero blur and zero spread, as a way of drawing a solid rectangle that a border cannot reach. Any blurred, offset, or lifting shadow is out of world.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use colour to tell one flag from another and carry severity in the word and the list order, per The Identity-Not-Severity Rule.",
+      "Do set black text on cyan, magenta, yellow, green and cool grey, and reserve white text for ink black.",
+      "Do keep every corner square (0 radius) and every edge either a 2px ink keyline or a 1px grey hairline.",
+      "Do mark a source sentence with the full change bar - underline, left-edge tab, code chip - and let it clone across wrapped lines.",
+      "Do reuse the tab-bar motif whenever a line needs attaching to something, at whatever scale the context wants.",
+      "Do run the whole field to full bleed and change the field colour to change the subject.",
+      "Do hold quoted document text at a 26rem measure, justified and hyphenated above 520px.",
+      "Do use the glossary in CONTEXT.md for every visible word: reader, flag, source sentence, red line, severity, consequence.",
+      "Do name a new state in words first. \"Critical\", \"High\", \"Refused\" carry meaning; the bar beside them only identifies."
+    ],
+    "donts": [
+      "Don't rank anything by hue, saturation or warmth. A red bar does not mean worse than a yellow one in this system.",
+      "Don't put white text on cyan, magenta, yellow or green. It fails AA and the build never does it.",
+      "Don't add a gradient, a tint ramp, a translucent overlay, a blur or a glass surface. The single 34-40% mix on a resting source-sentence underline is the whole exception and it does not generalise.",
+      "Don't cast a shadow. box-shadow is allowed only at zero blur and zero spread, to draw a solid rectangle.",
+      "Don't round a corner, anywhere, at any scale.",
+      "Don't add a second typeface, an italic, or a monospace family. Numerals get tabular-nums from Archivo instead.",
+      "Don't set display type between 1.125rem and 1.75rem; the ramp is two registers with nothing between them.",
+      "Don't introduce an icon font or a glyph character as an icon. Icons are inline SVG symbols with stroke-width 2-2.2 and square caps.",
+      "Don't ship a soft-shadowed product screenshot, a feature-card row, a metric strip, or a trust-navy field. The fold's refusal of those shapes is load-bearing: Redline has no metrics and will not borrow the shape of proof.",
+      "Don't carry the landing page's scatter-and-snap entrance into the app shell. Inside, motion is 150-250ms and conveys state only.",
+      "Don't rotate anything except a scattered fragment or an overprint bar."
+    ],
+    "inheritance": {
+      "carriesToAppShell": [
+        "palette and all colour rules",
+        "the Archivo ramp",
+        "zero radius",
+        "the two border weights",
+        "the flat field",
+        "the change bar",
+        "the tab-bar motif",
+        "the cool-grey rail against a white reading field",
+        "black-on-ink and white-only-on-black",
+        "the 3px ink focus ring",
+        "the themed browser surfaces"
+      ],
+      "landingPageOnly": [
+        "the display register above 2.875rem",
+        "whole-field colour sections (cyan, yellow, near-black)",
+        "scattered fragments",
+        "the overprint bar",
+        "the 7rem bar overhang",
+        "the runtime SVG keyline",
+        "the load-time snap and scatter"
+      ]
+    },
+    "knownLimits": [
+      "Register drift in two sections: the anatomy list and the question box read closer to documentation than to the world the fold establishes. Residual after two finish reviews. A defect the build carries, not a system rule; new surfaces should follow the fold's register.",
+      "The overprint bar is applied to exactly two headings. That is an inconsistency in the artifact, not a rule that the device is rare.",
+      "#2A2A2E and #5C4A00 are written as literals in the stylesheet rather than declared alongside the other custom properties. Reused and legible, so recorded; they should become :root tokens."
+    ]
+  }
+}
