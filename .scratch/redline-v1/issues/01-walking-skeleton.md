@@ -15,6 +15,15 @@ Put the paste box at the root for now. Ticket 14 later takes the root route for
 the landing page and moves this page to its own; that move is 14's work, not
 this ticket's.
 
+**Delete `vercel.json` as part of this ticket.** It exists only because the
+landing page shipped before any framework did, and it sets `framework` to null
+and `outputDirectory` to `landing`. Both actively block Vercel from detecting
+Next.js and switch off server rendering, routing, image optimisation and API
+routes. Vercel auto-detects Next.js from `package.json`, so removing the file is
+the whole fix. If Vercel config is needed later for headers, redirects or cron,
+re-add a `vercel.json` carrying only those keys. Root Directory is a dashboard
+setting and cannot be set in `vercel.json` at all.
+
 **Blocked by:** None. Can start immediately.
 
 **Status:** ready-for-agent
@@ -25,3 +34,4 @@ this ticket's.
 - [ ] A test runner is wired, with one command that runs the suite.
 - [ ] At least one test asserts round-trip fidelity of text containing smart quotes, ligatures and irregular whitespace.
 - [ ] No document text is persisted anywhere.
+- [ ] `vercel.json` is deleted and the Vercel deploy builds as a Next.js project.
