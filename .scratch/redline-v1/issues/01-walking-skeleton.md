@@ -11,6 +11,10 @@ test matters more than the page does.
 Runs locally only. Deploying to Vercel is the owner's call and is deliberately
 not part of this ticket.
 
+Put the paste box at the root for now. Ticket 14 later takes the root route for
+the landing page and moves this page to its own; that move is 14's work, not
+this ticket's.
+
 **Blocked by:** None. Can start immediately.
 
 **Status:** ready-for-agent

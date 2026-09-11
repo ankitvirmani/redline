@@ -11,6 +11,7 @@ signing costs them.
 - A question box that answers only from the document.
 - An editable list of the reader's red lines, which promote matching clauses.
 - A saved library of their past documents.
+- A landing page that says what Redline does and hands the reader to the paste box.
 
 ## Settled — do not reopen
 
@@ -52,6 +53,10 @@ Settled: input is pasted text and text-layer PDFs only (ADR 0006). No DOCX, no O
 - Ask before adding a dependency.
 - When grilling (`/mattpocock-skills:grilling`), put every question as
   selectable options with a recommendation. Never make me type free text.
+- All copy a user reads in this product, meaning the landing page, UI labels,
+  error messages and empty states, has to be run through the humanizer skill
+  before it is committed. Copy that reads as though a model wrote it is a
+  defect, not a matter of taste.
 
 ## Read when they matter
 

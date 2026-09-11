@@ -7,9 +7,12 @@ Only extracted text is stored. The uploaded file never is.
 
 **Stop and ask whether a Supabase project exists before writing any code.**
 `CLAUDE.md` marks this undecided and forbids scaffolding a throwaway project or
-mocking auth to get past a missing key. Settle one other thing in the same
-conversation: whether a signed-out reader can still paste and analyse, with only
-persistence behind an account. The spec does not decide it.
+mocking auth to get past a missing key.
+
+Analysis works signed out; an account gates the library and red lines and nothing
+else (owner, 2026-09-11). A signup wall in front of the paste box would cost the
+product its own use case, since the reader is deciding in the minutes before they
+accept.
 
 **Blocked by:** 07.
 
@@ -21,4 +24,5 @@ persistence behind an account. The spec does not decide it.
 - [ ] The library lists past documents, and each can be reopened with its analysis.
 - [ ] Only extracted text is stored; no original file, ever.
 - [ ] A reader's documents are visible only to them; no sharing between readers.
-- [ ] The signed-out behaviour matches whatever the owner settled.
+- [ ] A signed-out reader can paste, analyse, and read the full result, including flags, consequences and the question box.
+- [ ] Only the library and red lines require an account.

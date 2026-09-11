@@ -1,6 +1,8 @@
 # Redline — Product Brief (v1)
 
-Status: draft, 2026-08-29. Derived from `research/summary.md` and ADRs 0001–0008.
+Status: draft, 2026-08-29. Amended 2026-09-11: a landing page was added to §3
+(owner decision), with its cost recorded in §6 and what it may claim constrained in
+§4. Derived from `research/summary.md` and ADRs 0001–0008.
 Where this brief and an ADR disagree, the ADR wins and this file is wrong.
 
 ---
@@ -109,10 +111,21 @@ rulemaking
 9. **Reports genuinely clean documents as clean**, together with the list of what
    was checked. An empty result is indistinguishable from a failed parse, so the
    checked-list is what makes "clean" mean anything (ADR 0004).
-10. **Saves past documents to a library** the reader can return to.
+10. **Saves past documents to a library** the reader can return to. Analysis
+    itself works signed out; an account is needed only for the library and red
+    lines, because the reader is deciding in the minutes before they accept and
+    will not stop to create one (owner, 2026-09-11).
 11. **States that it is jurisdiction-neutral.** It describes what a clause says and
     does; it never asserts whether the clause is enforceable where the reader lives
     (ADR 0005).
+12. **Has a landing page**, which owns the root route and hands the reader to the
+    paste box. It states the mechanism, which is that every flag quotes the
+    sentence it came from and the quote is checked in code. It may compare against
+    a general chatbot at mechanism level, meaning what each tool structurally can
+    and cannot do, and may not claim to be more accurate or more reliable than
+    anything. It states no accuracy figure, because Redline has none measured yet
+    (§8). What it may assert is enumerated in `PRODUCT.md` under Evidence on
+    Hand.
 
 Nothing beyond this list. See §7.
 
@@ -162,6 +175,19 @@ same class as a missing citation.)*
 **External context resolves.** Every external claim rendered under a consequence
 carries a citation that resolves to a real source stating that fact. We own this
 accuracy in a way we do not own the document's (ADR 0007).
+
+**Landing-page claims are grounded.** Every claim on the landing page is either a
+mechanism the product demonstrably performs or an external fact carrying its own
+citation. No accuracy figure appears anywhere in the copy until this section's
+recall and precision have been calibrated against a real corpus. Product imagery
+shows real rendered output or none at all. This is the two-tier discipline of
+ADR 0007 applied to marketing, and it exists because an untested capability claim
+is the specific thing the FTC fined DoNotPay for.
+
+The judgement half of this rule has an owner: `PRODUCT.md` carries a landing-page
+claims list, and every sentence on the page must trace to an entry on it. A claim
+with no entry is not a style disagreement, it is the same defect class as a flag
+that cannot show its source sentence.
 
 ---
 
@@ -251,6 +277,7 @@ to track this, and §4's recall targets are set accordingly.
 | Completeness shown, not enforced (ADR 0006) | Withholding the clean verdict on partial text | Readers who paste half a document and receive a clean verdict sitting next to a low completeness reading. The indicator is passive; it informs, it does not prevent. |
 | Red lines rank (ADR 0008) | Red lines block | Readers who wanted a hard stop on terms they declared unacceptable. |
 | Two-tier consequences (ADR 0007) | Blending document and external facts into one voice | Nobody, in output quality. It costs interface complexity, and it makes the accuracy of every external fact our liability rather than the document's. |
+| A landing page in v1 (owner, 2026-09-11) | Shipping app-only until the analysis is proven | Nobody directly. The cost is that the page has to make a trust claim before the eval suite has measured anything, which is the exact shape of claim §7 says we will not make. §4 constrains what it may say; the constraint is the whole mitigation. |
 
 ---
 
@@ -335,3 +362,15 @@ is hard — and no evidence was found that this segment pays for anything adjace
   not. This is the failure a reader cannot detect for themselves (ADR 0006).
 - **Which OpenRouter model, and whether a Supabase project exists.** Both still
   marked stop-and-ask in `CLAUDE.md`.
+- **Who the landing page is talking to.** §1 describes a reader already holding a
+  document. A landing page is reached by someone who is not, and nothing in the
+  research says how that person arrives, what they searched for, or what they were
+  doing beforehand. Settled on 2026-09-11 that the page is written for the reader
+  §1 describes, because that is the only one the research supports. The gap is not
+  closed by that decision; it is accepted, the way the willingness-to-pay gap
+  above is.
+
+Three landing-page questions were resolved on 2026-09-11 rather than left open.
+What it may claim is now enumerated in `PRODUCT.md`; the chatbot comparison is
+permitted at mechanism level and forbidden as a quality claim; and the page waits
+for the flag rendering so that it shows real output instead of a mockup.
