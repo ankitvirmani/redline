@@ -14,11 +14,11 @@ the recorded behaviour, it does not resolve the question.
 
 **Blocked by:** 06.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] An empty flag set yields a clean-document determination, never a blank result.
-- [ ] The clean result names every clause type that was checked.
-- [ ] A benign corpus fixture produces zero flags at top severity and no invented finding.
-- [ ] A clean result is visibly distinguishable from a refused or failed analysis.
-- [ ] A low completeness reading appears beside a clean result without suppressing it.
-- [ ] The determination is made in the ranking seam, model-free, and tested there.
+- [x] An empty flag set yields a clean-document determination, never a blank result.
+- [x] The clean result names every clause type that was checked.
+- [x] A benign corpus fixture produces zero flags at top severity and no invented finding.
+- [x] A clean result is visibly distinguishable from a refused or failed analysis.
+- [x] A low completeness reading appears beside a clean result without suppressing it.
+- [x] The determination is made in the ranking seam, model-free, and tested there.
