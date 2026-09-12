@@ -1,16 +1,14 @@
 /**
  * The ranking seam: what goes in, and what comes out.
  *
- * Seam three of the four. Flags and red lines in; the flags in the order the reader
- * reads them, the red lines each one hit, and the clean-document determination out.
- * No model call, no network call, no database access, which is what makes the order
- * deterministic and cheap to assert.
+ * Seam three of the four. Flags, red lines and the list of clause types analysis
+ * checked go in; the flags in the order the reader reads them, the red lines each one
+ * hit, and the clean-document determination come out. No model call, no network call,
+ * no database access, which is what makes all three cheap to assert.
  *
- * Written for the two tickets that land in this same seam:
- *
- * - Ticket 07 fills `Ranking.cleanDocument`. The field is carried here and null.
- * - Ticket 12 fills `RankedFlag.matchedRedLines` and adds promotion, which is one
- *   more ordering key in front of the band rather than a filter (ADR 0008).
+ * One ticket still lands in this seam: ticket 12 fills `RankedFlag.matchedRedLines`
+ * and adds promotion, which is one more ordering key in front of the band rather than
+ * a filter (ADR 0008).
  *
  * Ranking consumes severity and leverage; it computes neither. Both are properties
  * of the clause as written and were assigned during analysis, which is the whole
@@ -47,9 +45,9 @@ export type RankedFlag = {
  * A document in which no flag met the bar, reported together with what was checked.
  * Never an empty result, which reads to a reader as a failure (`CONTEXT.md`).
  *
- * Ticket 07 owns this. Deciding it needs the list of clause types that were
- * checked, which this seam is not handed today, so ticket 07 adds that to
- * `RankingRequest` and fills this in one place.
+ * The list is carried rather than looked up, and it is the list analysis reports it
+ * checked. A screen that printed the seven types from `clause-types.ts` instead would
+ * go on printing seven whatever analysis did.
  */
 export type CleanDocumentReading = {
   readonly checkedClauseTypes: readonly ClauseTypeSlug[];
@@ -60,9 +58,10 @@ export type Ranking = {
   /** Every flag that went in, worst first. Ranking never drops one. */
   readonly flags: readonly RankedFlag[];
   /**
-   * Null means the determination has not been made yet, not that the document is
-   * unclean. Ticket 07 fills it; until then no screen may read this field as a
-   * verdict either way.
+   * The clean-document reading, or null where it was not determined. Null is never
+   * "not clean": it is what comes back when a flag met the bar, and also when no
+   * checked list was handed in, because a clean document is only reportable
+   * together with the names of what was looked for. The unclean case is the flags.
    */
   readonly cleanDocument: CleanDocumentReading | null;
 };
@@ -78,4 +77,14 @@ export type RankingRequest = {
   /** Unordered, as analysis returns them. */
   readonly flags: readonly Flag[];
   readonly redLines?: readonly RedLine[];
+  /**
+   * What analysis reports it checked, straight off `DocumentAnalysis`.
+   *
+   * The seam cannot work this out from the flags: a document with no flags is
+   * exactly the document whose flags say nothing about what was looked for, which is
+   * why the clean verdict needs this list handed to it. Omitted means the caller is
+   * not in a position to say, and `cleanDocument` comes back null rather than
+   * guessing at seven names.
+   */
+  readonly checkedClauseTypes?: readonly ClauseTypeSlug[];
 };

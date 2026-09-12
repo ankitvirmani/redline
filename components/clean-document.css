@@ -1,0 +1,70 @@
+/* ============================================================
+   Redline: the clean document
+   World: Modular Bars, in the Operate register.
+
+   Tokens come from app/globals.css. No green, no tick, no badge,
+   no card, no reassuring colour field: DESIGN.md records that
+   Check Green is a fourth identity slot and never means safe, and
+   that nothing in this system sits in a card on a background.
+
+   What carries the state instead: the tab-bar motif at question
+   scale, a 2px ink keyline under the verdict, the label register
+   for the two keys, and the rail list item's small ink marker on
+   each of the seven names. Zero radius. No motion: nothing here
+   changes state.
+   ============================================================ */
+
+.clean{max-width:34rem}
+
+/* The motif: this verdict is attached to the document beside it. */
+.clean::before{
+  content:"";display:block;
+  width:2.75rem;height:.5rem;
+  margin-bottom:.875rem;
+  background:var(--ink);
+}
+
+.clean__head{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem 2rem;
+  align-items:baseline;
+  padding-bottom:.75rem;
+  border-bottom:2px solid var(--ink);
+}
+.clean__k,.clean__v{
+  margin:0;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+}
+.clean__k{color:var(--grey-text)}
+.clean__v{color:var(--ink)}
+
+.clean__say{
+  margin:1.125rem 0 0;max-width:46ch;
+  font-size:1rem;line-height:1.5;font-weight:600;
+}
+
+/* The limit on the verdict, set as plain prose rather than as a
+   caveat a reader can skip. */
+.clean__limit{
+  margin:.875rem 0 0;max-width:52ch;
+  font-size:.9375rem;line-height:1.55;color:var(--grey-text);
+}
+
+.clean__sub{
+  margin:1.75rem 0 .75rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+
+.clean__list{margin:0;padding:0;list-style:none}
+.clean__item{
+  position:relative;padding:.5rem 0 .5rem 1.125rem;
+  font-size:.875rem;line-height:1.3;font-weight:600;
+  border-bottom:1px solid var(--grey-line);
+}
+.clean__item:first-child{border-top:1px solid var(--grey-line)}
+
+/* The bar motif at its smallest, as the rail gives a list item. */
+.clean__item::before{
+  content:"";position:absolute;left:0;top:.875rem;
+  width:.5rem;height:.1875rem;background:var(--ink);
+}

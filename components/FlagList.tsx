@@ -1,7 +1,7 @@
 "use client";
 
 import { SEVERITY_BAND_READING, clauseTypeLabel } from "@/src/domain/clause-types";
-import { countInWords, timesInWords } from "@/src/domain/text";
+import { timesInWords } from "@/src/domain/text";
 import type { RankedFlag } from "@/src/ranking";
 
 import { flagIds, inkFor } from "./flag-view";
@@ -23,29 +23,24 @@ import "./flags.css";
  *
  * Selecting a flag marks its sentence in the document rather than opening a panel
  * over it, which is the one idea this surface has.
+ *
+ * There is no empty state here. A document where no flag met the bar is a clean
+ * document, which is a state of its own with the list of what was checked on it
+ * (ADR 0004), and `components/CleanDocument.tsx` renders it in this column instead.
+ * An empty list rendered with nothing in it is the failure that state exists to
+ * prevent.
  */
 export default function FlagList({
   flags,
-  checkedCount,
   selected,
   onSelect,
   base,
 }: {
   flags: readonly RankedFlag[];
-  checkedCount: number;
   selected: string | null;
   onSelect: (code: string | null) => void;
   base: string;
 }) {
-  if (flags.length === 0) {
-    return (
-      <p className="flags__none">
-        Redline checked this document for all {countInWords(checkedCount)} kinds of
-        clause and found none of them.
-      </p>
-    );
-  }
-
   return (
     <ol className="flags">
       {flags.map(({ rank, flag }, position) => {

@@ -14,8 +14,14 @@
  * Every flag that goes in comes out. Ranking orders, and ordering is all it does:
  * red lines promote and mark (ticket 12), and neither of those removes a flag
  * either (ADR 0008).
+ *
+ * The one thing it decides beyond the order is whether this is a clean document,
+ * which is the same judgement seen from the other side: the seam holds the whole flag
+ * set, so it is the only place that can say nothing in it met the bar, and it says so
+ * with the list of what was checked attached. See `clean.ts`.
  */
 
+import { cleanDocumentFor } from "./clean";
 import { compareFlags, leversRemovedCount, RANKING_KEYS } from "./order";
 import type { RankedFlag, Ranking, RankingRequest } from "./types";
 
@@ -27,10 +33,12 @@ export type {
   RedLine,
 } from "./types";
 export { compareFlags, leversRemovedCount, RANKING_KEYS };
+export { cleanDocumentFor };
 export type { FlagOrdering } from "./order";
 
 /**
- * The seam. Flags in any order in, the reader's order out.
+ * The seam. Flags in any order in, the reader's order out and the clean-document
+ * reading beside it.
  *
  * The input is copied before it is sorted, so the array handed in is left as it was
  * found, and each flag is carried across untouched rather than rebuilt.
@@ -44,5 +52,8 @@ export function rank(request: RankingRequest): Ranking {
     matchedRedLines: [],
   }));
 
-  return { flags, cleanDocument: null };
+  return {
+    flags,
+    cleanDocument: cleanDocumentFor(request.flags, request.checkedClauseTypes),
+  };
 }

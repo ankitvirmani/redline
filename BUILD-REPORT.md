@@ -20,7 +20,7 @@ first". Nothing above that section is urgent.
 | 03 | PDF text layer and typed refusal | not started |
 | 04 | Analysis seam, verified flags | done |
 | 05 | Plain-English summary | not started |
-| 06 | Ranking by leverage lost | not started |
+| 06 | Ranking by leverage lost | done |
 | 07 | Clean document verdict | not started |
 | 08 | Flag consequence, exit, neutrality | not started |
 | 09 | Question box, grounded or refused | not started |

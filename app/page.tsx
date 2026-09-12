@@ -16,6 +16,7 @@
 
 import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 
+import CleanDocument from "@/components/CleanDocument";
 import CompletenessReading from "@/components/CompletenessReading";
 import DocumentReading from "@/components/DocumentReading";
 import FlagList from "@/components/FlagList";
@@ -100,17 +101,30 @@ export default function PastePage() {
   const openDocument = screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
   const analysis = screen.kind === "read" ? screen.analysis : null;
 
-  // The order the reader reads the flags in. Red lines are ticket 12's and there are
-  // none to give it yet, which the seam takes as the reader having set none. The
-  // document is marked from the same ordered list, so the ink on a bar is the ink its
-  // sentence lights up in.
+  // The order the reader reads the flags in, and whether this is a clean document.
+  // Red lines are ticket 12's and there are none to give the seam yet, which it takes
+  // as the reader having set none. The document is marked from the same ordered list,
+  // so the ink on a bar is the ink its sentence lights up in.
+  //
+  // The clean verdict comes back from the seam and is not worked out here. The screen
+  // hands over the clause types analysis says it checked and reads the answer back, so
+  // the names a clean document shows are the ones analysis looked for rather than a
+  // list this file keeps.
   const reading = useMemo(() => {
     if (analysis === null) return null;
-    const ranking = rank({ flags: analysis.flags });
-    return { ranked: ranking.flags, ordered: ranking.flags.map(({ flag }) => flag) };
+    const ranking = rank({
+      flags: analysis.flags,
+      checkedClauseTypes: analysis.checkedClauseTypes,
+    });
+    return {
+      ranked: ranking.flags,
+      ordered: ranking.flags.map(({ flag }) => flag),
+      clean: ranking.cleanDocument,
+    };
   }, [analysis]);
   const rankedFlags = reading?.ranked ?? [];
   const orderedFlags = reading?.ordered ?? [];
+  const clean = reading?.clean ?? null;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -233,17 +247,26 @@ export default function PastePage() {
 
                 {analysis ? (
                   <section className="stage__flags" aria-labelledby={flagsHeadingId}>
-                    <h2 className="stage__h" id={flagsHeadingId}>What signing costs you</h2>
-                    {analysis.flags.length > 0 ? (
-                      <p className="stage__count">{flagCount(analysis.flags.length)}</p>
-                    ) : null}
-                    <FlagList
-                      flags={rankedFlags}
-                      checkedCount={analysis.checkedClauseTypes.length}
-                      selected={selected}
-                      onSelect={setSelected}
-                      base={base}
-                    />
+                    <h2 className="stage__h" id={flagsHeadingId}>
+                      {clean ? "No clause met the bar" : "What signing costs you"}
+                    </h2>
+                    {clean ? (
+                      // The clean document takes the flag list's place in this column,
+                      // at the same weight, rather than leaving the column empty.
+                      <CleanDocument reading={clean} headingId={flagsHeadingId} />
+                    ) : (
+                      <>
+                        {analysis.flags.length > 0 ? (
+                          <p className="stage__count">{flagCount(analysis.flags.length)}</p>
+                        ) : null}
+                        <FlagList
+                          flags={rankedFlags}
+                          selected={selected}
+                          onSelect={setSelected}
+                          base={base}
+                        />
+                      </>
+                    )}
                   </section>
                 ) : null}
               </div>

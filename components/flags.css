@@ -14,12 +14,8 @@
 .flags{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.5rem}
 .flags__item{min-width:0}
 
-/* No flag met the bar. Product copy, never an empty panel. */
-.flags__none{
-  margin:0;max-width:52ch;
-  padding-left:.875rem;border-left:2px solid var(--ink);
-  font-size:1rem;line-height:1.5;font-weight:500;
-}
+/* No rule for an empty list. No flag met the bar is a clean document,
+   a state of its own, styled in components/clean-document.css. */
 
 .flag{
   --c:var(--grey-line);
