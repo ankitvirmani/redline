@@ -1,0 +1,5 @@
+# The fixture documents carry non-breaking spaces, ligature glyphs, tabs, trailing
+# whitespace and LF line endings on purpose. Every citation in the test suite is an
+# exact substring match against them, so any end-of-line conversion or whitespace
+# trim breaks the suite silently. Keep them byte for byte.
+tests/fixtures/*.txt -text
