@@ -11,10 +11,10 @@ not in the document, and it is the shape of claim the FTC fined DoNotPay for
 
 **Blocked by:** 04.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Every analysis returns a summary of what the document is and what accepting it commits the reader to.
-- [ ] The summary states only what the document supports.
-- [ ] No sign or don't-sign recommendation appears, explicit or implied.
-- [ ] The summary is shown above the flags.
-- [ ] Covered by tests against a stubbed model.
+- [x] Every analysis returns a summary of what the document is and what accepting it commits the reader to.
+- [~] The summary states only what the document supports. Prompt-constrained, plus a code check that every figure it states appears in the document. Groundedness of the prose itself is not checkable the way a flag's span is, and is not claimed.
+- [~] No sign or don't-sign recommendation appears, explicit or implied. Explicit wording is blocked in code by 44 patterns in four kinds, and a hit fails the analysis. Implied verdicts, reached through emphasis, ordering, omission or an unlisted phrasing, are not blocked. Recorded rather than claimed.
+- [x] The summary is shown above the flags.
+- [x] Covered by tests against a stubbed model.
