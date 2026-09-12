@@ -61,3 +61,36 @@ export function formatCharacterCount(count: number): string {
   const grouped = String(count).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return `${grouped} ${count === 1 ? "character" : "characters"}`;
 }
+
+/**
+ * Small counts as words, the way a sentence wants them: "nine flags", "all seven
+ * kinds of clause". Above twelve the figure reads better than the word, and a screen
+ * showing thirteen flags is not a screen that needs prose.
+ */
+const IN_WORDS = [
+  "no",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+] as const;
+
+export function countInWords(count: number): string {
+  if (!Number.isInteger(count) || count < 0) return String(count);
+  return IN_WORDS[count] ?? String(count);
+}
+
+/** How many times something turns up, as a reader would say it. */
+export function timesInWords(count: number): string {
+  if (count === 1) return "once";
+  if (count === 2) return "twice";
+  return `${countInWords(count)} times`;
+}

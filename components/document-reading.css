@@ -1,0 +1,66 @@
+/* ============================================================
+   Redline: the document, read back, with its flagged sentences
+   marked. World: Modular Bars, in the Operate register.
+
+   This carries the Change Bar, the signature device: the one
+   thing on this surface that is not negotiable, because it is
+   the product's rule made visible. A marked sentence takes
+   three marks at once, an underline in its flag's ink, the
+   left-edge ink tab, and the code chip, and all three clone
+   across every line the sentence wraps onto.
+
+   Nothing here rounds a corner, casts a shadow or tints a
+   field. The one mixture is the resting underline, which
+   DESIGN.md records as the single scoped exception.
+   ============================================================ */
+
+.read__doc{
+  max-width:26rem;
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+  font-size:.9375rem;line-height:1.72;font-weight:400;
+  text-align:justify;text-wrap:pretty;hyphens:auto;hyphenate-limit-chars:9 4 4;
+}
+
+/* ── the change bar ────────────────────────────────────────── */
+.src{
+  display:inline;
+  margin:0 0 0 -.4rem;padding:0 0 0 .4rem;
+  border:0;border-bottom:.5rem solid var(--c,var(--grey-line));
+  background:transparent;color:inherit;
+  font:inherit;letter-spacing:inherit;white-space:inherit;text-align:inherit;
+  cursor:pointer;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;
+  box-shadow:-.35rem 0 0 transparent;
+  transition:border-color 220ms var(--ease),box-shadow 220ms var(--ease);
+}
+
+/* At rest: a mix into white, so a document of nine flags does not shout. */
+.src[data-ink="magenta"]{--c:color-mix(in srgb,var(--magenta) 34%,var(--white))}
+.src[data-ink="cyan"]{--c:color-mix(in srgb,var(--cyan) 34%,var(--white))}
+.src[data-ink="yellow"]{--c:color-mix(in srgb,var(--yellow) 40%,var(--white))}
+.src[data-ink="green"]{--c:color-mix(in srgb,var(--green) 36%,var(--white))}
+
+/* Selected: full saturation, the ink tab down every line fragment, the chip. */
+.src[data-selected][data-ink="magenta"]{--c:var(--magenta)}
+.src[data-selected][data-ink="cyan"]{--c:var(--cyan)}
+.src[data-selected][data-ink="yellow"]{--c:var(--yellow)}
+.src[data-selected][data-ink="green"]{--c:var(--green)}
+.src[data-selected]{box-shadow:-.35rem 0 0 var(--ink)}
+
+.src[data-selected]::after{
+  content:attr(data-code);
+  display:inline-block;margin-left:.4rem;padding:0 .3rem;
+  background:var(--ink);color:var(--white);
+  font-size:.625rem;font-weight:800;letter-spacing:.1em;
+  font-variant-numeric:tabular-nums;
+  vertical-align:.18em;white-space:nowrap;
+}
+
+@media (max-width:520px){
+  .read__doc{text-align:left;hyphens:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .src{transition:none}
+}

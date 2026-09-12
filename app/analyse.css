@@ -80,12 +80,33 @@
   color:var(--grey-text);
 }
 .read__count{font-variant-numeric:tabular-nums;color:var(--ink)}
-.read__doc{
-  max-width:26rem;
-  white-space:pre-wrap;
-  overflow-wrap:break-word;
-  font-size:.9375rem;line-height:1.72;font-weight:400;
-  text-align:justify;text-wrap:pretty;hyphens:auto;hyphenate-limit-chars:9 4 4;
+/* The document itself, and the change bar on its flagged sentences, are styled
+   with the component that renders them, in components/document-reading.css. */
+
+/* How the two-way selection works, said once above the stage. */
+.read__how{
+  margin:1.5rem 0 0;max-width:56ch;
+  padding-left:.875rem;border-left:2px solid var(--ink);
+  font-size:.9375rem;line-height:1.5;font-weight:500;
+}
+
+/* ── the stage: the document, and the flags beside it ───────── */
+.stage{
+  margin-top:2rem;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,30rem);gap:3.5rem;
+  align-items:start;
+}
+.stage__doc{min-width:0}
+.stage__flags{min-width:0}
+.stage__h{
+  margin:0 0 .625rem;max-width:26ch;
+  font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.stage__count{
+  margin:0 0 1.5rem;max-width:46ch;
+  font-size:.9375rem;line-height:1.45;font-weight:600;
+  font-variant-numeric:tabular-nums;
 }
 .read__empty{margin:0;max-width:52ch;font-size:.9375rem;line-height:1.6;color:var(--grey-text)}
 
@@ -105,12 +126,12 @@
 .said:empty{display:none}
 
 /* ── responsive ────────────────────────────────────────────── */
-@media (max-width:860px){
-  .paste__foot{grid-template-columns:minmax(0,1fr)}
+@media (max-width:1100px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:2.5rem}
 }
 
-@media (max-width:520px){
-  .read__doc{text-align:left;hyphens:none}
+@media (max-width:860px){
+  .paste__foot{grid-template-columns:minmax(0,1fr)}
 }
 
 @media (prefers-reduced-motion:reduce){

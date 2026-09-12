@@ -1,0 +1,90 @@
+/* ============================================================
+   Redline: the flags. World: Modular Bars, Operate register.
+
+   A flag is a bar of flat ink with a body under it. The ink
+   identifies the flag and never ranks it: severity is the word
+   on the bar. Confidence is small prose in the body, where it
+   cannot be mistaken for severity.
+
+   Landing-page devices do not come inside: no 7rem overhang, no
+   rotation, no runtime keyline, no load-time snap. Motion is
+   state only, 150 to 250ms.
+   ============================================================ */
+
+.flags{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.5rem}
+.flags__item{min-width:0}
+
+/* The list is unordered until ticket 06 ranks it, and says so. */
+.flags__note{
+  margin:0 0 1.5rem;max-width:46ch;
+  padding-left:.875rem;border-left:2px solid var(--ink);
+  font-size:.8125rem;line-height:1.45;color:var(--grey-text);
+}
+
+/* No flag met the bar. Product copy, never an empty panel. */
+.flags__none{
+  margin:0;max-width:52ch;
+  padding-left:.875rem;border-left:2px solid var(--ink);
+  font-size:1rem;line-height:1.5;font-weight:500;
+}
+
+.flag{
+  --c:var(--grey-line);
+  border-left:.5rem solid transparent;
+  transition:border-color 200ms var(--ease);
+}
+.flag[data-ink="magenta"]{--c:var(--magenta)}
+.flag[data-ink="cyan"]{--c:var(--cyan)}
+.flag[data-ink="yellow"]{--c:var(--yellow)}
+.flag[data-ink="green"]{--c:var(--green)}
+
+/* Selected: the tab-bar motif at whole-flag scale, matching the ink tab the
+   sentence grows in the document. The space is reserved, so nothing moves. */
+.flag[data-selected]{border-left-color:var(--ink)}
+
+.flag__h{margin:0}
+.flag__bar{
+  display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:.875rem;
+  width:100%;padding:.875rem 1rem;border:0;
+  background:var(--c);color:var(--ink);
+  font:inherit;text-align:left;cursor:pointer;
+}
+.flag__code{
+  padding:.1875rem .4375rem;background:var(--ink);color:var(--white);
+  font-size:.6875rem;font-weight:900;letter-spacing:.1em;
+  font-variant-numeric:tabular-nums;
+}
+.flag__sev{font-size:.75rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.flag__type{font-size:1rem;font-weight:700;line-height:1.2;letter-spacing:-.01em}
+.flag__bar:hover .flag__type{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+
+.flag__body{
+  padding:.9375rem 1.125rem 1rem;
+  border:1px solid var(--grey-line);border-top:0;
+}
+.flag__consequence{margin:0 0 1rem;font-size:1rem;line-height:1.45;font-weight:500;max-width:56ch}
+
+.flag__k{
+  display:block;margin-bottom:.25rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
+}
+
+/* The sentence the flag came from, quoted. Held at the document measure and
+   underlined with the tab motif, so it reads as the document speaking. */
+.flag__src{margin:0 0 1rem}
+.flag__quote{
+  margin:0;padding:.75rem .875rem;
+  background:var(--grey);border-bottom:.5rem solid var(--ink);
+}
+.flag__quote p{
+  margin:0;max-width:26rem;
+  font-size:.9375rem;line-height:1.6;
+}
+
+.flag__again,.flag__conf{margin:0;max-width:52ch;font-size:.875rem;line-height:1.45;color:var(--grey-text)}
+.flag__again{margin-bottom:1rem}
+.flag__conf{font-variant-numeric:tabular-nums}
+
+@media (prefers-reduced-motion:reduce){
+  .flag{transition:none}
+}

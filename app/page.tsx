@@ -1,37 +1,119 @@
 "use client";
 
-// The paste box lives at the root until ticket 14 gives the root to the landing
-// page and moves this surface to /analyse.
+// The paste box and the reading it produces. This lives at the root until ticket 14
+// gives the root to the landing page and moves this surface to /analyse.
 //
-// Pasted text no longer goes straight to the screen. It goes through the
-// extraction seam, which hands back the text untouched, the kind of source it
-// came from, and how much of a document it believes it received.
+// Pasted text goes through the extraction seam, which hands back the text untouched,
+// and then to the analysis route, which is the only place a model is called, because
+// the key must never reach this browser. What comes back is flags that have already
+// been checked against the document: every one of them can show the sentence it was
+// drawn from, because a flag that could not never left the seam.
 
 import { useId, useRef, useState, type FormEvent } from "react";
 
 import CompletenessReading from "@/components/CompletenessReading";
-import { formatCharacterCount } from "@/src/domain/text";
-import { extract, type Extraction } from "@/src/extraction";
+import DocumentReading from "@/components/DocumentReading";
+import FlagList from "@/components/FlagList";
+import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
+import { countInWords, formatCharacterCount } from "@/src/domain/text";
+import { extract, type ExtractedDocument } from "@/src/extraction";
 import "./analyse.css";
+
+/** What the screen is showing. */
+type Screen =
+  | { readonly kind: "waiting" }
+  | { readonly kind: "nothing-pasted" }
+  | { readonly kind: "reading"; readonly document: ExtractedDocument }
+  | {
+      readonly kind: "read";
+      readonly document: ExtractedDocument;
+      readonly analysis: DocumentAnalysis;
+    }
+  | {
+      readonly kind: "failed";
+      readonly document: ExtractedDocument;
+      readonly reason: AnalysisFailureReason;
+    };
+
+/** What Redline says when a reading could not happen. Each one is a designed state. */
+const FAILURE_SAYS: Readonly<Record<AnalysisFailureReason, string>> = {
+  "model-not-configured":
+    "Redline has no model set up to read with, so it has not read your document. What you pasted is still in the box above.",
+  "model-unavailable":
+    "The reading did not come back. Redline kept nothing, so ask again.",
+  "model-response-rejected":
+    "What came back did not hold up, and Redline will not show you a flag it cannot stand behind. Ask again.",
+};
+
+type AnalysisAnswer =
+  | { readonly outcome: "analysed"; readonly analysis: DocumentAnalysis }
+  | { readonly outcome: "failed"; readonly reason: AnalysisFailureReason };
+
+/**
+ * Asks the route to read the document. Anything that comes back in a shape this does
+ * not recognise is treated as the model being unavailable, because the one thing that
+ * must not happen is showing a reader something unchecked.
+ */
+async function askForAnalysis(text: string): Promise<AnalysisAnswer> {
+  try {
+    const response = await fetch("/api/analyse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    const answer = (await response.json()) as AnalysisAnswer;
+    if (answer.outcome === "analysed" || answer.outcome === "failed") return answer;
+    return { outcome: "failed", reason: "model-unavailable" };
+  } catch {
+    return { outcome: "failed", reason: "model-unavailable" };
+  }
+}
+
+function flagCount(count: number): string {
+  return count === 1
+    ? "One flag, with the sentence it came from."
+    : `${countInWords(count)} flags, each with the sentence it came from.`;
+}
 
 export default function PastePage() {
   const fieldId = useId();
   const noteId = useId();
-  const headingId = useId();
+  const docHeadingId = useId();
+  const flagsHeadingId = useId();
+  const hintId = useId();
+  const base = useId();
   const field = useRef<HTMLTextAreaElement>(null);
 
   // The pasted text lives here and nowhere else: no localStorage, no
-  // sessionStorage, no cookie, no request, no log line. Reload and it is gone.
+  // sessionStorage, no cookie. It is sent to the analysis route and the route keeps
+  // nothing. Reload and it is gone.
   const [pasted, setPasted] = useState("");
-  const [extraction, setExtraction] = useState<Extraction | null>(null);
+  const [screen, setScreen] = useState<Screen>({ kind: "waiting" });
+  const [selected, setSelected] = useState<string | null>(null);
 
-  const openDocument = extraction?.outcome === "extracted" ? extraction.document : null;
+  const openDocument = screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
+  const analysis = screen.kind === "read" ? screen.analysis : null;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const result = await extract({ kind: "pasted-text", text: pasted });
-    setExtraction(result);
-    if (result.outcome === "rejected") field.current?.focus();
+    setSelected(null);
+
+    const extraction = await extract({ kind: "pasted-text", text: pasted });
+    if (extraction.outcome === "rejected") {
+      setScreen({ kind: "nothing-pasted" });
+      field.current?.focus();
+      return;
+    }
+
+    const document = extraction.document;
+    setScreen({ kind: "reading", document });
+
+    const answer = await askForAnalysis(document.text);
+    setScreen(
+      answer.outcome === "analysed"
+        ? { kind: "read", document, analysis: answer.analysis }
+        : { kind: "failed", document, reason: answer.reason },
+    );
   }
 
   return (
@@ -49,8 +131,9 @@ export default function PastePage() {
         <section className="paste" id="paste">
           <h1 className="paste__h">Paste a document</h1>
           <p className="paste__lede">
-            This page does two things. It reads your document back character for
-            character, and it says how much of a document it thinks it received.
+            Redline reads it back character for character and flags the clauses that
+            could cost you. Every flag shows the sentence it came from, so you can hold
+            each one against your own document.
           </p>
 
           <form className="paste__form" onSubmit={(event) => void onSubmit(event)} noValidate>
@@ -69,7 +152,7 @@ export default function PastePage() {
 
             <div className="paste__foot">
               <button className="btn btn--primary" type="submit">
-                <span>Read it back</span>
+                <span>Read it</span>
                 <svg className="btn__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <path
                     d="M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5"
@@ -81,24 +164,26 @@ export default function PastePage() {
                 </svg>
               </button>
               <p className="paste__note" id={noteId}>
-                Your document stays in this browser tab. Closing the tab is the
-                end of it.
+                Redline saves nothing. Your document goes to the model that reads it
+                and comes straight back.
               </p>
             </div>
           </form>
 
           <p className="said" role="status">
-            {extraction === null
-              ? ""
-              : extraction.outcome === "extracted"
-                ? "Your document is below, exactly as you pasted it."
-                : "The box is empty. Paste a document first."}
+            {screen.kind === "nothing-pasted"
+              ? "The box is empty. Paste a document first."
+              : screen.kind === "reading"
+                ? "Redline is reading your document. Give it a few seconds."
+                : screen.kind === "failed"
+                  ? FAILURE_SAYS[screen.reason]
+                  : ""}
           </p>
         </section>
 
-        <section className="read" aria-labelledby={headingId}>
+        <section className="read" aria-labelledby={docHeadingId}>
           <div className="read__head">
-            <h2 className="read__label" id={headingId}>What you pasted</h2>
+            <h2 className="read__label" id={docHeadingId}>Your document</h2>
             {openDocument ? (
               <p className="read__count">{formatCharacterCount(openDocument.characterCount)}</p>
             ) : null}
@@ -107,12 +192,48 @@ export default function PastePage() {
           {openDocument ? (
             <>
               <CompletenessReading assessment={openDocument.completeness} />
-              <div className="read__doc">{openDocument.text}</div>
+
+              {analysis && analysis.flags.length > 0 ? (
+                <p className="read__how" id={hintId}>
+                  The underlined sentences are the ones a flag came from. Choose an
+                  underlined sentence to go to its flag. Choose a flag to mark its
+                  sentence here.
+                </p>
+              ) : null}
+
+              <div className="stage">
+                <div className="stage__doc">
+                  <DocumentReading
+                    text={openDocument.text}
+                    flags={analysis?.flags ?? []}
+                    selected={selected}
+                    onSelect={setSelected}
+                    base={base}
+                    hintId={hintId}
+                  />
+                </div>
+
+                {analysis ? (
+                  <section className="stage__flags" aria-labelledby={flagsHeadingId}>
+                    <h2 className="stage__h" id={flagsHeadingId}>What signing costs you</h2>
+                    {analysis.flags.length > 0 ? (
+                      <p className="stage__count">{flagCount(analysis.flags.length)}</p>
+                    ) : null}
+                    <FlagList
+                      flags={analysis.flags}
+                      checkedCount={analysis.checkedClauseTypes.length}
+                      selected={selected}
+                      onSelect={setSelected}
+                      base={base}
+                    />
+                  </section>
+                ) : null}
+              </div>
             </>
           ) : (
             <p className="read__empty">
-              Nothing here yet. Paste a document above and it comes back exactly
-              as you left it.
+              Nothing here yet. Paste a document above and it comes back exactly as you
+              left it, with what it costs you beside it.
             </p>
           )}
         </section>
