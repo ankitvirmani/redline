@@ -26,13 +26,23 @@ export function inkFor(position: number): FlagInk {
   return FLAG_INKS[position % FLAG_INKS.length] ?? "magenta";
 }
 
-/** The ids that bind a flag to its sentence, both ways. */
+/**
+ * The ids that bind a flag to its sentence, both ways, and the ids that name the
+ * blocks inside a flag's body.
+ *
+ * `external` and `exit` are here rather than generated in the component because they
+ * label two regions a screen reader has to be able to tell apart from the consequence
+ * and from each other: the fact from outside the document, and the way out the document
+ * grants. Four related pieces of text in one flag, each announced as what it is.
+ */
 export function flagIds(base: string, code: string) {
   return {
     flag: `${base}-flag-${code}`,
     bar: `${base}-bar-${code}`,
     heading: `${base}-heading-${code}`,
     sentence: `${base}-sentence-${code}`,
+    external: `${base}-external-${code}`,
+    exit: `${base}-exit-${code}`,
   };
 }
 

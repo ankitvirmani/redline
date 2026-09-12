@@ -10,7 +10,7 @@ import {
   type DocumentAnalysis,
   type Flag,
 } from "@/src/analysis";
-import { CLAUSE_TYPE_SLUGS, type SeverityBand } from "@/src/domain/clause-types";
+import { CLAUSE_TYPE_SLUGS, clauseType, type SeverityBand } from "@/src/domain/clause-types";
 import { extract, type ExtractedDocument } from "@/src/extraction";
 import {
   changeSpan,
@@ -395,8 +395,22 @@ describe("all seven clause types", () => {
       expect(ADHESION).toContain(flag?.sourceSentence.text ?? "");
       expect(flag?.confidence).toBeGreaterThan(0);
       expect(flag?.consequence.fromTheDocument.length ?? 0).toBeGreaterThan(0);
-      // The second tier of the consequence is ticket 08's to fill.
-      expect(flag?.consequence.externalContext).toBeNull();
+
+      // The second tier of the consequence, filled by ticket 08 from the curated
+      // store. The four types resting on federal regulatory measurement carry a fact
+      // with a source; the three resting on weaker evidence carry none, and null there
+      // is the store being honest rather than a field nobody filled.
+      const outside = flag?.consequence.externalContext ?? null;
+      if (clauseType(slug).evidence === "regulator-evidenced") {
+        expect(outside?.fact.length ?? 0, slug).toBeGreaterThan(0);
+        expect(outside?.source.title.length ?? 0, slug).toBeGreaterThan(0);
+        expect(outside?.source.url ?? "", slug).toMatch(/^https:\/\//u);
+        // Two fields, never one string. Nothing folded the fact into the claim the
+        // source sentence backs (ADR 0007).
+        expect(flag?.consequence.fromTheDocument, slug).not.toContain(outside?.fact ?? "");
+      } else {
+        expect(outside, slug).toBeNull();
+      }
     }
   });
 

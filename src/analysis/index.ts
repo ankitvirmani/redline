@@ -63,10 +63,12 @@ export {
   readSummary,
   SUMMARY_CHARACTER_LIMIT,
   SUMMARY_REFUSALS,
-  VERDICT_KINDS,
-  verdictLanguageIn,
 } from "./summary";
-export type { Figure, SummaryReading, SummaryRefusal, VerdictFinding, VerdictKind } from "./summary";
+export type { Figure, SummaryReading, SummaryRefusal } from "./summary";
+export { statutoryLanguageIn, VERDICT_KINDS, verdictLanguageIn } from "./wording";
+export type { VerdictFinding, VerdictKind } from "./wording";
+export { EXTERNAL_CONTEXT, externalContextFor, SOURCED_FILES } from "./external-context";
+export type { ExternalContextEntry, SourcedFile } from "./external-context";
 
 /** A model failure, as a state the shell has copy for. */
 function failureFor(error: unknown): AnalysisFailureReason {

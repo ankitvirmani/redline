@@ -23,6 +23,7 @@ import CompletenessReading from "@/components/CompletenessReading";
 import DocumentReading from "@/components/DocumentReading";
 import DocumentSummary from "@/components/DocumentSummary";
 import FlagList from "@/components/FlagList";
+import StandingStatement from "@/components/StandingStatement";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
 import { countInWords, formatCharacterCount } from "@/src/domain/text";
 import { extract, type ExtractedDocument } from "@/src/extraction";
@@ -266,7 +267,15 @@ export default function PastePage() {
                     {clean ? (
                       // The clean document takes the flag list's place in this column,
                       // at the same weight, rather than leaving the column empty.
-                      <CleanDocument reading={clean} headingId={flagsHeadingId} />
+                      //
+                      // The standing statement is rendered here because the flag list is
+                      // not: every analysis carries it once (`PRODUCT.md`, Brand
+                      // Commitments), the flag list carries it for a document with flags,
+                      // and these two states never appear together.
+                      <>
+                        <StandingStatement />
+                        <CleanDocument reading={clean} headingId={flagsHeadingId} />
+                      </>
                     ) : (
                       <>
                         {analysis.flags.length > 0 ? (

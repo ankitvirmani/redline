@@ -6,6 +6,13 @@
    on the bar and the rank badge beside it. Confidence is small
    prose in the body, where it cannot be mistaken for severity.
 
+   Inside the body, four kinds of text and three different
+   shapes. What the document says is plain prose and a quoted
+   block with the ink underline. What comes from outside the
+   document is an inset cool-grey block. The way out the document
+   grants is a line under an ink tab. Nothing here is a card and
+   nothing sits on a field of its own colour.
+
    Landing-page devices do not come inside: no 7rem overhang, no
    rotation, no runtime keyline, no load-time snap. Motion is
    state only, 150 to 250ms.
@@ -67,8 +74,11 @@
 }
 .flag__consequence{margin:0 0 1rem;font-size:1rem;line-height:1.45;font-weight:500;max-width:56ch}
 
+/* margin-top is zeroed because this class now labels real h4 headings inside the
+   body as well as figcaptions and spans, and a heading's default top margin would
+   open a gap the rhythm does not ask for. */
 .flag__k{
-  display:block;margin-bottom:.25rem;
+  display:block;margin:0 0 .25rem;
   font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
 }
 
@@ -83,6 +93,38 @@
   margin:0;max-width:26rem;
   font-size:.9375rem;line-height:1.6;
 }
+
+/* External context: the inset block DESIGN.md already names for it. Cool grey
+   fill, no border, no radius, sitting under the claim the source sentence
+   backs. The fill is not what says this came from outside the document, because
+   colour cannot carry meaning alone: the heading and the attribution line say
+   it in words, and the fill only groups them. */
+.flag__ext{
+  margin:0 0 1rem;padding:.75rem .875rem;
+  background:var(--grey);
+}
+.flag__extfact{margin:0 0 .5rem;max-width:52ch;font-size:.9375rem;line-height:1.5}
+.flag__extsrc{margin:0;max-width:52ch;font-size:.8125rem;line-height:1.45;color:var(--grey-text)}
+/* Muted Ink on cool grey passes AA, and the link is underlined at rest, so the
+   attribution is never colour alone either. */
+.flag__extlink{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.flag__extlink:hover{text-decoration-thickness:2px}
+/* Read aloud, never seen: a link that leaves the reading behind says so. */
+.flag__away{
+  position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+}
+
+/* The way out the document grants. A line attached to the clause above it, so it
+   takes the tab-bar motif at question scale: a 2.75rem by 0.5rem ink tab over
+   the heading. */
+.flag__exit{margin:0 0 1rem;padding-top:.75rem;position:relative}
+.flag__exit::before{
+  content:"";position:absolute;top:0;left:0;
+  width:2.75rem;height:.5rem;background:var(--ink);
+}
+.flag__exitsay{margin:0 0 1rem;max-width:52ch;font-size:.9375rem;line-height:1.5}
+.flag__src--exit{margin-bottom:0}
 
 .flag__again,.flag__conf{margin:0;max-width:52ch;font-size:.875rem;line-height:1.45;color:var(--grey-text)}
 .flag__again{margin-bottom:1rem}

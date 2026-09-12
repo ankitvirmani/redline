@@ -1,0 +1,35 @@
+/* ============================================================
+   Redline: the standing statement. World: Modular Bars,
+   Operate register.
+
+   Said once per analysis, at the head of the flags. It carries
+   no flag ink, because it identifies nothing and ranks nothing.
+   What attaches it to the column is the tab-bar motif at
+   paragraph scale: a 2px ink keyline down the left edge, the
+   same device the summary uses, so a reader reads it as Redline
+   speaking rather than as the document speaking.
+
+   No field colour, no card, no radius, no shadow. A whole-field
+   cool grey would read as an inset block, and an inset block
+   inside a flag means external context (DESIGN.md, Cards /
+   Containers); this statement is not that, so it does not
+   borrow that shape.
+   ============================================================ */
+
+.standing{
+  margin:0 0 1.5rem;
+  padding:0 0 0 1rem;
+  border-left:2px solid var(--ink);
+}
+
+.standing__k{
+  margin:0 0 .5rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink);
+}
+
+.standing__say{
+  margin:0 0 .5rem;max-width:52ch;
+  font-size:.875rem;line-height:1.5;color:var(--grey-text);
+}
+.standing__say:last-child{margin-bottom:0;color:var(--ink);font-weight:600}

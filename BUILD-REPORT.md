@@ -19,7 +19,7 @@ first". Nothing above that section is urgent.
 | 02 | Extraction seam and completeness | done |
 | 03 | PDF text layer and typed refusal | not started |
 | 04 | Analysis seam, verified flags | done |
-| 05 | Plain-English summary | not started |
+| 05 | Plain-English summary | done, with two criteria partly met and recorded |
 | 06 | Ranking by leverage lost | done |
 | 07 | Clean document verdict | done |
 | 08 | Flag consequence, exit, neutrality | not started |

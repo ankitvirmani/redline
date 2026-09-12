@@ -15,7 +15,9 @@
  *    the flag's own citation is intact, and the exit is a separate claim that is
  *    simply not made.
  * 3. Severity is assigned from the type's baseline and the instance's terms.
- * 4. The flag is given its code, in the order the verified flags came back.
+ * 4. The external fact for the clause type, where the store holds one, is attached as
+ *    its own field beside the consequence rather than folded into it.
+ * 5. The flag is given its code, in the order the verified flags came back.
  *
  * Flags come out unordered. Ticket 06 orders them.
  */
@@ -23,6 +25,7 @@
 import { clauseType } from "@/src/domain/clause-types";
 
 import type { DefectReport } from "./defects";
+import { externalContextFor } from "./external-context";
 import type { ModelAnalysisPayload, ModelFlagPayload } from "./schema";
 import { assignSeverity, readClauseTerms } from "./severity";
 import type { Flag, SourceSentence } from "./types";
@@ -99,7 +102,16 @@ function readFlag(
       sourceSentence,
       severity: assignSeverity(reported.clauseType, terms),
       confidence: reported.confidence,
-      consequence: { fromTheDocument: reported.consequence, externalContext: null },
+      consequence: {
+        fromTheDocument: reported.consequence,
+        // The two tiers, filled from two different places on purpose. What the clause
+        // does to the reader comes from the model reading this document, bound to the
+        // sentence above. The fact underneath it comes from the curated store, keyed on
+        // the clause type, because its accuracy is ours rather than the document's and
+        // it is reviewed rather than generated (ADR 0007, `external-context.ts`). Most
+        // types have no fact, and null is the ordinary answer rather than a gap.
+        externalContext: externalContextFor(reported.clauseType),
+      },
       exit,
       terms,
       leverage: { leversRemoved: clauseType(reported.clauseType).leversRemoved },
