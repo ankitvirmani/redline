@@ -26,12 +26,12 @@ setting and cannot be set in `vercel.json` at all.
 
 **Blocked by:** None. Can start immediately.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The app runs locally with one page holding a paste box and a submit action.
-- [ ] Submitting renders the pasted text back character for character, including whitespace, smart quotes, ligatures and line breaks.
-- [ ] A character count is shown alongside the text.
-- [ ] A test runner is wired, with one command that runs the suite.
-- [ ] At least one test asserts round-trip fidelity of text containing smart quotes, ligatures and irregular whitespace.
-- [ ] No document text is persisted anywhere.
-- [ ] `vercel.json` is deleted and the Vercel deploy builds as a Next.js project.
+- [x] The app runs locally with one page holding a paste box and a submit action.
+- [x] Submitting renders the pasted text back character for character, including whitespace, smart quotes, ligatures and line breaks.
+- [x] A character count is shown alongside the text.
+- [x] A test runner is wired, with one command that runs the suite.
+- [x] At least one test asserts round-trip fidelity of text containing smart quotes, ligatures and irregular whitespace.
+- [x] No document text is persisted anywhere.
+- [x] `vercel.json` is deleted and the Vercel deploy builds as a Next.js project.

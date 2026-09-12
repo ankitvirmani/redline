@@ -2,10 +2,16 @@
 
 // The paste box lives at the root until ticket 14 gives the root to the landing
 // page and moves this surface to /analyse.
+//
+// Pasted text no longer goes straight to the screen. It goes through the
+// extraction seam, which hands back the text untouched, the kind of source it
+// came from, and how much of a document it believes it received.
 
 import { useId, useRef, useState, type FormEvent } from "react";
 
-import { formatCharacterCount, readBackPastedText, type ReadBack } from "@/src/domain/text";
+import CompletenessReading from "@/components/CompletenessReading";
+import { formatCharacterCount } from "@/src/domain/text";
+import { extract, type Extraction } from "@/src/extraction";
 import "./analyse.css";
 
 export default function PastePage() {
@@ -17,15 +23,15 @@ export default function PastePage() {
   // The pasted text lives here and nowhere else: no localStorage, no
   // sessionStorage, no cookie, no request, no log line. Reload and it is gone.
   const [pasted, setPasted] = useState("");
-  const [readBack, setReadBack] = useState<ReadBack | null>(null);
+  const [extraction, setExtraction] = useState<Extraction | null>(null);
 
-  const read = readBack?.kind === "document" ? readBack.document : null;
+  const openDocument = extraction?.outcome === "extracted" ? extraction.document : null;
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const result = readBackPastedText(pasted);
-    setReadBack(result);
-    if (result.kind === "nothing-pasted") field.current?.focus();
+    const result = await extract({ kind: "pasted-text", text: pasted });
+    setExtraction(result);
+    if (result.outcome === "rejected") field.current?.focus();
   }
 
   return (
@@ -43,11 +49,11 @@ export default function PastePage() {
         <section className="paste" id="paste">
           <h1 className="paste__h">Paste a document</h1>
           <p className="paste__lede">
-            So far this page does one thing. It reads your document back to you
-            character for character, and keeps no copy of it anywhere.
+            This page does two things. It reads your document back character for
+            character, and it says how much of a document it thinks it received.
           </p>
 
-          <form className="paste__form" onSubmit={onSubmit} noValidate>
+          <form className="paste__form" onSubmit={(event) => void onSubmit(event)} noValidate>
             <label className="paste__label" htmlFor={fieldId}>Your document</label>
             <textarea
               className="paste__area"
@@ -82,9 +88,9 @@ export default function PastePage() {
           </form>
 
           <p className="said" role="status">
-            {readBack === null
+            {extraction === null
               ? ""
-              : readBack.kind === "document"
+              : extraction.outcome === "extracted"
                 ? "Your document is below, exactly as you pasted it."
                 : "The box is empty. Paste a document first."}
           </p>
@@ -93,13 +99,16 @@ export default function PastePage() {
         <section className="read" aria-labelledby={headingId}>
           <div className="read__head">
             <h2 className="read__label" id={headingId}>What you pasted</h2>
-            {read ? (
-              <p className="read__count">{formatCharacterCount(read.characterCount)}</p>
+            {openDocument ? (
+              <p className="read__count">{formatCharacterCount(openDocument.characterCount)}</p>
             ) : null}
           </div>
 
-          {read ? (
-            <div className="read__doc">{read.text}</div>
+          {openDocument ? (
+            <>
+              <CompletenessReading assessment={openDocument.completeness} />
+              <div className="read__doc">{openDocument.text}</div>
+            </>
           ) : (
             <p className="read__empty">
               Nothing here yet. Paste a document above and it comes back exactly

@@ -1,0 +1,74 @@
+/* ============================================================
+   Redline: the completeness reading
+   World: Modular Bars, in the Operate register.
+
+   Tokens come from app/globals.css. No flag ink here: completeness
+   is not a flag and must not look like severity. Ink black type,
+   one 1px grey hairline to separate it from the document rather
+   than a card, and the tab-bar motif at two sizes. Zero radius.
+   Motion is 180ms and carries state only.
+   ============================================================ */
+
+.cmpl{
+  max-width:calc(26rem + 14rem);
+  margin:0 0 1.75rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--grey-line);
+}
+
+/* The tab-bar motif at question scale: this reading is attached to
+   the document below it. */
+.cmpl::before{
+  content:"";display:block;
+  width:2.75rem;height:.5rem;
+  margin-bottom:.75rem;
+  background:var(--ink);
+}
+
+.cmpl__head{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem 2rem;
+  align-items:baseline;
+}
+.cmpl__k,.cmpl__v{
+  margin:0;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+}
+.cmpl__k{color:var(--grey-text)}
+.cmpl__v{color:var(--ink)}
+
+.cmpl__say{
+  margin:.75rem 0 0;max-width:52ch;
+  font-size:.9375rem;line-height:1.6;font-weight:500;
+}
+
+.cmpl__sub{
+  margin:1.25rem 0 .625rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+
+.cmpl__list{margin:0;padding:0;list-style:none;max-width:52ch}
+.cmpl__s{
+  display:grid;grid-template-columns:.75rem minmax(0,1fr);gap:.75rem;
+  align-items:baseline;
+  padding:.5rem 0;
+  font-size:.875rem;line-height:1.5;
+  color:var(--grey-text);
+}
+.cmpl__s + .cmpl__s{border-top:1px solid var(--grey-line)}
+
+/* The motif at its smallest. A hairline box where the signal stayed
+   quiet, solid ink where it fired. The sentence beside it says which,
+   so nothing here rests on the mark alone. */
+.cmpl__mark{
+  width:.75rem;height:.375rem;
+  transform:translateY(-.1rem);
+  border:1px solid var(--grey-line);background:transparent;
+  transition:background 180ms var(--ease),border-color 180ms var(--ease);
+}
+.cmpl__s--fired{color:var(--ink);font-weight:500}
+.cmpl__s--fired .cmpl__mark{background:var(--ink);border-color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){
+  .cmpl__mark{transition:none}
+}
