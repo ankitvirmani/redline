@@ -25,13 +25,13 @@ invites the reader to assume the flag is legally operative.
 
 **Blocked by:** 04.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Each flag carries a document-grounded consequence bound to its source sentence.
-- [ ] External context is a separate field with its own citation, rendered visibly apart from the document-grounded claim.
-- [ ] Every external citation resolves to a real source stating that fact.
-- [ ] External facts come from a reviewable store, not from per-request model recall.
-- [ ] Exit information covers only deadlines and opt-outs the document states, each with a source sentence.
-- [ ] No statutory right is mentioned anywhere in a flag.
-- [ ] Jurisdiction neutrality is stated where the reader will see it, not buried.
-- [ ] No sign or don't-sign verdict appears in a flag.
+- [x] Each flag carries a document-grounded consequence bound to its source sentence.
+- [x] External context is a separate field with its own citation, rendered visibly apart from the document-grounded claim.
+- [x] Every external citation resolves to a real source stating that fact. Checked offline against the wording recorded in the repository; a separate deliberate script checks the URLs are live and was run once, all four returning 200.
+- [x] External facts come from a reviewable store, not from per-request model recall.
+- [x] Exit information covers only deadlines and opt-outs the document states, each with a source sentence.
+- [x] No statutory right is mentioned anywhere in a flag. Asserted over both fixtures and the whole fact base. Not enforced at runtime: dropping a verified flag on a word match would trade a visible false positive for an invisible false negative, and the decision on which way to fail is recorded in src/analysis/wording.ts rather than taken here.
+- [x] Jurisdiction neutrality is stated where the reader will see it, not buried.
+- [x] No sign or don't-sign verdict appears in a flag.
