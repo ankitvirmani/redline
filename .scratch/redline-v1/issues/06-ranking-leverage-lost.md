@@ -18,11 +18,11 @@ it does not move the order.
 
 **Blocked by:** 04.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Ranking is a pure function over flags, with no model call, network call or database access.
-- [ ] In a document containing both, arbitration outranks a merely unusual clause.
-- [ ] Ties break on leverage lost.
-- [ ] Confidence does not affect order.
-- [ ] The reader sees flags in ranked order.
-- [ ] Tested as pure-function tests over fixed flag sets.
+- [x] Ranking is a pure function over flags, with no model call, network call or database access.
+- [x] In a document containing both, arbitration outranks a merely unusual clause.
+- [x] Ties break on leverage lost.
+- [x] Confidence does not affect order.
+- [x] The reader sees flags in ranked order.
+- [x] Tested as pure-function tests over fixed flag sets.
