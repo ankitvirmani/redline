@@ -27,6 +27,7 @@ import {
   modelAnalysisJsonSchema,
   readModelAnalysis,
 } from "./schema";
+import { readSummary } from "./summary";
 import type { Analysis, AnalysisFailureReason, AnalysisRequest } from "./types";
 
 export type {
@@ -56,6 +57,16 @@ export { appearsVerbatim, locateSpan } from "./verify";
 export { defectsRecorded, defectsRecordedCount, forgetDefects } from "./defects";
 export { assignSeverity, WINDOW_A_READER_CAN_USE_DAYS } from "./severity";
 export { verifiedFlags } from "./flags";
+export {
+  figuresIn,
+  figuresNotInTheDocument,
+  readSummary,
+  SUMMARY_CHARACTER_LIMIT,
+  SUMMARY_REFUSALS,
+  VERDICT_KINDS,
+  verdictLanguageIn,
+} from "./summary";
+export type { Figure, SummaryReading, SummaryRefusal, VerdictFinding, VerdictKind } from "./summary";
 
 /** A model failure, as a state the shell has copy for. */
 function failureFor(error: unknown): AnalysisFailureReason {
@@ -101,13 +112,44 @@ export async function analyse(request: AnalysisRequest): Promise<Analysis> {
     return { outcome: "failed", reason: "model-response-rejected" };
   }
 
+  // The summary is prose, so the citation rule cannot reach it. What code can check
+  // about it is in `summary.ts`, along with what it cannot. A summary that says
+  // whether to sign, or that is not a summary at all, takes the whole analysis down
+  // rather than leaving the screen with verified flags and no summary above them:
+  // there is nothing to show in its place, and editing a verdict out of a paragraph
+  // in code would hand the reader a summary nobody wrote.
+  const summary = readSummary(document.text, read.payload.summary);
+  if (!summary.ok) {
+    recordDefect({
+      code: summary.refusal === "carries-a-verdict" ? "summary-carries-a-verdict" : "summary-unusable",
+      clauseType: null,
+      spanCharacterCount: read.payload.summary.length,
+      documentCharacterCount: document.characterCount,
+    });
+    return { outcome: "failed", reason: "model-response-rejected" };
+  }
+
   const reading = verifiedFlags(document.text, read.payload);
   const defects: Defect[] = reading.defects.map((defect) => recordDefect(defect));
+
+  // A figure the document does not contain is recorded and the summary still shows.
+  // The check cannot tell a fabricated number from a lawful rewording, and refusing
+  // on that would cost a reader every verified flag on the screen.
+  for (const figure of summary.ungroundedFigures) {
+    defects.push(
+      recordDefect({
+        code: "summary-figure-not-found",
+        clauseType: null,
+        spanCharacterCount: figure.length,
+        documentCharacterCount: document.characterCount,
+      }),
+    );
+  }
 
   return {
     outcome: "analysed",
     analysis: {
-      summary: { text: read.payload.summary },
+      summary: summary.summary,
       checkedClauseTypes: CLAUSE_TYPE_SLUGS,
       flags: reading.flags,
       defects,

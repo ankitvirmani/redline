@@ -29,6 +29,12 @@ export const DEFECT_CODES = [
   "exit-sentence-not-found",
   /** The model's JSON did not match the schema, so nothing was trusted from it. */
   "model-response-rejected",
+  /** The summary said whether to sign, or judged the document, so there is no analysis. */
+  "summary-carries-a-verdict",
+  /** The summary came back as whitespace, or far longer than a summary, so there is no analysis. */
+  "summary-unusable",
+  /** The summary stated a figure the document does not contain. Recorded, and the summary still shows. */
+  "summary-figure-not-found",
 ] as const;
 
 export type DefectCode = (typeof DEFECT_CODES)[number];
@@ -38,7 +44,10 @@ export type Defect = {
   readonly code: DefectCode;
   /** The type the dropped flag claimed to be, where the model named a legal one. */
   readonly clauseType: ClauseTypeSlug | null;
-  /** How long the rejected span was, in characters. Never the span itself. */
+  /**
+   * How long the rejected span was, in characters, or the summary where the defect
+   * is the summary's. Never the span or the summary itself.
+   */
   readonly spanCharacterCount: number | null;
   /** How long the document was, for context on a drop. Never the document. */
   readonly documentCharacterCount: number;

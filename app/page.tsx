@@ -7,7 +7,9 @@
 // and then to the analysis route, which is the only place a model is called, because
 // the key must never reach this browser. What comes back is flags that have already
 // been checked against the document: every one of them can show the sentence it was
-// drawn from, because a flag that could not never left the seam.
+// drawn from, because a flag that could not never left the seam. It also comes back
+// with a summary of what the document is and what accepting it commits the reader to,
+// which the seam has already held to describing the document rather than judging it.
 //
 // Those flags arrive unordered and go through the ranking seam here, which calls
 // nothing and needs no key, so the order is decided in the browser from the flags
@@ -19,6 +21,7 @@ import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 import CleanDocument from "@/components/CleanDocument";
 import CompletenessReading from "@/components/CompletenessReading";
 import DocumentReading from "@/components/DocumentReading";
+import DocumentSummary from "@/components/DocumentSummary";
 import FlagList from "@/components/FlagList";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
 import { countInWords, formatCharacterCount } from "@/src/domain/text";
@@ -224,6 +227,16 @@ export default function PastePage() {
           {openDocument ? (
             <>
               <CompletenessReading assessment={openDocument.completeness} />
+
+              {/* The summary comes before the flags here as well as on the screen, so a
+                  reader meets what the document is before they meet what it costs them.
+                  A reading that failed shows its own line above and no summary slot,
+                  because there is no summary coming. */}
+              {analysis ? (
+                <DocumentSummary state={{ kind: "read", summary: analysis.summary }} />
+              ) : screen.kind === "reading" ? (
+                <DocumentSummary state={{ kind: "reading" }} />
+              ) : null}
 
               {analysis && analysis.flags.length > 0 ? (
                 <p className="read__how" id={hintId}>

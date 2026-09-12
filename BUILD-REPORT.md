@@ -21,7 +21,7 @@ first". Nothing above that section is urgent.
 | 04 | Analysis seam, verified flags | done |
 | 05 | Plain-English summary | not started |
 | 06 | Ranking by leverage lost | done |
-| 07 | Clean document verdict | not started |
+| 07 | Clean document verdict | done |
 | 08 | Flag consequence, exit, neutrality | not started |
 | 09 | Question box, grounded or refused | not started |
 | 10 | Real OpenRouter client | not started |

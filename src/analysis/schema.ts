@@ -51,7 +51,12 @@ const modelFlag = z.strictObject({
 });
 
 export const MODEL_ANALYSIS_SCHEMA = z.strictObject({
-  summary: z.string(),
+  /**
+   * The summary has to be there and has to say something. What it is allowed to say
+   * is checked after the shape, in `summary.ts`, because that is a question about
+   * prose rather than about types.
+   */
+  summary: z.string().min(1),
   flags: z.array(modelFlag),
 });
 

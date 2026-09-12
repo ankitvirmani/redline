@@ -98,8 +98,11 @@ function asModelFlag(planted: NonNullable<Sidecar["plantedClauses"]>[number]): M
 
 /** The payload for one sidecar, in the order the clauses were planted. */
 export function payloadFor(sidecar: Sidecar): ModelAnalysisPayload {
+  if (sidecar.summary === undefined || sidecar.summary.trim().length === 0) {
+    throw new Error(`The sidecar for ${sidecar.document} carries no summary to answer with.`);
+  }
   return {
-    summary: sidecar.summary ?? "",
+    summary: sidecar.summary,
     flags: (sidecar.plantedClauses ?? []).map(asModelFlag),
   };
 }
@@ -181,6 +184,42 @@ export function withChangedSpans(
     ),
   };
 }
+
+/**
+ * The same payload with a different summary, the way the span helpers above hand back
+ * the same payload with a different span. The flags are untouched, so a test can see
+ * what one bad summary does to an otherwise sound answer.
+ */
+export function withSummary(payload: ModelAnalysisPayload, summary: string): ModelAnalysisPayload {
+  return { ...payload, summary };
+}
+
+/**
+ * Summaries that say whether to sign, one per way of saying it.
+ *
+ * Written here rather than in a test because they are example model output, which is
+ * what this file is for. Every one of them is about the gym membership fixture and
+ * every one of them is a summary the product must not show: the first two say it
+ * outright, the third and fourth judge the document's character, the fifth reassures,
+ * which is the worst of them because it reads as a kindness, and the sixth answers a
+ * question about the law that the document cannot answer (ADR 0005).
+ */
+export const SUMMARIES_THAT_CARRY_A_VERDICT = [
+  "This is a twelve-month gym membership that renews on its own. You should not sign it without getting the renewal window changed first.",
+  "This is a twelve-month gym membership with an instructor track. We recommend you think carefully before accepting it.",
+  "This is a twelve-month gym membership. The agreement is unusually aggressive about what it takes from you and what it gives back.",
+  "This is a twelve-month gym membership. It is a standard agreement of the kind clubs have used for years.",
+  "This is a twelve-month gym membership that renews for a further twelve months. There is nothing here to worry about.",
+  "This is a twelve-month gym membership with an arbitration clause and a fifteen mile teaching restriction. The teaching restriction is unenforceable in most states.",
+] as const;
+
+/**
+ * A summary of the gym membership with a figure the document does not contain. The
+ * document has no eighty-eight of anything, which is what makes it a fabrication
+ * rather than a rewording.
+ */
+export const SUMMARY_WITH_A_FIGURE_THE_DOCUMENT_DOES_NOT_HAVE =
+  "This is a twelve-month gym membership at Meridian Athletic Club. Dues run to eighty-eight dollars a month and the membership renews for another twelve months unless you cancel three days ahead.";
 
 export type StubOptions = {
   /**

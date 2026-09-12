@@ -1,0 +1,44 @@
+/* ============================================================
+   Redline: the summary above the flags
+   World: Modular Bars, in the Operate register.
+
+   Tokens come from app/globals.css. Prose on the white reading
+   field, no card and no background, zero radius, no shadow. A 2px
+   ink keyline down the left edge attaches it to the document it
+   describes, which is the tab-bar motif at paragraph scale; a 1px
+   grey hairline below merely separates it from the flags. No flag
+   ink, because the summary identifies nothing and ranks nothing.
+   Nothing here animates: the summary has one state on screen.
+   ============================================================ */
+
+.sum{
+  max-width:calc(26rem + 14rem);
+  margin:0 0 1.75rem;
+  padding:0 0 1.25rem 1.125rem;
+  border-left:2px solid var(--ink);
+  border-bottom:1px solid var(--grey-line);
+}
+
+.sum__k{
+  margin:0 0 .75rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+
+/* Body register at 400, held inside the measure rule's 52ch to 74ch band. */
+.sum__say{
+  margin:0;max-width:68ch;
+  font-size:clamp(1rem,.45vw + .92rem,1.0625rem);line-height:1.6;font-weight:400;
+  color:var(--ink);
+}
+.sum__say + .sum__say{margin-top:.875rem}
+
+.sum__waiting{
+  margin:0;max-width:52ch;
+  font-size:.9375rem;line-height:1.6;font-weight:400;
+  color:var(--grey-text);
+}
+
+@media (max-width:520px){
+  .sum{padding-left:.875rem}
+}
