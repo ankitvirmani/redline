@@ -20,11 +20,11 @@ spans against this text, so any normalisation breaks every citation silently.
 
 **Blocked by:** 01.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Extraction returns extracted text, source kind, and a completeness assessment.
-- [ ] Extracted text is character-identical to the input, with no normalisation of whitespace, quotes, ligatures or line breaks.
-- [ ] A document truncated at 40% produces a visibly different completeness reading from the same document intact.
-- [ ] The completeness reading is shown to the reader on every analysis.
-- [ ] A low completeness reading blocks and hides nothing.
-- [ ] Fidelity and truncation detection are covered by tests that make no model call.
+- [x] Extraction returns extracted text, source kind, and a completeness assessment.
+- [x] Extracted text is character-identical to the input, with no normalisation of whitespace, quotes, ligatures or line breaks.
+- [x] A document truncated at 40% produces a visibly different completeness reading from the same document intact.
+- [x] The completeness reading is shown to the reader on every analysis.
+- [x] A low completeness reading blocks and hides nothing.
+- [x] Fidelity and truncation detection are covered by tests that make no model call.
