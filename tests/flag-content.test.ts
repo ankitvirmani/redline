@@ -386,7 +386,7 @@ describe("every exit carries a source sentence that verifies verbatim", () => {
  * What this check catches: a wording that claims a law, a right the reader holds, or an
  * enforceability judgement. A statute by name, a cooling-off period, a right to cancel
  * or to sue, "unenforceable", "void", "consumer protection", "state law", "you may still
- * have", "where you live", a sentence about what courts do (`src/analysis/wording.ts`).
+ * have", "where you live", a sentence about what courts do (`src/domain/wording.ts`).
  *
  * What it misses. It reads words, so a statutory right described without any of those
  * words gets through: "you can take this to the county clerk within three days anyway"

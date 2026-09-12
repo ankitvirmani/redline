@@ -1,0 +1,190 @@
+/* ============================================================
+   Redline: the question box
+   World: Modular Bars, in the Operate register.
+
+   Tokens come from app/globals.css. Anchored where the document
+   ends, never over it: a panel across the document would hide the
+   thing the reader is checking the answer against.
+
+   Three scales of one rectangle, which is the whole world here.
+   The 2.75rem by 0.5rem ink tab above each question. The 0.5rem
+   ink underline beneath a cited answer's blockquote. The bar in
+   front of a refusal, which is the landing page's refusals bar
+   brought down to this register's scale and kept in ink.
+
+   A refusal is a designed state and not error chrome. No red, no
+   warning triangle, no icon, no tint. The word above it carries
+   the state and the bar only identifies the line, which is the
+   Identity-Not-Severity Rule read across to a state.
+
+   Landing-page devices stay outside: no rotation, no overhang, no
+   load-time snap. Motion is state only, 150 to 250ms.
+
+   The block is qbox rather than ask, because app/landing.css
+   already owns .ask, .qa and .qa__q for the landing page's own
+   question box. The two surfaces do not share a route today and
+   ticket 14 moves both, so the names are kept apart now rather
+   than after they collide.
+   ============================================================ */
+
+.qbox{
+  padding:clamp(2.5rem,5vw,4rem) var(--pad);
+  border-top:2px solid var(--ink);
+}
+
+.qbox__h{
+  margin:0 0 .75rem;max-width:26ch;
+  font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.qbox__lede{
+  margin:0 0 2.25rem;max-width:58ch;
+  font-size:1.0625rem;line-height:1.45;font-weight:500;
+}
+
+/* ── the field: the paste field's sibling ──────────────────── */
+
+.qbox__form{max-width:64rem;margin:0 0 2.5rem}
+
+.qbox__label{
+  display:block;margin-bottom:.625rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+.qbox__area{
+  display:block;width:100%;min-height:5rem;padding:1.125rem 1.25rem;
+  border:2px solid var(--ink);background:var(--white);color:var(--ink);
+  font:inherit;font-size:1rem;line-height:1.55;resize:vertical;
+  caret-color:var(--cyan);
+}
+.qbox__area::placeholder{color:var(--grey-text);opacity:1}
+/* The field's own edge does not move on focus; the cyan ring lands on it. */
+.qbox__area:focus{outline:3px solid var(--cyan);outline-offset:0;border-color:var(--ink)}
+
+.qbox__foot{
+  margin-top:1.25rem;display:grid;
+  grid-template-columns:minmax(0,12rem) minmax(0,1fr);gap:1.25rem 2rem;align-items:center;
+}
+/* The primary action, drawn here rather than borrowed from the surface's stylesheet
+   so the component carries its own world: square cut, 2px ink keyline, cyan field
+   under black label, arrow pushed to the far edge, inverting to ink on hover. */
+.qbox__btn{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.875rem 1rem;border:2px solid var(--ink);
+  background:var(--cyan);color:var(--ink);
+  font:inherit;font-weight:700;font-size:1rem;letter-spacing:.055em;text-transform:uppercase;
+  cursor:pointer;
+  transition:background 170ms var(--ease),color 170ms var(--ease);
+}
+.qbox__btn:hover{background:var(--ink);color:var(--white)}
+.qbox__arrow{width:1.25rem;height:1.25rem;flex:none}
+
+/* The reader submitted an empty box. Product copy, not error chrome: an ink tab in
+   front of the line, the tab-bar motif at its smallest. */
+.qbox__said{
+  display:flex;align-items:baseline;gap:.75rem;
+  margin:0;max-width:52ch;
+  font-size:.9375rem;line-height:1.6;font-weight:500;
+}
+.qbox__said::before{
+  content:"";flex:none;
+  width:2.75rem;height:.5rem;background:var(--magenta);
+  transform:translateY(-.15rem);
+}
+.qbox__said:empty{display:none}
+
+.qbox__empty{
+  margin:0;max-width:52ch;
+  font-size:.9375rem;line-height:1.6;color:var(--grey-text);
+}
+
+/* ── the exchanges ─────────────────────────────────────────── */
+
+.qbox__list{
+  list-style:none;margin:0;padding:0;
+  display:flex;flex-direction:column;gap:2rem;
+  max-width:calc(26rem + 14rem);
+}
+.qbox__item{min-width:0}
+.qbox__row{display:grid;gap:.875rem}
+
+/* The tab-bar motif at question scale, drawn exactly as the shipped page draws it. */
+.qbox__q{
+  position:relative;margin:0;padding-top:1.125rem;
+  font-size:1.25rem;font-weight:800;letter-spacing:-.02em;line-height:1.2;
+}
+.qbox__q::before{
+  content:"";position:absolute;left:0;top:0;
+  width:2.75rem;height:.5rem;background:var(--ink);
+}
+
+.qbox__a{display:grid;gap:.625rem}
+
+.qbox__k{
+  margin:0;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+
+.qbox__say{
+  margin:0;max-width:68ch;
+  font-size:clamp(1rem,.45vw + .92rem,1.0625rem);line-height:1.6;
+}
+
+.qbox__waiting,.qbox__failed{
+  margin:0;max-width:52ch;
+  font-size:.9375rem;line-height:1.6;font-weight:500;color:var(--grey-text);
+}
+
+/* ── the sentence the answer came from ─────────────────────── */
+
+.qbox__src{margin:0}
+.qbox__src .qbox__k{margin-bottom:.4375rem}
+
+/* Cool grey behind the quote, 0.5rem ink underline beneath it. Quoted document
+   text is held at the measure rule's 26rem, justified and hyphenated above
+   520px, because the point is that a contract is small. */
+.qbox__quote{
+  margin:0;padding:.875rem 1rem;
+  background:var(--grey);
+  border-bottom:.5rem solid var(--ink);
+}
+.qbox__quote p{
+  margin:0;max-width:26rem;
+  font-size:.9375rem;line-height:1.72;
+  text-align:justify;hyphens:auto;hyphenate-limit-chars:9 4 4;
+}
+
+/* ── a refusal ─────────────────────────────────────────────── */
+
+/* The refusals bar, at this register's scale and in ink rather than in a flag's
+   identity colour: a refusal is one state and there is nothing here to tell
+   apart. Baseline-aligned to the first line so it reads as attached to the
+   sentence and not as a bullet. */
+.qbox__refusal{
+  display:flex;align-items:baseline;gap:1rem;
+  margin:0;max-width:58ch;
+  font-size:1.0625rem;line-height:1.5;font-weight:500;
+}
+.qbox__bar{
+  flex:none;
+  width:clamp(1.75rem,4vw,2.75rem);height:.75rem;
+  background:var(--ink);
+  transform:translateY(-.2rem);
+}
+
+/* ── responsive ────────────────────────────────────────────── */
+
+@media (max-width:860px){
+  .qbox__foot{grid-template-columns:minmax(0,1fr)}
+}
+
+@media (max-width:520px){
+  /* Justification and hyphenation break down below here, as on the document. */
+  .qbox__quote p{text-align:left;hyphens:manual}
+  .qbox__refusal{gap:.75rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .qbox__btn{transition:none}
+}

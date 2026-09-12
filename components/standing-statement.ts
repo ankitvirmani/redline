@@ -3,7 +3,7 @@
  *
  * Kept out of the component for the same reason `flag-view.ts` and `summary-view.ts`
  * are: what a reader ends up seeing can then be held against the wording checks in
- * `src/analysis/wording.ts` without a browser, and the copy has one home rather than
+ * `src/domain/wording.ts` without a browser, and the copy has one home rather than
  * being retyped wherever the statement is placed.
  *
  * Neither statement may drift into the thing it is warning about. Saying Redline does
@@ -12,8 +12,8 @@
  * and it would breach ADR 0005 in the middle of the sentence promising not to.
  *
  * This is the one place in the product allowed to say "where you live", and the flag
- * check in `wording.ts` catches that wording everywhere else. The exemption is narrow
- * and deliberate: a warning that Redline does not account for the reader's
+ * check in `src/domain/wording.ts` catches that wording everywhere else. The exemption
+ * is narrow and deliberate: a warning that Redline does not account for the reader's
  * jurisdiction cannot be written without naming it. `tests/flag-content.test.ts` holds
  * these lines to the other three kinds of verdict, so the exemption buys nothing else.
  */

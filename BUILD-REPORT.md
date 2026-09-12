@@ -22,7 +22,7 @@ first". Nothing above that section is urgent.
 | 05 | Plain-English summary | done, with two criteria partly met and recorded |
 | 06 | Ranking by leverage lost | done |
 | 07 | Clean document verdict | done |
-| 08 | Flag consequence, exit, neutrality | not started |
+| 08 | Flag consequence, exit, neutrality | done |
 | 09 | Question box, grounded or refused | not started |
 | 10 | Real OpenRouter client | not started |
 | 11 | Sign in and the library | not started |

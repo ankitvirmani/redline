@@ -7,7 +7,7 @@
  * there is no analysis.
  *
  * The load-bearing property here is that an unverifiable flag never leaves. The
- * model returns spans, `verify.ts` holds each one against the stored extracted text,
+ * model returns spans, `src/domain/verify.ts` holds each one against the stored text,
  * and a span that does not appear verbatim means the flag is dropped and the drop is
  * recorded as a defect. No render path can display a flag that cannot show its
  * source sentence, because one never gets out of this function (ADR 0001).
@@ -17,9 +17,9 @@
  */
 
 import { CLAUSE_TYPE_SLUGS } from "@/src/domain/clause-types";
+import { recordDefect, type Defect } from "@/src/domain/defects";
 import { ModelCallError, type ModelClient } from "@/src/model/client";
 
-import { recordDefect, type Defect } from "./defects";
 import { verifiedFlags } from "./flags";
 import { ANALYSIS_INSTRUCTIONS } from "./prompt";
 import {
@@ -53,8 +53,8 @@ export type {
   WindowToAct,
 } from "./types";
 export { ANALYSIS_FAILURE_REASONS } from "./types";
-export { appearsVerbatim, locateSpan } from "./verify";
-export { defectsRecorded, defectsRecordedCount, forgetDefects } from "./defects";
+export { appearsVerbatim, locateSpan, verifiedSentence } from "@/src/domain/verify";
+export { defectsRecorded, defectsRecordedCount, forgetDefects } from "@/src/domain/defects";
 export { assignSeverity, WINDOW_A_READER_CAN_USE_DAYS } from "./severity";
 export { verifiedFlags } from "./flags";
 export {
@@ -65,8 +65,8 @@ export {
   SUMMARY_REFUSALS,
 } from "./summary";
 export type { Figure, SummaryReading, SummaryRefusal } from "./summary";
-export { statutoryLanguageIn, VERDICT_KINDS, verdictLanguageIn } from "./wording";
-export type { VerdictFinding, VerdictKind } from "./wording";
+export { statutoryLanguageIn, VERDICT_KINDS, verdictLanguageIn } from "@/src/domain/wording";
+export type { VerdictFinding, VerdictKind } from "@/src/domain/wording";
 export { EXTERNAL_CONTEXT, externalContextFor, SOURCED_FILES } from "./external-context";
 export type { ExternalContextEntry, SourcedFile } from "./external-context";
 

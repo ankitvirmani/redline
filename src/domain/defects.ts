@@ -7,10 +7,15 @@
  * the deterministic suite reads the same log to prove a drop happened rather than
  * assuming it.
  *
+ * Two seams write to it. Analysis records a dropped flag; question answering records
+ * a refused answer. It sits in `src/domain/` for that reason: ticket 13 counts one
+ * number across the whole product, and a second log at the question seam would be a
+ * second number nobody adds up.
+ *
  * What it records is codes, types and lengths. What it never records is the
- * document text, the span, the summary or a consequence. This is a defect counter,
- * not a store of someone's contract, and it is the only place in the analysis path
- * that keeps anything after a request ends.
+ * document text, the span, the summary, a consequence, a question or an answer. This
+ * is a defect counter, not a store of someone's contract, and it is the only thing on
+ * either path that keeps anything after a request ends.
  *
  * The log lives in module state, which means one process, in memory, lost on
  * restart. That is all a counter needs, and a counter that survived a restart
@@ -19,7 +24,7 @@
 
 import type { ClauseTypeSlug } from "@/src/domain/clause-types";
 
-/** Every kind of defect the analysis path can record. Meant to gain members. */
+/** Every kind of defect the product can record. Meant to gain members. */
 export const DEFECT_CODES = [
   /** The model's span does not appear in the document, so the flag was dropped. */
   "source-sentence-not-found",
@@ -35,6 +40,18 @@ export const DEFECT_CODES = [
   "summary-unusable",
   /** The summary stated a figure the document does not contain. Recorded, and the summary still shows. */
   "summary-figure-not-found",
+  /**
+   * An answer claimed a sentence the document does not contain, so the question was
+   * refused. The same failure as `source-sentence-not-found` on the answer path, kept
+   * as its own code because ticket 13 measures the two paths separately.
+   */
+  "answer-sentence-not-found",
+  /** An answer claimed to be grounded and carried no sentence at all, so it was refused. */
+  "answer-sentence-missing",
+  /** An answer claimed a law or a right, so it was not shown (ADR 0005). */
+  "answer-claims-a-law-or-a-right",
+  /** An answer came back as whitespace, or far longer than an answer, so it was not shown. */
+  "answer-unusable",
 ] as const;
 
 export type DefectCode = (typeof DEFECT_CODES)[number];
@@ -45,8 +62,8 @@ export type Defect = {
   /** The type the dropped flag claimed to be, where the model named a legal one. */
   readonly clauseType: ClauseTypeSlug | null;
   /**
-   * How long the rejected span was, in characters, or the summary where the defect
-   * is the summary's. Never the span or the summary itself.
+   * How long the rejected span was, in characters, or the summary or answer where the
+   * defect is theirs. Never the span, the summary or the answer itself.
    */
   readonly spanCharacterCount: number | null;
   /** How long the document was, for context on a drop. Never the document. */

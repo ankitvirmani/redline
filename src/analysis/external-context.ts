@@ -31,7 +31,7 @@
  *    period, not a right to sue, not "you may still have rights where you live"
  *    (ADR 0005). A regulator's measurement of what happens to people is not a
  *    statement about what the reader is entitled to, and the line between the two is
- *    checked in `wording.ts` rather than trusted.
+ *    checked in `src/domain/wording.ts` rather than trusted.
  *
  * Most clause types have no entry, and that is the ordinary case rather than a gap to
  * fill. The four that have one are the four resting on federal regulatory

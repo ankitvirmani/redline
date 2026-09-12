@@ -17,7 +17,8 @@
  *   rather than from a constant in a component.
  * - Ticket 08 fills `Consequence.externalContext` from the curated fact base, and
  *   renders `Flag.exit`. Both fields are carried here and neither is filled here.
- * - Ticket 09 reuses `SourceSentence` and the verifier for answers.
+ * - Ticket 09 reuses `SourceSentence` and the verifier for answers, and moved both to
+ *   `src/domain/verify.ts` so that neither seam imports the other.
  * - Ticket 13 counts `DocumentAnalysis.defects`.
  *
  * Nothing on a flag is optional. A field a later ticket fills is present and null,
@@ -29,31 +30,14 @@ import type {
   Lever,
   SeverityBand,
 } from "@/src/domain/clause-types";
+import type { Defect } from "@/src/domain/defects";
+import type { SourceSentence, SpanLocation } from "@/src/domain/verify";
 import type { ExtractedDocument } from "@/src/extraction";
 import type { ModelClient } from "@/src/model/client";
 
-import type { Defect } from "./defects";
-import type { SpanLocation } from "./verify";
-
 export type { ClauseTypeSlug, Lever, SeverityBand };
-export type { Defect } from "./defects";
-export type { SpanLocation } from "./verify";
-
-/**
- * A sentence from the document, quoted verbatim, with where it was found.
- *
- * Nothing constructs one of these except verification. That is what makes the
- * type worth having: a `SourceSentence` in hand is a sentence that has already
- * been held against the document character for character.
- */
-export type SourceSentence = {
-  /** The sentence, exactly as it appears in the document. */
-  readonly text: string;
-  /** Where it sits, in UTF-16 code units. See `SpanLocation`. */
-  readonly at: SpanLocation;
-  /** How many times the sentence appears in the document. Usually one. */
-  readonly occurrences: number;
-};
+export type { Defect } from "@/src/domain/defects";
+export type { SourceSentence, SpanLocation } from "@/src/domain/verify";
 
 /** The terms of the clause that can move its band. Reported by the model. */
 export type ClauseTerms = {

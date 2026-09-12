@@ -7,6 +7,12 @@
  * returns them in the shape the real model is required to answer in. A test that
  * wants a different answer, including a wrong one, hands in its own payload.
  *
+ * It answers two purposes, because two seams call a model. For "analysis" it hands back
+ * the clauses a sidecar plants. For "question" it reads the document and the question out
+ * of the request and answers from the questions sidecar: the sentence the sidecar names
+ * for a question the document answers, and a refusal carrying no answer at all for one it
+ * does not.
+ *
  * The sidecars carry no window-to-act field, and this file does not invent one: it
  * reads the day count out of the sentence the sidecar names as the exit, the way a
  * model reading the document would. So the severity test is not handed the answer
@@ -22,6 +28,8 @@ import { fileURLToPath } from "node:url";
 import type { ModelAnalysisPayload, ModelFlagPayload } from "@/src/analysis/schema";
 import type { WindowRunsAgainst } from "@/src/analysis/types";
 import { isClauseTypeSlug } from "@/src/domain/clause-types";
+import { readQuestionInput } from "@/src/qa/prompt";
+import type { ModelAnswerPayload } from "@/src/qa/schema";
 
 import { ModelCallError, type ModelClient, type ModelFailure, type ModelRequest } from "./client";
 
@@ -235,6 +243,12 @@ export type StubOptions = {
 /**
  * A model client that answers from the fixture sidecars, or with whatever a test
  * hands it. It makes no network call, because there is nothing in it that could.
+ *
+ * `answer` is handed the request's input, which is the document text for an analysis and
+ * the composed document-and-question string for a question. A question test that wants to
+ * bend one field of a faithful payload reads the pair out with `readQuestionInput` and
+ * builds from `answerPayloadFor`, the same way an analysis test builds from
+ * `fixturePayload`.
  */
 export function stubModelClient(options: StubOptions = {}): ModelClient {
   return {
@@ -245,11 +259,143 @@ export function stubModelClient(options: StubOptions = {}): ModelClient {
       if (options.answer !== undefined) {
         const answer =
           typeof options.answer === "function"
-            ? (options.answer as (documentText: string) => unknown)(request.input)
+            ? (options.answer as (input: string) => unknown)(request.input)
             : options.answer;
         return { json: answer };
       }
+
+      if (request.purpose === "question") {
+        const asked = readQuestionInput(request.input);
+        if (asked === null) {
+          throw new Error("The stub was handed a question request it could not read.");
+        }
+        return { json: answerPayloadFor(asked.documentText, asked.question) };
+      }
+
       return { json: fixturePayload(request.input) };
     },
   };
+}
+
+// ── questions (ticket 09) ─────────────────────────────────────────────────────
+//
+// The questions sidecar names a document, ten questions the document answers with the
+// sentence each answer has to cite, and eight it does not with the reason why. It plants
+// no clauses, so `analysisSidecars` above passes over it.
+//
+// The request carries the document and the question in one string, composed by
+// `src/qa/prompt.ts`. It is read back here by the same module rather than by a copy of
+// the format kept in this file, so the two cannot drift apart.
+
+/** The questions sidecar's shape, as far as the stub needs it. */
+type QuestionsSidecar = {
+  readonly document: string;
+  readonly grounded: readonly { readonly question: string; readonly expectedSourceSentence: string }[];
+  readonly ungrounded: readonly { readonly question: string; readonly why: string }[];
+};
+
+/** The questions sidecar, read from disk. */
+export function questionsSidecar(): QuestionsSidecar {
+  return JSON.parse(fixture("questions.json")) as QuestionsSidecar;
+}
+
+/** The document the questions are about. */
+export function questionsDocument(): string {
+  return fixture(questionsSidecar().document);
+}
+
+/** The questions the document answers, each with the sentence its answer has to cite. */
+export function groundedQuestions(): QuestionsSidecar["grounded"] {
+  return questionsSidecar().grounded;
+}
+
+/** The questions the document does not answer, each with the reason it cannot. */
+export function ungroundedQuestions(): QuestionsSidecar["ungrounded"] {
+  return questionsSidecar().ungrounded;
+}
+
+/**
+ * The answer text the stub hands back with a grounded answer.
+ *
+ * The sidecar names the sentence and not an answer, and this file does not write prose
+ * for one: what the stub owes its caller is the shape a real model has to answer in, and
+ * the sentence, which is the only part of a reply that anything checks. No test reads
+ * these words. It is deliberately free of anything the wording check would catch, so that
+ * a test about a source sentence fails for the sentence and not for the framing.
+ */
+const STUB_ANSWER = "Your document covers this. The sentence it says it in is quoted below.";
+
+/** A grounded answer payload citing one sentence. */
+export function groundedAnswer(sourceSentence: string): ModelAnswerPayload {
+  return { grounded: true, answer: STUB_ANSWER, sourceSentence };
+}
+
+/** An ungrounded answer payload. No answer field and no sentence, as the schema requires. */
+export function ungroundedAnswer(): ModelAnswerPayload {
+  return { grounded: false, answer: null, sourceSentence: null };
+}
+
+/**
+ * A payload that claims to be grounded and names a sentence the document does not
+ * contain. The case the answer path's verification exists for, and the one a test needs
+ * to prove that the code's judgement beats the model's claim.
+ */
+export function answerClaimingASentenceTheDocumentDoesNotHave(): ModelAnswerPayload {
+  return groundedAnswer(FABRICATED_SENTENCE);
+}
+
+/** The same payload with one thing about its source sentence changed. */
+export function withChangedAnswerSpan(
+  payload: ModelAnswerPayload,
+  change: SpanChange,
+): ModelAnswerPayload {
+  if (payload.sourceSentence === null) {
+    throw new Error("That payload carries no source sentence to change.");
+  }
+  return { ...payload, sourceSentence: changeSpan(payload.sourceSentence, change) };
+}
+
+/** The same payload with a different answer, leaving the source sentence alone. */
+export function withAnswer(payload: ModelAnswerPayload, answer: string | null): ModelAnswerPayload {
+  return { ...payload, answer };
+}
+
+/**
+ * Answers that claim a law or a right, one per way of reaching for one.
+ *
+ * Written here rather than in a test because they are example model output, which is what
+ * this file is for. Every one of them is about the gym membership fixture, every one of
+ * them cites a real sentence from it, and every one of them is an answer the product must
+ * not show: the first judges enforceability, the second and third hand the reader a right
+ * the document does not grant, the fourth reaches for where they live, and the fifth
+ * reports what courts do, which is a claim about the law wearing a fact's clothes.
+ */
+export const ANSWERS_THAT_CLAIM_A_LAW_OR_A_RIGHT = [
+  "You give up your right to a jury trial under this clause. A class action waiver of this kind is unenforceable in several states.",
+  "You have thirty days to opt out. You also have a statutory right to cancel within three days of signing, whatever the agreement says.",
+  "The agreement says dues rise once a year. Consumer protection rules mean they cannot raise them without your written consent.",
+  "The teaching restriction runs for twelve months. Whether it binds you depends on the law in your state.",
+  "Arbitration is required for any dispute. Courts usually decline to enforce a fifteen mile radius on a fitness instructor.",
+] as const;
+
+/**
+ * The answer payload for one question, from the sidecar.
+ *
+ * Throws for a question the sidecar does not carry, rather than refusing it, because a
+ * stub that quietly refused an unknown question would let a test pass on the refusal path
+ * while proving nothing: a typo in a question string would read as the document being
+ * silent.
+ */
+export function answerPayloadFor(documentText: string, question: string): ModelAnswerPayload {
+  const sidecar = questionsSidecar();
+  if (fixture(sidecar.document) !== documentText) {
+    throw new Error("The stub was handed a document the questions sidecar does not describe.");
+  }
+
+  const grounded = sidecar.grounded.find((entry) => entry.question === question);
+  if (grounded !== undefined) return groundedAnswer(grounded.expectedSourceSentence);
+
+  if (sidecar.ungrounded.some((entry) => entry.question === question)) return ungroundedAnswer();
+
+  throw new Error("The stub was handed a question no fixture sidecar describes.");
 }

@@ -15,6 +15,11 @@
 // nothing and needs no key, so the order is decided in the browser from the flags
 // alone. Ranking is where the reader's red lines will be applied too, which is the
 // other reason it runs here rather than in the route: the route has no reader.
+//
+// The question box sits below the document, where the document ends rather than over it,
+// and goes to a second route for the same reason the first one exists. It answers from the
+// same text the flags were checked against, and an answer carries the sentence it came
+// from, verified by the same code a flag's citation runs through.
 
 import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 
@@ -23,10 +28,13 @@ import CompletenessReading from "@/components/CompletenessReading";
 import DocumentReading from "@/components/DocumentReading";
 import DocumentSummary from "@/components/DocumentSummary";
 import FlagList from "@/components/FlagList";
+import QuestionBox from "@/components/QuestionBox";
+import type { Exchange } from "@/components/question-view";
 import StandingStatement from "@/components/StandingStatement";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
 import { countInWords, formatCharacterCount } from "@/src/domain/text";
 import { extract, type ExtractedDocument } from "@/src/extraction";
+import type { QuestionReading } from "@/src/qa";
 import { rank } from "@/src/ranking";
 import "./analyse.css";
 
@@ -80,6 +88,51 @@ async function askForAnalysis(text: string): Promise<AnalysisAnswer> {
   }
 }
 
+/**
+ * Asks the route one question about the open document. Anything that comes back in a shape
+ * this does not recognise is treated as the model being unavailable, never as a refusal: a
+ * refusal says something true about the reader's document, and saying it on the strength of
+ * a reply nobody could read would be a claim about the thing they are about to sign.
+ */
+async function askAQuestion(text: string, question: string): Promise<QuestionReading> {
+  try {
+    const response = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, question }),
+    });
+    const reading = (await response.json()) as QuestionReading;
+    if (
+      reading.outcome === "answered" ||
+      reading.outcome === "refused" ||
+      reading.outcome === "not-asked" ||
+      reading.outcome === "failed"
+    ) {
+      return reading;
+    }
+    return { outcome: "failed", reason: "model-unavailable" };
+  } catch {
+    return { outcome: "failed", reason: "model-unavailable" };
+  }
+}
+
+/** What one reading looks like as an exchange on the screen. */
+function stateOf(reading: QuestionReading): Exchange["state"] {
+  switch (reading.outcome) {
+    case "answered":
+      return { kind: "answered", answer: reading.answer };
+    case "refused":
+      return { kind: "refused" };
+    // A question with nothing in it never reaches the route, because the question box
+    // checks it with the seam's own function first. If one arrives here anyway, it is
+    // something going wrong rather than the document being silent.
+    case "not-asked":
+      return { kind: "failed", reason: "model-response-rejected" };
+    case "failed":
+      return { kind: "failed", reason: reading.reason };
+  }
+}
+
 function flagCount(count: number): string {
   return count === 1
     ? "One flag, with the sentence it came from."
@@ -94,6 +147,9 @@ export default function PastePage() {
   const hintId = useId();
   const base = useId();
   const field = useRef<HTMLTextAreaElement>(null);
+  // One number per question asked in this session, so an exchange keeps its identity while
+  // its answer arrives and React does not rebuild the list around it.
+  const asked = useRef(1);
 
   // The pasted text lives here and nowhere else: no localStorage, no
   // sessionStorage, no cookie. It is sent to the analysis route and the route keeps
@@ -101,6 +157,12 @@ export default function PastePage() {
   const [pasted, setPasted] = useState("");
   const [screen, setScreen] = useState<Screen>({ kind: "waiting" });
   const [selected, setSelected] = useState<string | null>(null);
+
+  // The questions the reader has asked about the open document, oldest first, so the box
+  // reads downward like the rest of the surface. They live here and nowhere else: no
+  // storage, no cookie. A new document clears them, because an answer about one document
+  // means nothing under another.
+  const [exchanges, setExchanges] = useState<readonly Exchange[]>([]);
 
   const openDocument = screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
   const analysis = screen.kind === "read" ? screen.analysis : null;
@@ -134,6 +196,8 @@ export default function PastePage() {
     event.preventDefault();
     setSelected(null);
 
+    setExchanges([]);
+
     const extraction = await extract({ kind: "pasted-text", text: pasted });
     if (extraction.outcome === "rejected") {
       setScreen({ kind: "nothing-pasted" });
@@ -149,6 +213,20 @@ export default function PastePage() {
       answer.outcome === "analysed"
         ? { kind: "read", document, analysis: answer.analysis }
         : { kind: "failed", document, reason: answer.reason },
+    );
+  }
+
+  async function onAsk(question: string) {
+    if (openDocument === null) return;
+
+    const id = `${asked.current++}`;
+    setExchanges((before) => [...before, { id, question, state: { kind: "asking" } }]);
+
+    const reading = await askAQuestion(openDocument.text, question);
+    setExchanges((before) =>
+      before.map((exchange) =>
+        exchange.id === id ? { ...exchange, state: stateOf(reading) } : exchange,
+      ),
     );
   }
 
@@ -300,6 +378,13 @@ export default function PastePage() {
             </p>
           )}
         </section>
+
+        {/* Anchored where the document ends, in the DOM as well as on the screen, so a
+            reader arriving by keyboard meets the document and its flags before the box
+            that asks about them. It appears as soon as there is a document to ask about:
+            a reading that failed still leaves the reader holding their text, and a
+            question about it is still answerable. */}
+        {openDocument ? <QuestionBox exchanges={exchanges} onAsk={(q) => void onAsk(q)} /> : null}
       </main>
     </>
   );

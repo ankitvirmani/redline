@@ -23,13 +23,13 @@
  */
 
 import { clauseType } from "@/src/domain/clause-types";
+import type { DefectReport } from "@/src/domain/defects";
+import { verifiedSentence, type SourceSentence } from "@/src/domain/verify";
 
-import type { DefectReport } from "./defects";
 import { externalContextFor } from "./external-context";
 import type { ModelAnalysisPayload, ModelFlagPayload } from "./schema";
 import { assignSeverity, readClauseTerms } from "./severity";
-import type { Flag, SourceSentence } from "./types";
-import { locateSpan } from "./verify";
+import type { Flag } from "./types";
 
 /** What came of reading one payload against one document. */
 export type FlagReading = {
@@ -40,13 +40,6 @@ export type FlagReading = {
 /** `F-01`, `F-02`. Identity, not rank. Two digits, so a long list stays aligned. */
 function codeFor(position: number): string {
   return `F-${String(position).padStart(2, "0")}`;
-}
-
-/** The span, held against the document. Null means there is no citation to show. */
-function verify(text: string, span: string): SourceSentence | null {
-  const located = locateSpan(text, span);
-  if (located.outcome !== "found") return null;
-  return { text: span, at: located.at, occurrences: located.occurrences };
 }
 
 /**
@@ -61,7 +54,7 @@ function readFlag(
   reported: ModelFlagPayload,
   position: number,
 ): { readonly flag: Flag; readonly defects: readonly DefectReport[] } | { readonly defect: DefectReport } {
-  const sourceSentence = verify(text, reported.sourceSentence);
+  const sourceSentence = verifiedSentence(text, reported.sourceSentence);
   if (sourceSentence === null) {
     return {
       defect: {
@@ -77,7 +70,7 @@ function readFlag(
 
   let exit: Flag["exit"] = null;
   if (reported.exit !== null) {
-    const exitSentence = verify(text, reported.exit.sourceSentence);
+    const exitSentence = verifiedSentence(text, reported.exit.sourceSentence);
     if (exitSentence === null) {
       defects.push({
         code: "exit-sentence-not-found",

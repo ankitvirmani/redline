@@ -1,11 +1,14 @@
 /**
  * What a flag and a summary may not say, in one list.
  *
- * Two tickets need the same judgement. A summary must not tell the reader whether to
- * sign or claim something about the law (ticket 05, `summary.ts`), and neither must a
- * flag's consequence, its exit or the external fact beneath it (ticket 08, ADR 0005
- * and ADR 0007). Two lists would drift, and the one nobody watches is the one that
- * fails, so there is one list here and both callers read it.
+ * Three tickets need the same judgement, across two seams. A summary must not tell the
+ * reader whether to sign or claim something about the law (ticket 05,
+ * `src/analysis/summary.ts`); neither must a flag's consequence, its exit or the
+ * external fact beneath it (ticket 08, ADR 0005 and ADR 0007); and neither must an
+ * answer from the question box (ticket 09, `src/qa/answer.ts`). Two lists would drift,
+ * and the one nobody watches is the one that fails, so there is one list here and every
+ * caller reads it. It sits in `src/domain/` for that reason: it is a rule about what the
+ * product may say, not a part of either seam.
  *
  * What this is, exactly: a list of wordings. It catches wordings. It cannot catch a
  * verdict carried by emphasis, by ordering, or by what the text leaves out, and it
@@ -18,7 +21,7 @@
  * document says.
  *
  * Where each caller runs it. The summary runs it at analysis time and refuses the whole
- * reading when it fires (`summary.ts`), because a summary carrying a verdict poisons
+ * reading when it fires (`src/analysis/summary.ts`), because a summary carrying a verdict poisons
  * everything under it and there is a designed state to show instead. A flag does not:
  * the consequence and the exit are held to this list by the prompt and by
  * `tests/flag-content.test.ts` over both fixtures, and nothing drops a flag at runtime
@@ -28,6 +31,11 @@
  * check that would catch "you still have a right to cancel under state law" would also
  * catch a document that grants a right to cancel in those words. Closing that gap needs
  * a decision about which way to fail, and it is recorded here rather than guessed.
+ *
+ * An answer is the third caller and it fails the other way from a flag: an answer whose
+ * wording claims a law or a right is not shown at all. The trade is different there,
+ * because refusing an answer costs the reader nothing else on the screen and they can
+ * ask again, where dropping a flag would take a real risk off it silently.
  *
  * The statutory half deserves its own note, because it is the half that is easiest to
  * get wrong in the honest direction. It looks for a claim about what the law is or

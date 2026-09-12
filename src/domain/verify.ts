@@ -7,6 +7,13 @@
  * or not found out. That is deliberate, because verification that lives in a
  * prompt degrades silently the moment the prompt or the model changes (ADR 0001).
  *
+ * It sits in `src/domain/` because two seams rest on it and neither owns it. Ticket
+ * 04 wrote it at the analysis seam; ticket 09 needs the identical check for an
+ * answer's source sentence, and an answer's verifier is the one nobody watches, so
+ * a second copy of these rules would drift exactly where it matters most. It moved
+ * here rather than being imported across the seams or written twice. The rules are
+ * unchanged by the move.
+ *
  * Verbatim means exact substring. No trim before comparison, no whitespace
  * collapse, no quote folding, no case folding, no `normalize()`, no dash or
  * ligature repair. A span that differs from the document by one curly quote does
@@ -100,4 +107,34 @@ export function locateSpan(text: string, span: string): SpanVerification {
  */
 export function appearsVerbatim(text: string, span: string): boolean {
   return locateSpan(text, span).outcome === "found";
+}
+
+/**
+ * A sentence from the document, quoted verbatim, with where it was found.
+ *
+ * Nothing constructs one of these except verification. That is what makes the type
+ * worth having: a `SourceSentence` in hand is a sentence that has already been held
+ * against the document character for character, whether it reached the reader as a
+ * flag's citation or as the sentence an answer came from.
+ */
+export type SourceSentence = {
+  /** The sentence, exactly as it appears in the document. */
+  readonly text: string;
+  /** Where it sits, in UTF-16 code units. See `SpanLocation`. */
+  readonly at: SpanLocation;
+  /** How many times the sentence appears in the document. Usually one. */
+  readonly occurrences: number;
+};
+
+/**
+ * The span as a `SourceSentence`, or null when the document does not contain it.
+ *
+ * The only constructor. A flag's citation and an answer's citation are built by this
+ * one call, so there is no path on which one of them is held to a looser rule than
+ * the other.
+ */
+export function verifiedSentence(text: string, span: string): SourceSentence | null {
+  const located = locateSpan(text, span);
+  if (located.outcome !== "found") return null;
+  return { text: span, at: located.at, occurrences: located.occurrences };
 }

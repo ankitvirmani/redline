@@ -3,7 +3,7 @@
  *
  * The summary is the one thing the model returns that is not a span. A flag is held
  * against the document character for character and dropped when it does not match
- * (`verify.ts`), and that mechanism cannot reach prose: there is nothing to hold a
+ * (`src/domain/verify.ts`), and that mechanism cannot reach prose: there is nothing to hold a
  * paraphrase against. So the checks here are narrower than the citation rule, and
  * this file says exactly how far each one goes. What it does not do is pretend the
  * prompt is a guarantee.
@@ -14,9 +14,10 @@
  *    summary, is not a summary. Blocking.
  * 2. No verdict. A recommendation about signing, a judgement of the document's
  *    character, a reassurance, or a claim about the law is refused, and the whole
- *    analysis fails rather than rendering without a summary. The wordings it looks for
- *    are in `wording.ts`, which a flag's consequence and exit are held against too, and
- *    that file records how far the check reaches: it catches wordings, and it cannot
+ *    analysis fails rather than rendering without a summary. The wordings it reaches for
+ *    are in `src/domain/wording.ts`, which a flag's consequence, a flag's exit and an
+ *    answer from the question box are held against too, and that file records how far
+ *    the check reaches: it catches wordings, and it cannot
  *    catch a verdict carried by emphasis, by ordering, or by what the summary leaves
  *    out. Blocking.
  * 3. Figures. A number the summary states has to appear in the document, as digits
@@ -31,14 +32,15 @@
  * the shell already has copy for than by a summary that has been quietly cut.
  */
 
-import type { Summary } from "./types";
-import { verdictLanguageIn } from "./wording";
+import { verdictLanguageIn } from "@/src/domain/wording";
 
-// The verdict and statutory wordings live in `wording.ts`, because ticket 08 checks a
-// flag's consequence, exit and external context against the same list. One list, two
-// callers: two lists would drift, and the one nobody watches is the one that fails.
-export { statutoryLanguageIn, VERDICT_KINDS, verdictLanguageIn } from "./wording";
-export type { VerdictFinding, VerdictKind } from "./wording";
+import type { Summary } from "./types";
+
+// The verdict and statutory wordings live in `src/domain/wording.ts`, because two more
+// callers read the same list: a flag's consequence, exit and external context, and an
+// answer from the question box. Two lists would drift, and the one nobody watches fails.
+export { statutoryLanguageIn, VERDICT_KINDS, verdictLanguageIn } from "@/src/domain/wording";
+export type { VerdictFinding, VerdictKind } from "@/src/domain/wording";
 
 /** Why a summary cannot be shown. */
 export const SUMMARY_REFUSALS = ["unusable", "carries-a-verdict"] as const;

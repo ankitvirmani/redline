@@ -13,8 +13,16 @@
  * and the trust decision, because the caller is the one that has to drop a flag.
  */
 
-/** What the model is being asked to do. Ticket 09 adds its own member. */
-export type ModelPurpose = "analysis";
+/**
+ * What the model is being asked to do. Meant to gain members.
+ *
+ * The client does not read it. It is carried so that a stub can answer one purpose
+ * differently from another, and so that a reader of a request can see which of the
+ * two seams made it without inspecting the schema name.
+ */
+export const MODEL_PURPOSES = ["analysis", "question"] as const;
+
+export type ModelPurpose = (typeof MODEL_PURPOSES)[number];
 
 /**
  * One request. `schema` is the caller's JSON Schema, which the real client sends
