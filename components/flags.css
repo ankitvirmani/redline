@@ -3,8 +3,8 @@
 
    A flag is a bar of flat ink with a body under it. The ink
    identifies the flag and never ranks it: severity is the word
-   on the bar. Confidence is small prose in the body, where it
-   cannot be mistaken for severity.
+   on the bar and the rank badge beside it. Confidence is small
+   prose in the body, where it cannot be mistaken for severity.
 
    Landing-page devices do not come inside: no 7rem overhang, no
    rotation, no runtime keyline, no load-time snap. Motion is
@@ -13,13 +13,6 @@
 
 .flags{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.5rem}
 .flags__item{min-width:0}
-
-/* The list is unordered until ticket 06 ranks it, and says so. */
-.flags__note{
-  margin:0 0 1.5rem;max-width:46ch;
-  padding-left:.875rem;border-left:2px solid var(--ink);
-  font-size:.8125rem;line-height:1.45;color:var(--grey-text);
-}
 
 /* No flag met the bar. Product copy, never an empty panel. */
 .flags__none{
@@ -44,11 +37,25 @@
 
 .flag__h{margin:0}
 .flag__bar{
-  display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:.875rem;
+  display:grid;grid-template-columns:auto auto auto minmax(0,1fr);align-items:center;gap:.875rem;
   width:100%;padding:.875rem 1rem;border:0;
   background:var(--c);color:var(--ink);
   font:inherit;text-align:left;cursor:pointer;
 }
+/* The rank, as the shipped landing page draws it: ink field, tabular
+   numerals, zero radius. It is one of the two things carrying severity. */
+.flag__rank{
+  position:relative;
+  display:grid;place-items:center;width:1.75rem;height:1.75rem;
+  background:var(--ink);color:var(--white);
+  font-size:1rem;font-weight:900;font-variant-numeric:tabular-nums;
+}
+/* Read aloud, "1" alone says nothing. Off screen, never off the page. */
+.flag__ranked{
+  position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+}
+
 .flag__code{
   padding:.1875rem .4375rem;background:var(--ink);color:var(--white);
   font-size:.6875rem;font-weight:900;letter-spacing:.1em;
@@ -84,6 +91,13 @@
 .flag__again,.flag__conf{margin:0;max-width:52ch;font-size:.875rem;line-height:1.45;color:var(--grey-text)}
 .flag__again{margin-bottom:1rem}
 .flag__conf{font-variant-numeric:tabular-nums}
+
+/* Narrow: the type takes its own row under the badge, the code and the word,
+   which is where DESIGN.md puts it below 520px. */
+@media (max-width:520px){
+  .flag__bar{grid-template-columns:auto auto minmax(0,1fr);row-gap:.5rem}
+  .flag__type{grid-column:1 / -1}
+}
 
 @media (prefers-reduced-motion:reduce){
   .flag{transition:none}

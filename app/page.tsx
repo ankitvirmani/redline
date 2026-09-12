@@ -8,8 +8,13 @@
 // the key must never reach this browser. What comes back is flags that have already
 // been checked against the document: every one of them can show the sentence it was
 // drawn from, because a flag that could not never left the seam.
+//
+// Those flags arrive unordered and go through the ranking seam here, which calls
+// nothing and needs no key, so the order is decided in the browser from the flags
+// alone. Ranking is where the reader's red lines will be applied too, which is the
+// other reason it runs here rather than in the route: the route has no reader.
 
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 
 import CompletenessReading from "@/components/CompletenessReading";
 import DocumentReading from "@/components/DocumentReading";
@@ -17,6 +22,7 @@ import FlagList from "@/components/FlagList";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
 import { countInWords, formatCharacterCount } from "@/src/domain/text";
 import { extract, type ExtractedDocument } from "@/src/extraction";
+import { rank } from "@/src/ranking";
 import "./analyse.css";
 
 /** What the screen is showing. */
@@ -93,6 +99,18 @@ export default function PastePage() {
 
   const openDocument = screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
   const analysis = screen.kind === "read" ? screen.analysis : null;
+
+  // The order the reader reads the flags in. Red lines are ticket 12's and there are
+  // none to give it yet, which the seam takes as the reader having set none. The
+  // document is marked from the same ordered list, so the ink on a bar is the ink its
+  // sentence lights up in.
+  const reading = useMemo(() => {
+    if (analysis === null) return null;
+    const ranking = rank({ flags: analysis.flags });
+    return { ranked: ranking.flags, ordered: ranking.flags.map(({ flag }) => flag) };
+  }, [analysis]);
+  const rankedFlags = reading?.ranked ?? [];
+  const orderedFlags = reading?.ordered ?? [];
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -205,7 +223,7 @@ export default function PastePage() {
                 <div className="stage__doc">
                   <DocumentReading
                     text={openDocument.text}
-                    flags={analysis?.flags ?? []}
+                    flags={orderedFlags}
                     selected={selected}
                     onSelect={setSelected}
                     base={base}
@@ -220,7 +238,7 @@ export default function PastePage() {
                       <p className="stage__count">{flagCount(analysis.flags.length)}</p>
                     ) : null}
                     <FlagList
-                      flags={analysis.flags}
+                      flags={rankedFlags}
                       checkedCount={analysis.checkedClauseTypes.length}
                       selected={selected}
                       onSelect={setSelected}

@@ -18,7 +18,7 @@ first". Nothing above that section is urgent.
 | 01 | Walking skeleton | done |
 | 02 | Extraction seam and completeness | done |
 | 03 | PDF text layer and typed refusal | not started |
-| 04 | Analysis seam, verified flags | not started |
+| 04 | Analysis seam, verified flags | done |
 | 05 | Plain-English summary | not started |
 | 06 | Ranking by leverage lost | not started |
 | 07 | Clean document verdict | not started |
