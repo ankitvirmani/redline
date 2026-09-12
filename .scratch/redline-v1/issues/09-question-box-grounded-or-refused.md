@@ -12,11 +12,11 @@ citation, not a quality shortfall.
 
 **Blocked by:** 04.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The reader can ask a free-text question about the analysed document.
-- [ ] An answerable question returns an answer plus its source sentence, quoted verbatim.
-- [ ] The answer's source sentence is verified against the stored text by the same code path a flag uses; an unverifiable answer is not shown.
-- [ ] A question the document cannot answer is refused, and the refusal says the document does not address it.
-- [ ] No answer draws on anything outside the document.
-- [ ] Both the answer path and the refusal path are covered by deterministic tests with a stubbed client.
+- [x] The reader can ask a free-text question about the analysed document.
+- [x] An answerable question returns an answer plus its source sentence, quoted verbatim.
+- [x] The answer's source sentence is verified against the stored text by the same code path a flag uses; an unverifiable answer is not shown.
+- [x] A question the document cannot answer is refused, and the refusal says the document does not address it.
+- [x] No answer draws on anything outside the document.
+- [x] Both the answer path and the refusal path are covered by deterministic tests with a stubbed client.
