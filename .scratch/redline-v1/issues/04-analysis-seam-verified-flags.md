@@ -22,12 +22,12 @@ from one environment variable and never hardcoded.
 
 **Blocked by:** 02.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Analysis returns an unordered set of flags, each carrying a source sentence, clause type, severity and confidence.
-- [ ] Every returned flag's source sentence appears verbatim in the extracted text, asserted programmatically over every fixture rather than sampled.
-- [ ] A stubbed model returning an unmatchable span produces zero flags and a logged defect.
-- [ ] Severity responds to the terms of the clause instance, not only to its type.
-- [ ] The model client is injected; the deterministic suite uses a stub and makes no network call.
-- [ ] The model identifier is read from a single environment variable and appears nowhere in committed source.
-- [ ] All seven clause types from the brief can be represented.
+- [x] Analysis returns an unordered set of flags, each carrying a source sentence, clause type, severity and confidence.
+- [x] Every returned flag's source sentence appears verbatim in the extracted text, asserted programmatically over every fixture rather than sampled.
+- [x] A stubbed model returning an unmatchable span produces zero flags and a logged defect.
+- [x] Severity responds to the terms of the clause instance, not only to its type.
+- [x] The model client is injected; the deterministic suite uses a stub and makes no network call.
+- [x] The model identifier is read from a single environment variable and appears nowhere in committed source.
+- [x] All seven clause types from the brief can be represented.
