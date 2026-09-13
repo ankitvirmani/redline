@@ -1,0 +1,70 @@
+/* ============================================================
+   Redline: the library of documents a reader kept
+   World: Modular Bars, in the Operate register.
+
+   A list, ruled with hairlines, in the white reading field. No
+   cards, no tiles, no count of anything: a number about a
+   contract is the claim this product does not make, so a row
+   says what the document is and when it was kept and stops.
+   ============================================================ */
+
+.lib{padding:clamp(2.5rem,5vw,4rem) var(--pad)}
+.lib__h{
+  margin:0 0 1rem;max-width:26ch;
+  font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.lib__lede{margin:0 0 2.5rem;max-width:58ch;font-size:1.0625rem;line-height:1.45;font-weight:500}
+
+.lib-list{margin:0;padding:0;list-style:none;max-width:52rem;border-top:2px solid var(--ink)}
+.lib-list li{border-bottom:1px solid var(--grey-line)}
+.lib-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.375rem 2rem;align-items:baseline;
+  padding:1.125rem 0 1.125rem 1.25rem;position:relative;
+  text-decoration:none;
+  transition:background 150ms var(--ease);
+}
+.lib-row::before{
+  content:"";position:absolute;left:0;top:1.625rem;
+  width:.75rem;height:.1875rem;background:var(--ink);
+}
+.lib-row:hover{background:var(--grey)}
+.lib-row__title{
+  margin:0;min-width:0;
+  font-size:1.25rem;font-weight:800;line-height:1.2;letter-spacing:-.02em;
+  overflow-wrap:anywhere;
+}
+.lib-row__kept,.lib-row__size{
+  margin:0;
+  font-size:.6875rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey-text);font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.lib-row__size{grid-column:1;font-weight:700;letter-spacing:.08em}
+
+/* The way back to the list, above a reopened document and on a document that could
+   not be opened. */
+.lib__back{margin-top:0}
+
+/* The head of a reopened document. The reading below it brings its own 2px ink
+   keyline, which is what separates the two subjects. */
+.lib--kept{padding-bottom:clamp(1.75rem,3vw,2.5rem)}
+
+/* An empty library. Not an error and not a blank panel: a reader arrives here
+   having kept nothing, so it says what the library is for. */
+.lib-empty{max-width:52ch;border-top:2px solid var(--ink);padding-top:1.75rem}
+.lib-empty__k{
+  margin:0 0 .75rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
+}
+.lib-empty__say{margin:0 0 1.25rem;font-size:1rem;line-height:1.55;font-weight:500}
+.lib-empty__note{margin:0 0 1.75rem;font-size:.875rem;line-height:1.5;color:var(--grey-text)}
+
+@media (max-width:860px){
+  .lib-row{grid-template-columns:minmax(0,1fr)}
+  .lib-row__kept{grid-column:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .lib-row{transition:none}
+}

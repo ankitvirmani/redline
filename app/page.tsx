@@ -11,31 +11,26 @@
 // with a summary of what the document is and what accepting it commits the reader to,
 // which the seam has already held to describing the document rather than judging it.
 //
-// Those flags arrive unordered and go through the ranking seam here, which calls
-// nothing and needs no key, so the order is decided in the browser from the flags
-// alone. Ranking is where the reader's red lines will be applied too, which is the
-// other reason it runs here rather than in the route: the route has no reader.
+// The reading itself is rendered by `components/Reading.tsx`, which is the same
+// component the library uses to reopen a document. Ranking happens there, in the
+// browser, because it calls nothing and needs no key.
 //
-// The question box sits below the document, where the document ends rather than over it,
-// and goes to a second route for the same reason the first one exists. It answers from the
-// same text the flags were checked against, and an answer carries the sentence it came
-// from, verified by the same code a flag's citation runs through.
+// Nothing on this screen imports a Supabase client, and that is the constraint the
+// whole surface is built around: the reader is deciding in the minutes before they
+// accept and will not stop to make an account, so a document is read whether or not
+// this build has a project at all. Whether anyone is signed in comes from a route,
+// the same way the analysis does, and it decides one thing only: whether Redline
+// offers to keep the document. `tests/signed-out.test.ts` walks the import graph of
+// this file to keep it that way.
 
-import { useId, useMemo, useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 
-import CleanDocument from "@/components/CleanDocument";
-import CompletenessReading from "@/components/CompletenessReading";
-import DocumentReading from "@/components/DocumentReading";
-import DocumentSummary from "@/components/DocumentSummary";
-import FlagList from "@/components/FlagList";
-import QuestionBox from "@/components/QuestionBox";
-import type { Exchange } from "@/components/question-view";
-import StandingStatement from "@/components/StandingStatement";
+import KeepInLibrary from "@/components/KeepInLibrary";
+import Reading from "@/components/Reading";
+import Shell from "@/components/Shell";
+import { useAccount } from "@/components/use-account";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
-import { countInWords, formatCharacterCount } from "@/src/domain/text";
 import { extract, type ExtractedDocument } from "@/src/extraction";
-import type { QuestionReading } from "@/src/qa";
-import { rank } from "@/src/ranking";
 import "./analyse.css";
 
 /** What the screen is showing. */
@@ -88,115 +83,29 @@ async function askForAnalysis(text: string): Promise<AnalysisAnswer> {
   }
 }
 
-/**
- * Asks the route one question about the open document. Anything that comes back in a shape
- * this does not recognise is treated as the model being unavailable, never as a refusal: a
- * refusal says something true about the reader's document, and saying it on the strength of
- * a reply nobody could read would be a claim about the thing they are about to sign.
- */
-async function askAQuestion(text: string, question: string): Promise<QuestionReading> {
-  try {
-    const response = await fetch("/api/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, question }),
-    });
-    const reading = (await response.json()) as QuestionReading;
-    if (
-      reading.outcome === "answered" ||
-      reading.outcome === "refused" ||
-      reading.outcome === "not-asked" ||
-      reading.outcome === "failed"
-    ) {
-      return reading;
-    }
-    return { outcome: "failed", reason: "model-unavailable" };
-  } catch {
-    return { outcome: "failed", reason: "model-unavailable" };
-  }
-}
-
-/** What one reading looks like as an exchange on the screen. */
-function stateOf(reading: QuestionReading): Exchange["state"] {
-  switch (reading.outcome) {
-    case "answered":
-      return { kind: "answered", answer: reading.answer };
-    case "refused":
-      return { kind: "refused" };
-    // A question with nothing in it never reaches the route, because the question box
-    // checks it with the seam's own function first. If one arrives here anyway, it is
-    // something going wrong rather than the document being silent.
-    case "not-asked":
-      return { kind: "failed", reason: "model-response-rejected" };
-    case "failed":
-      return { kind: "failed", reason: reading.reason };
-  }
-}
-
-function flagCount(count: number): string {
-  return count === 1
-    ? "One flag, with the sentence it came from."
-    : `${countInWords(count)} flags, each with the sentence it came from.`;
-}
-
 export default function PastePage() {
   const fieldId = useId();
   const noteId = useId();
-  const docHeadingId = useId();
-  const flagsHeadingId = useId();
-  const hintId = useId();
-  const base = useId();
   const field = useRef<HTMLTextAreaElement>(null);
-  // One number per question asked in this session, so an exchange keeps its identity while
-  // its answer arrives and React does not rebuild the list around it.
-  const asked = useRef(1);
 
   // The pasted text lives here and nowhere else: no localStorage, no
   // sessionStorage, no cookie. It is sent to the analysis route and the route keeps
-  // nothing. Reload and it is gone.
+  // nothing. Reload and it is gone. A document is kept only when the reader asks for
+  // it to be, and only then does it leave this browser for anywhere but the model.
   const [pasted, setPasted] = useState("");
   const [screen, setScreen] = useState<Screen>({ kind: "waiting" });
-  const [selected, setSelected] = useState<string | null>(null);
+  // One number per document read in this session. It is the reading's key, so a second
+  // document gets a new one rather than inheriting the questions asked about the first.
+  const [opened, setOpened] = useState(0);
 
-  // The questions the reader has asked about the open document, oldest first, so the box
-  // reads downward like the rest of the surface. They live here and nowhere else: no
-  // storage, no cookie. A new document clears them, because an answer about one document
-  // means nothing under another.
-  const [exchanges, setExchanges] = useState<readonly Exchange[]>([]);
+  const account = useAccount();
 
-  const openDocument = screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
+  const openDocument =
+    screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
   const analysis = screen.kind === "read" ? screen.analysis : null;
-
-  // The order the reader reads the flags in, and whether this is a clean document.
-  // Red lines are ticket 12's and there are none to give the seam yet, which it takes
-  // as the reader having set none. The document is marked from the same ordered list,
-  // so the ink on a bar is the ink its sentence lights up in.
-  //
-  // The clean verdict comes back from the seam and is not worked out here. The screen
-  // hands over the clause types analysis says it checked and reads the answer back, so
-  // the names a clean document shows are the ones analysis looked for rather than a
-  // list this file keeps.
-  const reading = useMemo(() => {
-    if (analysis === null) return null;
-    const ranking = rank({
-      flags: analysis.flags,
-      checkedClauseTypes: analysis.checkedClauseTypes,
-    });
-    return {
-      ranked: ranking.flags,
-      ordered: ranking.flags.map(({ flag }) => flag),
-      clean: ranking.cleanDocument,
-    };
-  }, [analysis]);
-  const rankedFlags = reading?.ranked ?? [];
-  const orderedFlags = reading?.ordered ?? [];
-  const clean = reading?.clean ?? null;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSelected(null);
-
-    setExchanges([]);
 
     const extraction = await extract({ kind: "pasted-text", text: pasted });
     if (extraction.outcome === "rejected") {
@@ -206,6 +115,7 @@ export default function PastePage() {
     }
 
     const document = extraction.document;
+    setOpened((before) => before + 1);
     setScreen({ kind: "reading", document });
 
     const answer = await askForAnalysis(document.text);
@@ -216,176 +126,86 @@ export default function PastePage() {
     );
   }
 
-  async function onAsk(question: string) {
-    if (openDocument === null) return;
-
-    const id = `${asked.current++}`;
-    setExchanges((before) => [...before, { id, question, state: { kind: "asking" } }]);
-
-    const reading = await askAQuestion(openDocument.text, question);
-    setExchanges((before) =>
-      before.map((exchange) =>
-        exchange.id === id ? { ...exchange, state: stateOf(reading) } : exchange,
-      ),
-    );
-  }
-
   return (
-    <>
-      <a className="skip" href="#paste">Skip to the paste box</a>
-
-      <header className="mast">
-        <p className="mark">
-          <span className="mark__box" aria-hidden="true">R</span>
-          <span className="mark__word">REDLINE</span>
+    <Shell
+      place="paste"
+      account={account}
+      skip={{ href: "#paste", says: "Skip to the paste box" }}
+    >
+      <section className="paste" id="paste">
+        <h1 className="paste__h">Paste a document</h1>
+        <p className="paste__lede">
+          Redline reads it back character for character and flags the clauses that
+          could cost you. Every flag shows the sentence it came from, so you can hold
+          each one against your own document.
         </p>
-      </header>
 
-      <main>
-        <section className="paste" id="paste">
-          <h1 className="paste__h">Paste a document</h1>
-          <p className="paste__lede">
-            Redline reads it back character for character and flags the clauses that
-            could cost you. Every flag shows the sentence it came from, so you can hold
-            each one against your own document.
-          </p>
+        <form className="paste__form" onSubmit={(event) => void onSubmit(event)} noValidate>
+          <label className="paste__label" htmlFor={fieldId}>Your document</label>
+          <textarea
+            className="paste__area"
+            id={fieldId}
+            ref={field}
+            rows={12}
+            value={pasted}
+            onChange={(event) => setPasted(event.target.value)}
+            placeholder="Paste the agreement you were asked to accept."
+            aria-describedby={noteId}
+            spellCheck={false}
+          />
 
-          <form className="paste__form" onSubmit={(event) => void onSubmit(event)} noValidate>
-            <label className="paste__label" htmlFor={fieldId}>Your document</label>
-            <textarea
-              className="paste__area"
-              id={fieldId}
-              ref={field}
-              rows={12}
-              value={pasted}
-              onChange={(event) => setPasted(event.target.value)}
-              placeholder="Paste the agreement you were asked to accept."
-              aria-describedby={noteId}
-              spellCheck={false}
-            />
-
-            <div className="paste__foot">
-              <button className="btn btn--primary" type="submit">
-                <span>Read it</span>
-                <svg className="btn__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path
-                    d="M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="square"
-                  />
-                </svg>
-              </button>
-              <p className="paste__note" id={noteId}>
-                Redline saves nothing. Your document goes to the model that reads it
-                and comes straight back.
-              </p>
-            </div>
-          </form>
-
-          <p className="said" role="status">
-            {screen.kind === "nothing-pasted"
-              ? "The box is empty. Paste a document first."
-              : screen.kind === "reading"
-                ? "Redline is reading your document. Give it a few seconds."
-                : screen.kind === "failed"
-                  ? FAILURE_SAYS[screen.reason]
-                  : ""}
-          </p>
-        </section>
-
-        <section className="read" aria-labelledby={docHeadingId}>
-          <div className="read__head">
-            <h2 className="read__label" id={docHeadingId}>Your document</h2>
-            {openDocument ? (
-              <p className="read__count">{formatCharacterCount(openDocument.characterCount)}</p>
-            ) : null}
-          </div>
-
-          {openDocument ? (
-            <>
-              <CompletenessReading assessment={openDocument.completeness} />
-
-              {/* The summary comes before the flags here as well as on the screen, so a
-                  reader meets what the document is before they meet what it costs them.
-                  A reading that failed shows its own line above and no summary slot,
-                  because there is no summary coming. */}
-              {analysis ? (
-                <DocumentSummary state={{ kind: "read", summary: analysis.summary }} />
-              ) : screen.kind === "reading" ? (
-                <DocumentSummary state={{ kind: "reading" }} />
-              ) : null}
-
-              {analysis && analysis.flags.length > 0 ? (
-                <p className="read__how" id={hintId}>
-                  The underlined sentences are the ones a flag came from. Choose an
-                  underlined sentence to go to its flag. Choose a flag to mark its
-                  sentence here.
-                </p>
-              ) : null}
-
-              <div className="stage">
-                <div className="stage__doc">
-                  <DocumentReading
-                    text={openDocument.text}
-                    flags={orderedFlags}
-                    selected={selected}
-                    onSelect={setSelected}
-                    base={base}
-                    hintId={hintId}
-                  />
-                </div>
-
-                {analysis ? (
-                  <section className="stage__flags" aria-labelledby={flagsHeadingId}>
-                    <h2 className="stage__h" id={flagsHeadingId}>
-                      {clean ? "No clause met the bar" : "What signing costs you"}
-                    </h2>
-                    {clean ? (
-                      // The clean document takes the flag list's place in this column,
-                      // at the same weight, rather than leaving the column empty.
-                      //
-                      // The standing statement is rendered here because the flag list is
-                      // not: every analysis carries it once (`PRODUCT.md`, Brand
-                      // Commitments), the flag list carries it for a document with flags,
-                      // and these two states never appear together.
-                      <>
-                        <StandingStatement />
-                        <CleanDocument reading={clean} headingId={flagsHeadingId} />
-                      </>
-                    ) : (
-                      <>
-                        {analysis.flags.length > 0 ? (
-                          <p className="stage__count">{flagCount(analysis.flags.length)}</p>
-                        ) : null}
-                        <FlagList
-                          flags={rankedFlags}
-                          selected={selected}
-                          onSelect={setSelected}
-                          base={base}
-                        />
-                      </>
-                    )}
-                  </section>
-                ) : null}
-              </div>
-            </>
-          ) : (
-            <p className="read__empty">
-              Nothing here yet. Paste a document above and it comes back exactly as you
-              left it, with what it costs you beside it.
+          <div className="paste__foot">
+            <button className="btn btn--primary btn--lg" type="submit">
+              <span>Read it</span>
+              <svg className="btn__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="square"
+                />
+              </svg>
+            </button>
+            <p className="paste__note" id={noteId}>
+              Your document goes to the model that reads it and comes straight back.
+              Redline keeps nothing unless you ask it to.
             </p>
-          )}
-        </section>
+          </div>
+        </form>
 
-        {/* Anchored where the document ends, in the DOM as well as on the screen, so a
-            reader arriving by keyboard meets the document and its flags before the box
-            that asks about them. It appears as soon as there is a document to ask about:
-            a reading that failed still leaves the reader holding their text, and a
-            question about it is still answerable. */}
-        {openDocument ? <QuestionBox exchanges={exchanges} onAsk={(q) => void onAsk(q)} /> : null}
-      </main>
-    </>
+        <p className="said" role="status">
+          {screen.kind === "nothing-pasted"
+            ? "The box is empty. Paste a document first."
+            : screen.kind === "reading"
+              ? "Redline is reading your document. Give it a few seconds."
+              : screen.kind === "failed"
+                ? FAILURE_SAYS[screen.reason]
+                : ""}
+        </p>
+      </section>
+
+      {openDocument === null ? (
+        <section className="waiting">
+          <p className="waiting__k">Your document</p>
+          <p className="waiting__say">
+            Nothing here yet. Paste a document above and it comes back exactly as you
+            left it, with what it costs you beside it.
+          </p>
+        </section>
+      ) : (
+        <Reading
+          key={opened}
+          document={openDocument}
+          analysis={analysis}
+          waiting={screen.kind === "reading"}
+          aside={
+            analysis === null ? null : (
+              <KeepInLibrary document={openDocument} analysis={analysis} account={account} />
+            )
+          }
+        />
+      )}
+    </Shell>
   );
 }

@@ -1,0 +1,98 @@
+/* ============================================================
+   Redline: the rail, and the shell it sits in
+   World: Modular Bars, in the Operate register.
+
+   The rail is the navigation. There is no horizontal nav, no
+   dropdown and no mobile menu in this system: at 860px the rail
+   becomes a static top band with a 2px ink bottom border and
+   stays fully visible, as DESIGN.md records.
+
+   Composition follows the landing page's rail, which DESIGN.md
+   is recorded from: the 2.25rem ink mark square, the wordmark at
+   800 and 0.11em, label-register section labels, hairline-ruled
+   rows, and the 0.5rem by 0.1875rem ink marker that is the bar
+   motif at its smallest.
+   ============================================================ */
+
+.shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr)}
+
+.rail{
+  display:flex;flex-direction:column;gap:2rem;
+  min-height:100vh;
+  padding:var(--pad) 1.75rem;
+  background:var(--grey);
+  border-right:1px solid var(--grey-line);
+}
+.rail__top{display:flex;flex-direction:column;gap:1.5rem}
+
+.mark{display:flex;align-items:center;gap:.625rem;text-decoration:none}
+.mark__box{
+  display:grid;place-items:center;
+  width:2.25rem;height:2.25rem;
+  background:var(--ink);color:var(--white);
+  font-weight:900;font-size:1.25rem;line-height:1;letter-spacing:0;
+}
+.mark__word{font-weight:800;letter-spacing:.11em;font-size:1.0625rem}
+
+.rail__block{padding-top:1.5rem;border-top:1px solid var(--grey-line)}
+.rail__label{
+  margin:0 0 .75rem;font-size:.6875rem;font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--grey-text);
+}
+
+/* Hairline-ruled rows, each with the ink marker at the left. The marker goes to
+   full ink on the row the reader is on, and the row's own weight says so too, so
+   the current place is never carried by colour alone. */
+.rail-nav{margin:0;padding:0;list-style:none}
+.rail-nav li{border-bottom:1px solid var(--grey-line)}
+.rail-nav li:first-child{border-top:1px solid var(--grey-line)}
+.rail-nav a{
+  position:relative;display:block;
+  padding:.5625rem 0 .5625rem 1.125rem;
+  font-size:.8125rem;line-height:1.3;font-weight:600;
+  text-decoration:none;
+  transition:color 150ms var(--ease);
+}
+.rail-nav a::before{
+  content:"";position:absolute;left:0;top:.875rem;
+  width:.5rem;height:.1875rem;background:var(--grey-line);
+  transition:background 150ms var(--ease),width 150ms var(--ease);
+}
+.rail-nav a:hover::before{background:var(--ink)}
+.rail-nav a[aria-current="page"]{font-weight:800}
+.rail-nav a[aria-current="page"]::before{background:var(--ink);width:.75rem}
+
+/* Who is signed in, or what is missing. The block sits at the foot of the rail
+   because it is the least of what the reader came for. */
+.rail__foot{margin-top:auto;padding-top:1.5rem;border-top:1px solid var(--grey-line)}
+.rail__who{
+  margin:0 0 .75rem;
+  font-size:.8125rem;line-height:1.4;font-weight:600;
+  overflow-wrap:anywhere;
+}
+.rail__note{margin:0;font-size:.75rem;line-height:1.45;color:var(--grey-text);max-width:34ch}
+.rail__note + .rail__note{margin-top:.75rem}
+.rail__out{display:inline;margin:0}
+.rail__link{
+  display:inline-block;
+  font-size:.8125rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:.125rem;
+  background:none;border-left:0;border-right:0;border-top:0;
+  font-family:inherit;color:inherit;cursor:pointer;
+}
+.rail__link:hover{background:var(--ink);color:var(--white);border-bottom-color:var(--ink)}
+
+.main{min-width:0}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{
+    min-height:0;
+    border-right:0;border-bottom:2px solid var(--ink);
+  }
+  .rail__foot{margin-top:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rail-nav a,.rail-nav a::before{transition:none}
+}

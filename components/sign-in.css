@@ -1,0 +1,41 @@
+/* ============================================================
+   Redline: signing in
+   World: Modular Bars, in the Operate register.
+
+   One field and one action. White field, 2px ink keyline, zero
+   radius, the label visible above it, the global focus ring, and
+   the cyan primary button with its black uppercase label.
+
+   A sign-in that did not go through gets the same treatment every
+   other state in this product gets: a line of copy with an ink
+   bar in front of it, tied to the field it is about. There is no
+   red text and no warning triangle in this system.
+   ============================================================ */
+
+.in{padding:clamp(2.5rem,5vw,4rem) var(--pad)}
+.in__h{
+  margin:0 0 1rem;max-width:26ch;
+  font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.in__lede{margin:0 0 2.5rem;max-width:56ch;font-size:1.0625rem;line-height:1.45;font-weight:500}
+
+.in__form{max-width:28rem;border-top:2px solid var(--ink);padding-top:1.75rem}
+.in__label{
+  display:block;margin-bottom:.625rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
+}
+.in__field{
+  display:block;width:100%;padding:.9375rem 1rem;
+  border:2px solid var(--ink);background:var(--white);color:var(--ink);
+  font:inherit;font-size:1rem;line-height:1.4;
+  caret-color:var(--cyan);
+}
+.in__field::placeholder{color:var(--grey-text);opacity:1}
+.in__field:focus{outline:3px solid var(--cyan);outline-offset:0}
+.in__go{margin-top:1.25rem;width:100%;justify-content:center}
+.in__note{margin:1.5rem 0 0;max-width:52ch;font-size:.875rem;line-height:1.5;color:var(--grey-text)}
+
+/* The link is on its way. The bar in front of the line is cyan, which identifies
+   and does not rank, as every ink in this system does. */
+.in__sent{max-width:44rem}

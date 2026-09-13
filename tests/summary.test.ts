@@ -335,13 +335,23 @@ describe("the summary as the screen breaks it up", () => {
   it("is above the flags in the page's markup, so a screen reader meets it first", () => {
     // What this proves: the DOM order on the result screen. What it does not prove:
     // anything about the rendered layout, which no test here can see.
-    const page = readFileSync(fileURLToPath(new URL("../app/page.tsx", import.meta.url)), "utf8");
-    const summaryAt = page.indexOf("<DocumentSummary");
-    const flagsAt = page.indexOf("<FlagList");
+    //
+    // The result screen is `components/Reading.tsx` as of ticket 11, because the
+    // library reopens a document into the same markup the paste box produces. The
+    // assertion is unchanged; it reads the file that now holds the markup, and also
+    // checks that the paste screen is still composed of it.
+    const source = (name: string): string =>
+      readFileSync(fileURLToPath(new URL(`../${name}`, import.meta.url)), "utf8");
+
+    const reading = source("components/Reading.tsx");
+    const summaryAt = reading.indexOf("<DocumentSummary");
+    const flagsAt = reading.indexOf("<FlagList");
 
     expect(summaryAt).toBeGreaterThan(-1);
     expect(flagsAt).toBeGreaterThan(-1);
     expect(summaryAt).toBeLessThan(flagsAt);
+
+    expect(source("app/page.tsx")).toContain("<Reading");
   });
 });
 

@@ -1,0 +1,26 @@
+/* ============================================================
+   Redline: keeping a document in the library
+   World: Modular Bars, in the Operate register.
+
+   The action sits with the document rather than over it, in the
+   label register, and it says what it does before it is pressed.
+   A document is kept because the reader asked, never because
+   Redline decided to keep a copy of their contract.
+   ============================================================ */
+
+.keep{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.25rem;margin:0}
+.keep__btn{flex:none}
+.keep__say{
+  margin:0;max-width:46ch;
+  font-size:.875rem;line-height:1.5;font-weight:500;color:var(--grey-text);
+}
+
+/* The line the reader gets after it is kept, or after it was not. The bar in
+   front of it is the same motif every state in this product uses. */
+.keep .said{margin:0}
+
+.keep__link{
+  font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.8125rem;
+  text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:.125rem;
+}
+.keep__link:hover{background:var(--ink);color:var(--white)}
