@@ -8,22 +8,24 @@ This file is the handover. Read "Start here when you sit down" first.
 
 ## Start here when you sit down
 
-Eight of the fourteen tickets are done, committed and pushed. The deterministic suite
-is 219 tests, passes in under a second, makes no network call and needs no key.
-`npm run typecheck` and `npm run build` both pass.
+**All fourteen tickets are done, committed and pushed.** The deterministic suite is 559
+tests, passes in under a second, makes no network call and needs no key. `npm run
+typecheck` and `npm run build` both pass.
 
 Run the four commands under "The exact commands to run first" at the end of this file.
-Then read "Risks worth a decision", which is the part that needs you rather than
-another agent.
+Then read "What the eval suite measured" and "Risks worth a decision", which are the
+parts that need you rather than another agent.
 
-Six tickets are not started: 03, 10, 11, 12, 13 and 14. Each has a complete,
-self-contained brief at `.scratch/redline-v1/briefs/NN.md`, so resuming costs no
-re-reading of the spec.
+Two things are done as written and verified only as far as they can be. Nothing on the
+Supabase path has run, because no project exists: sign-in, the library and red lines are
+built, typechecked and unexercised, and `supabase/README.md` carries the order to check
+them in once the migrations run. And three of ticket 11's criteria plus one of ticket
+12's are marked in their ticket files as written rather than verified, for the same
+reason.
 
-The one thing nothing here has proved: no real model call was made during this run.
-Every seam is correct against known inputs from the stub, and nothing yet shows the
-model finds a real clause in a real document. Ticket 10 is where that happens and it
-is the first ticket that spends money.
+The product does work end to end against a real model. `npm run smoke` puts the fixture
+contract through all four seams and prints every flag with its source sentence.
+`npm run eval` measures a labelled corpus and produced the numbers in the next section.
 
 ## Ticket status
 
@@ -31,7 +33,7 @@ is the first ticket that spends money.
 | --- | --- | --- |
 | 01 | Walking skeleton | done |
 | 02 | Extraction seam and completeness | done |
-| 03 | PDF text layer and typed refusal | not started, brief written, unblocked |
+| 03 | PDF text layer and typed refusal | done |
 | 04 | Analysis seam, verified flags | done |
 | 05 | Plain-English summary | done, two criteria partly met and recorded as partly met |
 | 06 | Ranking by leverage lost | done |
@@ -158,6 +160,68 @@ the criteria. This is the index.
   sentence, and an external fact from a reviewable store with its own citation.
 - **09** answers only from the document and refuses what it cannot ground, through the
   same verifier a flag uses, now moved to `src/domain/verify.ts` so there is one.
+- **10** runs a real document through a real model with the provider pinned, and the run
+  dropped a flag whose sentence the model retyped rather than copied.
+- **11** lets a reader keep a document and rechecks every citation against the stored text
+  on the way in and the way out, so a kept analysis cannot show a quote its own text no
+  longer contains.
+- **12** promotes a matching clause with one more comparator in front of the severity band,
+  and produces no count, no score and no verdict.
+- **13** measures the model over a labelled corpus, reports rather than gates, and turned
+  the character-fidelity anecdote into a number.
+- **14** gave the landing page the root route and replaced its invented demonstration with
+  a real run, then cut the three sentences that traced to no claim.
+- **03** reads a PDF text layer in the browser with normalisation switched off, and refuses
+  a picture of a page with the reason shown.
+
+## What the eval suite measured
+
+`npm run eval` ran twice against the real model over a labelled corpus of nine documents
+carrying forty planted clauses. Both passes exited zero, every blocking check held, and
+the numbers were byte-identical between them. Recorded in `eval-runs/`.
+
+**Pass or fail, and all of it passed.** Citation integrity: 41 flags claimed, 39 shown,
+and zero quotes reaching a reader that failed to appear in their document. Ungrounded
+questions: 13 of 13 refused. Ranking: arbitration above a lower-banded clause in all five
+readings that had both. Clean documents: all three benign documents produced no flags at
+any band and no invented finding.
+
+**Measured and reported, not gated, because the thresholds in `PRD.md` section 4 are
+proposed and mean nothing until calibrated.** Strict recall 35 of 40, matching a flag to a
+planted clause by type plus span overlap. By-type recall 39 of 40. Proxy precision at the
+top band 93.3%, labelled a proxy because the real measurement is a human reading source
+sentences and that is yours to do; the run prints all fifteen top-band flags for it.
+
+**The finding worth acting on is about characters, not clauses.** Split by typography,
+recall on planted sentences carrying an em dash, a curly apostrophe, a non-breaking space
+or a ligature glyph is 7 of 10. On sentences carrying none it is 28 of 30. The model
+retypes those characters instead of copying them, the span fails the substring check, and
+the verifier drops the flag. The rule is working exactly as designed and it costs real
+recall that nobody had priced. Ticket 10 found this as an anecdote about one flag; the eval
+suite turned it into a measurement; ticket 03 then found that a PDF text layer is where
+those characters come from in the real world.
+
+**One flag needs your eye.** In the phone-plan document the model rendered a sentence
+about raising two billing charges at critical severity, labelled non-compete. The citation
+is honest and the severity is wrong, so a reader would see the product's strongest band on
+a clause that takes no lever. One flag in 39, it did not block the run, and it is precisely
+what precision at high severity exists to catch.
+
+**The recall split runs opposite to what `PRD.md` predicts**, and it is not a real
+contradiction. The regulator-evidenced group scores 20 of 24 strict against the weaker
+group's 15 of 16, because that group carries all nine fee-escalator instances and fee
+escalators is the type the model kept finding and naming wrong. By-type recall there is 9
+of 9.
+
+**Read every recall figure as an upper bound.** Seven of the nine corpus documents were
+written for the suite rather than collected from the world, each manifest entry records its
+provenance, and a test asserts none claims otherwise. A sentence written to read like an
+arbitration clause is a sentence a model is likely to recognise as one. Non-compete and
+limitation of liability have four instances each and the run says so beside them.
+
+A cold pass is 35 model calls and took 42 attempts, because a rate limit from the pinned
+provider's shared pool arrives as a refusal rather than a reroute. Replies cache to disk,
+so a re-run is free.
 
 ## Where the code lives
 
@@ -173,41 +237,38 @@ src/domain/       verify.ts, defects.ts, wording.ts, clause-types.ts, text.ts, r
 src/model/        client.ts (injected), openrouter.ts (real), stub.ts (from fixtures)
 ```
 
-`src/domain/verify.ts` is the file the product rests on. It is 100 lines, it knows
-nothing about models or screens, and both the flag path and the answer path build their
-citations through the same call in it.
+`src/domain/verify.ts` is the file the product rests on. It knows nothing about models or
+screens, and the flag path, the answer path and the library's recheck on reopen all build
+their citations through the same call in it. If you change one thing in this repository by
+accident, let it not be that file.
 
-## Where this run stopped, and why
+Nothing on the reading path imports a Supabase client, and a test walks the import graph
+from the paste box, the layout, the renderer, the shell and all four seams to prove it,
+printing the chain if it ever does. The same discipline applies to the model client: a test
+fails if any file outside the two route handlers, the smoke script and the eval script
+imports it.
 
-The owner's session limit was about to be reached, so the run was stopped
-deliberately after ticket 09 rather than blocked on anything. Tickets 03, 10, 11, 12,
-13 and 14 have complete briefs written and nothing else. Picking them up needs no
-re-reading of the spec: every brief is self-contained.
+## How the run went
 
-## Resuming
+Fourteen tickets, one commit each, written to say why rather than what. Every ticket was
+handed to a subagent with a self-contained brief, and each one's work was checked here
+against the typecheck, its own tests, the full suite and a diff read before it was
+committed. No ticket was sent back twice and none was blocked.
 
-Every ticket brief is at `.scratch/redline-v1/briefs/NN.md`, and the standing brief
-every one of them depends on is at `.scratch/redline-v1/AGENT-BRIEF.md`. The standing
-brief carries the two answers `CLAUDE.md` marks stop-and-ask, the repository layout,
-the approved dependency list, and the rules each ticket is checked against.
+The briefs are at `.scratch/redline-v1/briefs/NN.md` and the standing brief every one of
+them depends on is at `.scratch/redline-v1/AGENT-BRIEF.md`. They are worth keeping,
+because they record what each ticket was told, which is the only way to tell a decision
+from a guess after the fact.
 
-The remaining tickets in dependency order, with what each one is waiting on:
+Two pairs ran in parallel, with a hard file split rather than a hope. Ticket 10 owned the
+model client and the smoke script while 11 owned the screens; 13 owned the corpus and the
+eval harness while 12 owned ranking and the red-lines screen. Both pairs sat on different
+seams. Nothing collided, and the one test that broke mid-flight was a file one of the pair
+owned and fixed itself.
 
-1. **03, PDF text layer and typed refusal.** Blocked by 02, which is done. Ready.
-   Its dependency question is already decided: `pdfjs-dist`, recorded below.
-2. **10, the real OpenRouter client.** Blocked by 04 and 09, both of which will be
-   done. This is the first ticket that spends money, and it is the one that produces
-   `npm run smoke`.
-3. **11, sign in and the library.** Blocked by 07, which is done. Nothing on this path
-   can be verified by running it, because no Supabase project exists.
-4. **12, red lines.** Blocked by 11 and 06.
-5. **13, the eval suite.** Blocked by 10 and 06.
-6. **14, the landing page.** Blocked by 01 and 08, both done. Ready now, though it is
-   better after 10, because its fold is meant to show real model output rather than
-   stub output.
-
-Two of those, 03 and 14, are unblocked today and sit on different seams. They both
-touch a screen, so they were not run together; that judgement can be revisited.
+The suite grew to 559 tests purely by addition. No ticket weakened an earlier one's
+assertion, which was a standing instruction in every brief, because the cheapest way to
+make a hard criterion pass is to loosen the test that checks it.
 
 ## The exact commands to run first
 
@@ -228,13 +289,38 @@ Then look at the product:
 npm run dev
 ```
 
-`/` is the paste box and the result screen. `/landing` is the ported landing page,
-which ticket 14 moves to the root. Paste `tests/fixtures/adhesion-contract.txt` into
-the box. Without `OPENROUTER_API_KEY` reachable from the server the analysis call will
-fail with a stated reason rather than a stack trace, which is itself one of the states
-worth looking at.
+`/` is the landing page. `/analyse` is the paste box and the result screen. Paste
+`tests/fixtures/adhesion-contract.txt` into the box, or pick
+`tests/fixtures/pdf/text-layer-offer-letter.pdf` to watch a PDF parse in the browser, or
+`tests/fixtures/pdf/pages-are-images.pdf` to see a scan refused. `/library`, `/sign-in`
+and `/red-lines` all render their no-project state, which is what you will see until the
+migrations run.
 
-`npm run smoke` does not exist yet. Ticket 10 writes it.
+Then the two deliberate scripts:
+
+```
+npm run smoke
+npm run eval
+```
+
+`npm run smoke` puts the fixture contract through all four seams against the real model
+and prints every flag with its source sentence in full, plus how many were dropped. It
+needs `OPENROUTER_API_KEY` and says so and exits non-zero without it, rather than falling
+back to the stub.
+
+`npm run eval` measures the labelled corpus. A cold pass is 35 model calls; replies cache
+to disk so a re-run is free. Read `eval-runs/README.md` first, and the two recorded passes
+are already in that directory, so you do not have to pay to see the numbers.
+
+Then the migrations, which is the work only you can do:
+
+```
+supabase/README.md
+```
+
+It carries the order to run `supabase/migrations/0001` through `0003` and the numbered
+list of what to check afterwards. The most important check is that a row-level-security
+policy actually denies another reader, because nothing here has shown that.
 
 `node scripts/verify-fixtures.mjs` checks the two fixture documents against their
 sidecars. It must pass before and after any change that touches `tests/fixtures/`.
@@ -253,24 +339,52 @@ the constraint that matters most: the analysis path works with both Supabase var
 absent, because a reader deciding in the minutes before they accept will not stop to
 create an account.
 
-**No real model call was made during this run.** Ticket 10 is the first that makes
-one, and it had not started when the run stopped. Everything measured so far ran
-against the stub in `src/model/stub.ts`, which builds its payloads from the fixture
-sidecars. That means the seams are proved correct against known inputs and nothing yet
-proves the model finds a real clause in a real document. `PRD.md` section 4's recall
-and precision numbers do not exist, which is also why no accuracy claim may appear
-anywhere in the product.
+**The accuracy numbers now exist, and they still may not be claimed anywhere in the
+product.** The eval suite produced real figures over a corpus seven ninths of which was
+written for the suite rather than collected from the world. `PRD.md` section 4 says no
+accuracy figure appears in copy until this section has been calibrated against a real
+corpus, and a corpus of documents written to be measured is not that. The landing page
+carries no figure and a test enforces it.
+
+**Precision at the top severity band is a proxy, not the measurement.** The real one is a
+person reading each top-band flag's source sentence and judging whether it survives review.
+The run prints all fifteen of them so you can do it.
 
 **No browser was opened by a person.** Several tickets rendered markup with
-`react-dom/server` and two checked layout in headless Chromium, and that is not the
-same as someone looking at the screen. The Impeccable direction round was skipped on
-purpose, because it opens a page and waits for a human.
+`react-dom/server` and several drove headless Chromium, including a full contrast pass over
+every text element on the landing page and a real check that the PDF worker starts and the
+document never leaves the browser. None of that is the same as someone looking at the
+screen. The Impeccable direction round was skipped on purpose, because it opens a page and
+waits for a human.
 
 **No Vercel deploy was run.** `vercel.json` is deleted, which is the whole fix for
 Next.js detection, and `next build` passes locally. Whether the deploy behaves is the
 owner's to check.
 
 ## Risks worth a decision
+
+**One top-band flag in the eval run is wrong in the way that matters most.** A sentence
+about raising two billing charges came back as a non-compete at critical severity. Honest
+citation, wrong severity, strongest band in the product. Worth deciding whether the
+severity path needs a guard when the clause type and the cited sentence disagree that
+badly.
+
+**A scan already put through OCR elsewhere is read rather than refused.** It arrives with a
+text layer full of misread words and nothing distinguishes it from a real one. ADR 0006
+excludes OCR precisely to avoid citations into misread text, and this is that failure
+arriving from outside the product. There may be no honest detection for it, which is itself
+worth recording as a decision rather than a gap.
+
+**PDF extraction loses three kinds of whitespace, and it is not our code doing it.** Inside
+the worker, PDF.js drops whitespace glyphs and emits a single space, so a non-breaking space
+becomes a plain space, a run of spaces becomes one, and trailing whitespace disappears. Its
+`keepWhiteSpace` option is not forwarded by the public API, so changing this means forking
+the parser. Verification is unaffected, since the extracted text is the only thing a span is
+held against, but a quoted sentence can differ from the PDF by a space. All three are
+asserted as tests so the day any of them changes is a failure rather than a silent shift.
+
+**A picked PDF is read into memory whole, with no size guard.** A very large scan would be
+slow before being refused. Not in any ticket.
 
 **The summary's verdict check can fail a whole analysis on a word match.** Ticket 05
 blocks forty-four wordings and a hit fails the analysis rather than striking the

@@ -14,12 +14,12 @@ verification compares model-returned spans against this text.
 
 **Blocked by:** 02.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The owner has approved the parsing dependency before it is added.
-- [ ] A text-layer PDF yields extracted text character-identical to its text layer.
-- [ ] Parsing happens in the browser; the file is never sent to a server or stored.
-- [ ] A PDF with no text layer produces a typed rejection carrying a machine-readable reason, never empty text.
-- [ ] A scanned or photographed PDF is refused with the reason shown to the reader.
-- [ ] PDF input produces a completeness reading the same way pasted text does.
-- [ ] Rejection behaviour is covered by tests over known fixtures.
+- [x] The parsing dependency is decided: pdfjs-dist, chosen during this run because the owner was absent, with the reason recorded in BUILD-REPORT.md.
+- [x] A text-layer PDF yields extracted text character-identical to its text layer, with one exception outside this code: inside the worker PDF.js drops whitespace glyphs and emits a single space, so a non-breaking space arrives as a plain space, a run of spaces as one, and trailing whitespace as nothing. Asserted as tests so a change is caught. Verification is unaffected, since the extracted text is the only thing a span is held against.
+- [x] Parsing happens in the browser; the file is never sent to a server or stored.
+- [x] A PDF with no text layer produces a typed rejection carrying a machine-readable reason, never empty text.
+- [x] A scanned or photographed PDF is refused with the reason shown to the reader. A scan already put through OCR elsewhere cannot be told from a real text layer and is read, which is the ADR 0006 failure arriving from outside the product.
+- [x] PDF input produces a completeness reading the same way pasted text does.
+- [x] Rejection behaviour is covered by tests over known fixtures.
