@@ -41,7 +41,7 @@ export default function LibraryList({
           Redline keeps the text it read and this reading of it. It never keeps the
           file you started with, and nobody but you can read what is here.
         </p>
-        <a className="btn btn--primary btn--lg btn--inline" href="/">
+        <a className="btn btn--primary btn--lg btn--inline" href="/analyse">
           <span>Read a document</span>
         </a>
       </div>

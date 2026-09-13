@@ -233,7 +233,7 @@
 .flag.is-open .flag__body{display:block}
 .flag__body p{margin:0 0 .75rem}
 .flag__consequence{font-size:1rem;line-height:1.45;font-weight:500}
-.flag__exit,.flag__ext{font-size:.875rem;line-height:1.45}
+.flag__exit,.flag__ext,.flag__conf{font-size:.875rem;line-height:1.45}
 .flag__k{
   display:block;margin-bottom:.25rem;
   font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);

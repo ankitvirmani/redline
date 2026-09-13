@@ -292,6 +292,10 @@ const FORBIDDEN_MODULES = ["src/supabase/browser", "src/supabase/server"] as con
 
 /** The files the analysis path starts from: the screen, its reading, and the four seams. */
 const ANALYSIS_PATH = [
+  // The paste box, which ticket 14 moved to `/analyse` when the landing page took the
+  // root. The root is seeded too: the landing page must not reach a client either, and
+  // it is the first page a reader loads.
+  "app/analyse/page.tsx",
   "app/page.tsx",
   "app/layout.tsx",
   "components/Reading.tsx",
@@ -384,8 +388,8 @@ describe("the analysis path imports no Supabase client", () => {
 
   it("starts from files that exist, so the walk is walking something", () => {
     for (const seed of ANALYSIS_PATH) expect(chains.has(seed)).toBe(true);
-    // A sanity check on the walker itself: the paste screen reaches the extraction
-    // seam, which it does through two imports and a re-export.
+    // A sanity check on the walker itself: the paste screen at `/analyse` reaches the
+    // extraction seam, which it does through two imports and a re-export.
     expect(chains.has("src/domain/verify.ts")).toBe(true);
     expect(chains.size).toBeGreaterThan(ANALYSIS_PATH.length);
   });
@@ -418,7 +422,12 @@ describe("the analysis path imports no Supabase client", () => {
 
 describe("every screen loads with both variables unset", () => {
   it("loads the paste screen, which is the one that must never need a project", async () => {
-    const module = await import("@/app/page");
+    const module = await import("@/app/analyse/page");
+    expect(typeof module.default).toBe("function");
+  });
+
+  it("loads the landing page at the root, which needs no project either", async () => {
+    const module = (await import("@/app/page")) as { readonly default?: unknown };
     expect(typeof module.default).toBe("function");
   });
 

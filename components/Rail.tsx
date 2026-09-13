@@ -32,9 +32,12 @@ type Place = { readonly place: RailPlace; readonly href: string; readonly label:
 /**
  * The places, in the order a reader meets them: they arrive with a document, what
  * they keep is next, and the red lines they check documents against are last.
+ *
+ * The paste box sits at `/analyse`; the root belongs to the landing page, which the
+ * mark above leads back to (ticket 14).
  */
 const PLACES: readonly Place[] = [
-  { place: "paste", href: "/", label: "Paste a document" },
+  { place: "paste", href: "/analyse", label: "Paste a document" },
   { place: "library", href: "/library", label: "Your library" },
   { place: "red-lines", href: "/red-lines", label: "Your red lines" },
 ];

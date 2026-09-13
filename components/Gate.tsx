@@ -59,7 +59,7 @@ export default function Gate({
             in <code>.env.local</code>, run the migrations in{" "}
             <code>supabase/migrations</code>, and this page opens.
           </p>
-          <a className="btn btn--primary btn--lg btn--inline" href="/">
+          <a className="btn btn--primary btn--lg btn--inline" href="/analyse">
             <span>Read a document</span>
           </a>
         </div>

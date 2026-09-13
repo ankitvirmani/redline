@@ -339,7 +339,8 @@ describe("the summary as the screen breaks it up", () => {
     // The result screen is `components/Reading.tsx` as of ticket 11, because the
     // library reopens a document into the same markup the paste box produces. The
     // assertion is unchanged; it reads the file that now holds the markup, and also
-    // checks that the paste screen is still composed of it.
+    // checks that the paste screen, at `/analyse` since ticket 14, is still composed
+    // of it.
     const source = (name: string): string =>
       readFileSync(fileURLToPath(new URL(`../${name}`, import.meta.url)), "utf8");
 
@@ -351,7 +352,7 @@ describe("the summary as the screen breaks it up", () => {
     expect(flagsAt).toBeGreaterThan(-1);
     expect(summaryAt).toBeLessThan(flagsAt);
 
-    expect(source("app/page.tsx")).toContain("<Reading");
+    expect(source("app/analyse/page.tsx")).toContain("<Reading");
   });
 });
 
