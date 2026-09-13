@@ -104,3 +104,9 @@ tmp/
 .impeccable/questions/
 .impeccable/mocks/
 .impeccable/build/
+
+# ---- Eval suite ----
+# Cached model replies, so an interrupted corpus pass resumes rather than paying again.
+# A reply is a reading of a document, not a fact about the product, and a committed one
+# would let a stale reply stand in for a run nobody made.
+.eval-cache/

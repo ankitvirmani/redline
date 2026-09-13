@@ -472,10 +472,20 @@ describe("what the public repository holds", () => {
 
   test("the key never reaches the browser, because only the server imports the client", () => {
     // The module throws on import in a browser, which catches it at run time. This
-    // catches it now: nothing but the two route handlers and the smoke script may name
-    // the file, so a client component that reaches for it fails the suite rather than
-    // the reader.
-    const allowed = ["app/api/analyse/route.ts", "app/api/ask/route.ts", "scripts/smoke.ts", "src/model/openrouter.ts"];
+    // catches it now: nothing but the two route handlers and the two scripts that run
+    // deliberately against a real model may name the file, so a client component that
+    // reaches for it fails the suite rather than the reader.
+    //
+    // The list is the whole of the rule, so an entry added to it is a decision. Ticket
+    // 13's `scripts/eval.ts` is on it for the same reason `scripts/smoke.ts` is: it runs
+    // from a terminal, on command, and its whole job is to call the real model.
+    const allowed = [
+      "app/api/analyse/route.ts",
+      "app/api/ask/route.ts",
+      "scripts/smoke.ts",
+      "scripts/eval.ts",
+      "src/model/openrouter.ts",
+    ];
 
     const importing = sourceFiles()
       .filter((path) => path !== "tests/openrouter-client.test.ts")

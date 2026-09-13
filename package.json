@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "smoke": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env.local --import ./scripts/module-resolution.mjs scripts/smoke.ts",
+    "eval": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env.local --import ./scripts/module-resolution.mjs scripts/eval.ts",
+    "verify:corpus": "node --disable-warning=ExperimentalWarning --import ./scripts/module-resolution.mjs scripts/verify-corpus.ts",
     "check:citations": "node --experimental-strip-types scripts/check-citations.mjs"
   },
   "dependencies": {

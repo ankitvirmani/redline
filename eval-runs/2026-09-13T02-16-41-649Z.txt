@@ -1,0 +1,315 @@
+Redline eval run, started 2026-09-13T02:16:41.649Z.
+A model id was read from OPENROUTER_MODEL. It is not printed and not recorded.
+Replies already on disk from an earlier pass are reused, so an interrupted pass resumes. Pass --fresh to call for every one.
+
+WHAT BLOCKS THE RUN, AND WHAT ONLY INFORMS IT
+---------------------------------------------
+  Blocking   Citation integrity: every flag and every answer shows a sentence that is in
+             the document, character for character. PRD.md section 4 makes this pass or
+             fail with no threshold.
+  Blocking   Ranking: arbitration outranks a merely unusual clause, in every reading that
+             has both. A specified behaviour, so a failure is a defect.
+  Blocking   An answer to a question the document cannot answer. PRD.md puts one in the
+             same class as a missing citation. The count blocks; the percentage informs.
+  Informs    Recall per clause type and per evidence group.
+  Informs    Precision at the top severity band, which is a proxy here, not the figure.
+  Informs    The clean-document reading on a benign document.
+  Informs    The rate at which a flag was dropped for a sentence not in the document.
+  Informs    Grounded questions answered, and which sentence was cited.
+
+  The proposed thresholds in PRD.md section 4 are uncalibrated and nothing here is
+  measured against them. Do not read a number below as a pass or a failure.
+
+THE CORPUS: REDLINE-V1 V1
+-------------------------
+  Nine documents with a known clause inventory per document, used by npm run eval. Two came from tests/fixtures and the other seven were written for this suite. None was collected from the world. See README.md in this directory before reading a number off a run.
+
+  document                      characters  planted  provenance
+  adhesion-contract             9713        9        written-for-the-deterministic-suite
+  clean-document                3992        benign   written-for-the-deterministic-suite
+  saas-subscription             6098        8        written-for-this-suite
+  offer-letter                  4731        5        written-for-this-suite
+  storage-unit-rental           4320        6        written-for-this-suite
+  phone-plan-terms              4844        7        written-for-this-suite
+  internship-agreement          3542        5        written-for-this-suite
+  library-volunteer-agreement   2879        benign   written-for-this-suite
+  swim-lesson-registration      3011        benign   written-for-this-suite
+
+  Instances per clause type, which is what every recall figure divides by:
+    arbitration-and-class-action-waiver   5   regulator-evidenced
+    unilateral-modification               6   weaker-evidence
+    non-compete                           4   regulator-evidenced  too thin for the figure to mean much
+    auto-renewal                          6   regulator-evidenced
+    limitation-of-liability               4   weaker-evidence  too thin for the figure to mean much
+    indemnification                       6   weaker-evidence
+    fee-escalators-and-late-fees          9   regulator-evidenced
+
+READING THE CORPUS
+------------------
+  adhesion-contract             8 flags, 1 dropped, completeness whole
+                                18 questions asked, 11 refused
+  clean-document                0 flags, 0 dropped, completeness whole
+  saas-subscription             7 flags, 1 dropped, completeness whole
+                                8 questions asked, 5 refused
+  offer-letter                  5 flags, 0 dropped, completeness whole
+  storage-unit-rental           6 flags, 0 dropped, completeness whole
+  phone-plan-terms              7 flags, 0 dropped, completeness whole
+  internship-agreement          6 flags, 0 dropped, completeness whole
+  library-volunteer-agreement   0 flags, 0 dropped, completeness whole
+  swim-lesson-registration      0 flags, 0 dropped, completeness whole
+
+RECALL PER CLAUSE TYPE
+----------------------
+  The matching rule, which is the measurement:
+    strict   the flag names the planted clause's type and its verified sentence overlaps
+             the planted sentence in the document. This is the primary figure.
+    by type  the document produced any flag of that type, wherever it was cited. Looser,
+             and the gap between the two is where the model found the right category and
+             the wrong clause.
+    The third column counts planted clauses whose sentence a flag did quote, under some
+    other type. Those flags read the right words and named the wrong thing.
+
+  clause type                           evidence            strict              by type             wrong type
+  arbitration-and-class-action-waiver   regulator-evidenced 5/5 100.0%          5/5 100.0%          0
+  unilateral-modification               weaker-evidence     6/6 100.0%          6/6 100.0%          0
+  non-compete                           regulator-evidenced 3/4 75.0%           4/4 100.0%          0
+  auto-renewal                          regulator-evidenced 6/6 100.0%          6/6 100.0%          0
+  limitation-of-liability               weaker-evidence     3/4 75.0%           3/4 75.0%           0
+  indemnification                       weaker-evidence     6/6 100.0%          6/6 100.0%          0
+  fee-escalators-and-late-fees          regulator-evidenced 6/9 66.7%           9/9 100.0%          2
+
+RECALL BY EVIDENCE GROUP
+------------------------
+  PRD.md section 4 proposes 95 percent on the four regulator-evidenced types and 80 on
+  the other three. Both figures are uncalibrated and neither is applied here.
+
+  regulator-evidenced
+    types:    arbitration-and-class-action-waiver, non-compete, auto-renewal, fee-escalators-and-late-fees
+    strict:   20/24  83.3%
+    by type:  24/24  100.0%
+  weaker-evidence
+    types:    unilateral-modification, limitation-of-liability, indemnification
+    strict:   15/16  93.8%
+    by type:  15/16  93.8%
+
+RECALL SPLIT BY THE CHARACTERS IN THE SENTENCE
+----------------------------------------------
+  Ticket 10's run dropped the same flag on every attempt, on a sentence carrying an em
+  dash, a curly apostrophe and a non-breaking space: the model retyped those characters
+  rather than copying them, so the span did not verify and the flag never left the seam.
+  This split says how much of the drop rate those characters account for.
+
+  sentences carrying at-risk characters:  7/10  70.0%
+  sentences carrying none:                28/30  93.3%
+  Missed, with the characters each sentence carries:
+    adhesion-contract#P-05                  em-dash, curly-apostrophe, non-breaking-space
+    saas-subscription#P-01                  non-breaking-space
+    phone-plan-terms#P-01                   ligature
+
+PRECISION AT THE TOP SEVERITY BAND (CRITICAL)
+---------------------------------------------
+  PRD.md section 4 asks what fraction of top-band flags survive review by a person
+  reading the source sentence. Nobody is reading in a run, so this is the proxy the
+  ticket names and not the measurement. The flags are printed below so the owner can do
+  the real review by reading them.
+
+  Flags at the top band:                            15
+  Of those, found a planted clause banded critical:  14
+  Found a planted clause the corpus banded lower:    0
+  Found nothing planted at all:                      1
+  Proxy precision:                                   93.3%
+  Against any planted clause, at either band:        93.3%
+
+  Flags that found no planted clause anywhere in the corpus: 4
+  Flags beyond the first to find the same planted clause:    0
+
+EVERY TOP-BAND FLAG, WITH ITS SOURCE SENTENCE
+---------------------------------------------
+  Read these. Precision at high severity needs a person reading the sentence. This list is
+  what they read.
+
+  adhesion-contract F-02  Unilateral modification
+    found: adhesion-contract#P-04
+    "Meridian may amend the Club Rules, the Schedule of Fees, the hours of operation, the class
+    timetable and the terms of this Agreement at any time by posting the amended version at the
+    club or on the Meridian website, and the amended version applies to you from the date it is
+    posted."
+
+  adhesion-contract F-03  Non-compete and restrictive covenants
+    found: adhesion-contract#P-08
+    "For twelve (12) months after your Program candidacy ends for any reason, you will not
+    teach, coach or deliver group ﬁtness instruction or personal training, whether as an
+    employee, as a contractor or on your own account, at any facility within ﬁfteen (15) miles
+    of a Meridian location at which you taught or trained."
+
+  adhesion-contract F-01  Arbitration and class-action waiver
+    found: adhesion-contract#P-09
+    "Any dispute, claim or controversy between you and Meridian arising out of or relating to
+    this Agreement, your membership or the Program will be resolved by ﬁnal and binding
+    arbitration administered by a nationally recognised arbitration provider under its consumer
+    arbitration rules, and you and Meridian each waive any right to a trial by jury and any
+    right to bring or participate in a class, collective or representative action."
+
+  saas-subscription F-02  Unilateral modification
+    found: saas-subscription#P-05
+    "We may amend these terms, the pricing page and the Fee Schedule at any time, an amended
+    version takes effect when we post it at northwindstudio.example/terms, and your continued
+    use of the service after it is posted is your acceptance of the amended version."
+
+  saas-subscription F-01  Arbitration and class-action waiver
+    found: saas-subscription#P-08
+    "Any dispute between you and Northwind arising out of these terms or out of your use of the
+    service will be settled by binding arbitration before a single arbitrator under the consumer
+    rules of a recognised arbitration body, and you agree to bring any claim only in your
+    individual capacity and not as a plaintiff or class member in any purported class,
+    collective or representative proceeding."
+
+  offer-letter F-01  Unilateral modification
+    found: offer-letter#P-01
+    "Ardent may introduce, withdraw, interpret or amend any policy, handbook provision, benefit
+    plan or term of employment described in this letter at any time and without your agreement,
+    and the version in force on the Ardent intranet governs from the date it is published
+    there."
+
+  offer-letter F-02  Non-compete and restrictive covenants
+    found: offer-letter#P-02
+    "For a period of twelve (12) months following the last day of your employment, whether that
+    employment ends at your choice or at ours, you will not provide services that are the same
+    as or substantially similar to those you provided to Ardent, whether as an employee, a
+    consultant, a contractor, an adviser or a principal, to any business that develops,
+    manufactures or sells a product within the Restricted Field as that term is defined in
+    Exhibit B to this letter."
+
+  offer-letter F-04  Arbitration and class-action waiver
+    found: offer-letter#P-05
+    "You and Ardent each agree that any claim arising out of or relating to your employment, its
+    terms, or its end, including any statutory claim, will be resolved by final and binding
+    arbitration administered under the employment rules of a nationally recognised arbitration
+    provider, on an individual basis only, and each of us waives any right to a jury trial and
+    any right to participate in a class, collective or representative action."
+
+  storage-unit-rental F-03  Unilateral modification
+    found: storage-unit-rental#P-06
+    "Gate hours, the rules posted in the office, and the terms of this Agreement may be changed
+    by the Operator on notice posted at the facility and sent to the Occupant's last known email
+    address, and the changed version applies to the Occupant from the first day of the month
+    after it is posted."
+
+  phone-plan-terms F-03  Non-compete and restrictive covenants
+    found: no planted clause of this type at this sentence
+    "Cascade may introduce, increase or remove either charge on notice given with the bill in
+    which the change ﬁrst appears."
+
+  phone-plan-terms F-02  Unilateral modification
+    found: phone-plan-terms#P-04
+    "Cascade may change any term of this Agreement, any charge, and any feature of your rate
+    plan, and the change takes effect on the date stated in the notice we give you, which may be
+    given on a bill, by message to your device, or by email."
+
+  phone-plan-terms F-01  Arbitration and class-action waiver
+    found: phone-plan-terms#P-07
+    "You and Cascade agree that any dispute arising out of or relating to this Agreement, the
+    service or any device will be resolved by individual binding arbitration administered by a
+    nationally recognised arbitration provider under its consumer rules, and both of us give up
+    the right to a jury trial and the right to bring or join a class, collective or
+    representative action."
+
+  internship-agreement F-02  Unilateral modification
+    found: internship-agreement#P-02
+    "The Firm may amend the Programme Handbook, the assessment structure, the teaching schedule
+    and the terms of this Agreement at any time by issuing a revised version to the Analyst by
+    email, and the revised version applies from the date of that email."
+
+  internship-agreement F-03  Non-compete and restrictive covenants
+    found: internship-agreement#P-03
+    "For six (6) months after the Programme ends, the Analyst will not accept an engagement,
+    whether paid or unpaid and whether as an employee, a contractor or an intern, with any firm
+    on the Restricted List issued to the Analyst in week one of the Programme, and will not
+    approach any client of the Firm whose file the Analyst worked on."
+
+  internship-agreement F-01  Arbitration and class-action waiver
+    found: internship-agreement#P-05
+    "Any dispute between the Analyst and the Firm arising out of the Programme or out of this
+    Agreement will be resolved by final and binding arbitration on an individual basis,
+    administered under the employment rules of a nationally recognised provider, and the Analyst
+    gives up any right to a jury trial and any right to bring or join a class or collective
+    action."
+
+CLEAN DOCUMENTS
+---------------
+  PRD.md section 4: against a benign corpus the system reports a clean document with the
+  list of what was checked, and no flag at the top band. A tool that manufactured a
+  finding to look useful has failed this even though nothing it said was false.
+
+  clean-document                0 flags, 0 at the top band, clean reading: true
+  library-volunteer-agreement   0 flags, 0 at the top band, clean reading: true
+  swim-lesson-registration      0 flags, 0 at the top band, clean reading: true
+
+RANKING: ARBITRATION OUTRANKS A MERELY UNUSUAL CLAUSE
+-----------------------------------------------------
+  adhesion-contract             held. Arbitration is rank 3, above 5 flag(s) below the top band.
+  clean-document                nothing to compare: no arbitration flag in this reading
+  saas-subscription             held. Arbitration is rank 2, above 5 flag(s) below the top band.
+  offer-letter                  held. Arbitration is rank 3, above 2 flag(s) below the top band.
+  storage-unit-rental           nothing to compare: no arbitration flag in this reading
+  phone-plan-terms              held. Arbitration is rank 3, above 4 flag(s) below the top band.
+  internship-agreement          held. Arbitration is rank 3, above 3 flag(s) below the top band.
+  library-volunteer-agreement   nothing to compare: no arbitration flag in this reading
+  swim-lesson-registration      nothing to compare: no arbitration flag in this reading
+
+THE QUESTION BOX
+----------------
+  Both halves are counted. A product that refused every question would score 100 percent
+  refusal and be worth nothing, so the refusal figure means nothing without the answered
+  figure beside it.
+
+  Questions the document answers:      9/13 answered  69.2%, 3 refused, 1 failed
+  Of those answers, cited the sentence the corpus names: 8/9
+    A different sentence is not automatically a wrong answer. The ticket 10 run found the
+    model citing a sentence that answered the question better than the one the sidecar
+    names, which is why this is reported and why recall is not matched on it.
+
+  Questions the document cannot answer: 13/13 refused  100.0%, 0 answered, 0 failed
+
+  Questions the document answers and the run did not answer:
+    adhesion-contract  refused (the-document-does-not-address-it)
+      What happens if my payment bounces and I am two weeks late?
+    adhesion-contract  refused (the-sentence-is-not-in-the-document)
+      If I get hurt because a machine was broken, what is the most I could get back from them?
+    adhesion-contract  refused (the-document-does-not-address-it)
+      If a friend I sign in as a guest sues the club, does that land on me?
+    adhesion-contract  failed (model-response-rejected)
+      Is there any way to keep my right to sue?
+
+CITATION INTEGRITY
+------------------
+  Every quote a reader would see, held against the document it came from.
+
+  Flags the model claimed across the corpus:        41
+  Flags that survived verification:                 39
+  Flags dropped, the span is not in the document:   2
+  Drop rate:                                        4.9%
+  Exits dropped, the span is not in the document:   1
+
+  A drop is the rule working, not a failure of the run: the model named a sentence the
+  document does not contain and the flag never left the seam. What would be a failure is
+  a quote reaching a reader that cannot be shown, which is the count below.
+
+  Quotes that do not appear in their document: 0. Checked 39 flags and every answer.
+
+WHAT THIS PASS COST
+-------------------
+  Calls the pass asked for:        35
+  Answered from disk:              35
+  Attempts made over the wire:     0
+  Calls that ran out of attempts:  0
+  Faults:                          none
+
+VERDICT
+-------
+  Every blocking check held.
+
+  The numbers above are measurements. None of them decides this verdict, and the
+  proposed figures in PRD.md section 4 still need calibrating against a real corpus.
+
+  Recorded at eval-runs/2026-09-13T02-16-41-649Z.json and eval-runs/2026-09-13T02-16-41-649Z.txt
