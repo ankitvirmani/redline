@@ -63,3 +63,8 @@ Settled: input is pasted text and text-layer PDFs only (ADR 0006). No DOCX, no O
 - `research/summary.md` — the user research, including evidence that contradicts
   the original hypothesis. Read before deciding what the product should do.
 - `PRD.md` — the brief, once it exists. Read before building.
+- `LEARNINGS.md` — what the v1 build found that the code does not say, including why
+  citation verification costs recall and where the residual risk actually sits. Read
+  before changing verification, severity, extraction, or the eval suite.
+- `BUILD-REPORT.md` — what the v1 build did, what it could not verify, and the
+  commands to run first.
