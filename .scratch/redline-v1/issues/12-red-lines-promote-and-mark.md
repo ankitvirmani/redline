@@ -16,12 +16,12 @@ the same clauses found, so the feature costs nothing to skip.
 
 **Blocked by:** 11, 06.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The reader can add, edit and remove red lines, and they persist with their account.
-- [ ] A flag matching a red line is promoted to the top of the ranking.
-- [ ] A promoted flag is marked as matching a red line the reader named.
-- [ ] No red line removes, hides or suppresses a flag.
-- [ ] A reader with no red lines gets an identical flag set to a reader with them, asserted in a test.
-- [ ] No walk-away recommendation or verdict is produced from red-line matches.
-- [ ] Promotion is tested as a pure function over fixed flag sets and fixed red lines.
+- [x] The reader can add, edit and remove red lines, and they persist with their account. Built and typechecked. Persistence is unverified: no Supabase project exists, so no write has run.
+- [x] A flag matching a red line is promoted to the top of the ranking.
+- [x] A promoted flag is marked as matching a red line the reader named.
+- [x] No red line removes, hides or suppresses a flag.
+- [x] A reader with no red lines gets an identical flag set to a reader with them, asserted in a test.
+- [x] No walk-away recommendation or verdict is produced from red-line matches.
+- [x] Promotion is tested as a pure function over fixed flag sets and fixed red lines.
