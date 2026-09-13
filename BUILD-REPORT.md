@@ -41,7 +41,7 @@ is the first ticket that spends money.
 | 10 | Real OpenRouter client | done, and the real run found something |
 | 11 | Sign in and the library | done as written, nothing on the Supabase path verified |
 | 12 | Red lines promote and mark | done as written, persistence unverified |
-| 13 | Tier-two eval suite | not started, brief written, unblocked |
+| 13 | Tier-two eval suite | done, and it produced real numbers |
 | 14 | Landing page | not started, brief written, unblocked |
 
 ## Decisions made in the owner's absence

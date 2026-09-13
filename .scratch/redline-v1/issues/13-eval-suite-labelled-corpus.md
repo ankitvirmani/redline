@@ -17,13 +17,13 @@ pass/fail yet.
 
 **Blocked by:** 10, 06.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A labelled corpus exists, with a known clause inventory per document.
-- [ ] The suite reports recall per clause type, separating the four regulator-evidenced types from the other three.
-- [ ] The suite reports precision at the top severity band.
-- [ ] The suite runs on command and never as part of the commit suite.
-- [ ] Citation integrity is checked across the whole corpus as pass/fail: every rendered quote appears verbatim, and any failure blocks release.
-- [ ] Ranking is asserted across the corpus: arbitration outranks a merely unusual clause.
-- [ ] Q&A refusal is measured against a set of questions whose answers are absent from the document.
-- [ ] Results are recorded so the proposed thresholds can be calibrated.
+- [x] A labelled corpus exists, with a known clause inventory per document. Nine documents, forty planted clauses. Seven were written for this suite rather than collected, each manifest entry carries its provenance, and the recall figures should be read as an upper bound.
+- [x] The suite reports recall per clause type, separating the four regulator-evidenced types from the other three.
+- [x] The suite reports precision at the top severity band, labelled as a proxy for the human review PRD.md describes rather than as that review. Every top-band flag is printed with its source sentence so the real review can be done by reading the output.
+- [x] The suite runs on command and never as part of the commit suite.
+- [x] Citation integrity is checked across the whole corpus as pass/fail: every rendered quote appears verbatim, and any failure blocks release.
+- [x] Ranking is asserted across the corpus: arbitration outranks a merely unusual clause.
+- [x] Q&A refusal is measured against a set of questions whose answers are absent from the document.
+- [x] Results are recorded so the proposed thresholds can be calibrated.
