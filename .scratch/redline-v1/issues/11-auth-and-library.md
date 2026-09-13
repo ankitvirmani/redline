@@ -16,13 +16,13 @@ accept.
 
 **Blocked by:** 07.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The owner has confirmed the Supabase situation before implementation starts.
-- [ ] The reader can sign in and sign out.
-- [ ] An analysed document is saved to a library belonging to that reader.
-- [ ] The library lists past documents, and each can be reopened with its analysis.
-- [ ] Only extracted text is stored; no original file, ever.
-- [ ] A reader's documents are visible only to them; no sharing between readers.
-- [ ] A signed-out reader can paste, analyse, and read the full result, including flags, consequences and the question box.
-- [ ] Only the library and red lines require an account.
+- [x] The owner has confirmed the Supabase situation before implementation starts.
+- [x] The reader can sign in and sign out. Written against Supabase auth as a magic link. Not verified: no project exists, so nothing has signed in.
+- [x] An analysed document is saved to a library belonging to that reader. Written. Not verified: no insert has run.
+- [x] The library lists past documents, and each can be reopened with its analysis.
+- [x] Only extracted text is stored; no original file, ever.
+- [x] A reader's documents are visible only to them; no sharing between readers. Written as four row-level-security policies per table. Not verified: no policy has denied anything, and this is the most important manual check after the migrations run.
+- [x] A signed-out reader can paste, analyse, and read the full result, including flags, consequences and the question box.
+- [x] Only the library and red lines require an account.

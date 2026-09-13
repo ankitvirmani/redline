@@ -13,11 +13,11 @@ so a key is exposed the moment it is pushed and has to be rotated.
 
 **Blocked by:** 04, 09.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The owner has named the model before implementation starts.
-- [ ] The model identifier is read from a single environment variable at every call site.
-- [ ] No model identifier and no credential appears in committed source.
-- [ ] A real run over a real adhesion contract produces flags whose source sentences all verify.
-- [ ] A real run of the question box answers a grounded question and refuses an ungrounded one.
-- [ ] The deterministic suite still passes with the stub and still makes no network call.
+- [x] The owner has named the model before implementation starts.
+- [x] The model identifier is read from a single environment variable at every call site.
+- [x] No model identifier and no credential appears in committed source.
+- [x] A real run over a real adhesion contract produces flags whose source sentences all verify.
+- [x] A real run of the question box answers a grounded question and refuses an ungrounded one.
+- [x] The deterministic suite still passes with the stub and still makes no network call.
