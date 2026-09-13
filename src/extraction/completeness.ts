@@ -12,20 +12,57 @@
  * The assessment informs and it gates nothing. A low reading sits beside the
  * result, suppresses nothing and blocks no submission (ADR 0006).
  *
- * Ticket 03 parses PDFs behind the same seam and calls `assessCompleteness` on
- * the text it extracts rather than writing its own. Adding a signal means adding
- * a code to `COMPLETENESS_SIGNAL_CODES` and a case to `SIGNAL_TESTS`; nothing
- * else in the shape has to move.
+ * PDF input comes through here too. `src/extraction/pdf.ts` calls
+ * `assessCompleteness` on the text it extracted rather than writing its own
+ * assessor, and hands in what it knows about the pages it read as a second
+ * argument. Adding a signal means adding a code and a test function to one of the
+ * two lists below; nothing else in the shape has to move.
  */
 
-/** Every signal the assessment weighs, in the order the reader sees them. */
-export const COMPLETENESS_SIGNAL_CODES = [
+/**
+ * The signals that read the text itself. Every document gets all of them, however
+ * its text arrived, in the order the reader sees them.
+ */
+export const TEXT_COMPLETENESS_SIGNAL_CODES = [
   "ends-mid-sentence",
   "no-closing-block",
   "implausibly-short",
 ] as const;
 
+/**
+ * The signals that read the pages the text came off, which only a document with
+ * pages has. A pasted document is not weighed against these, and does not report
+ * them: a signal nobody could look at is not a signal that was weighed, and a
+ * reader shown a page check on text they pasted out of an email would rightly
+ * wonder what pages Redline thought it had.
+ */
+export const PAGE_COMPLETENESS_SIGNAL_CODES = ["pages-without-text"] as const;
+
+/**
+ * Every code either list can produce. This is the list to validate a stored
+ * reading against, because a document kept in the library may have come from
+ * either kind of source.
+ */
+export const COMPLETENESS_SIGNAL_CODES = [
+  ...TEXT_COMPLETENESS_SIGNAL_CODES,
+  ...PAGE_COMPLETENESS_SIGNAL_CODES,
+] as const;
+
+export type TextCompletenessSignalCode = (typeof TEXT_COMPLETENESS_SIGNAL_CODES)[number];
+export type PageCompletenessSignalCode = (typeof PAGE_COMPLETENESS_SIGNAL_CODES)[number];
 export type CompletenessSignalCode = (typeof COMPLETENESS_SIGNAL_CODES)[number];
+
+/**
+ * What the pages of a paginated document gave up, for the signals that read pages
+ * rather than text. Counts only: nothing here carries page content, because the
+ * document's text is the document and there is only one of it.
+ */
+export type PagesRead = {
+  /** How many pages the parser found. */
+  readonly pages: number;
+  /** How many of them gave up text that is not only whitespace. */
+  readonly pagesWithText: number;
+};
 
 /**
  * One signal and what it found. Every signal is reported, fired or not, because
@@ -146,10 +183,28 @@ function isImplausiblyShort(text: string): boolean {
   return Array.from(text).length < IMPLAUSIBLY_SHORT_CHARACTERS;
 }
 
-const SIGNAL_TESTS: Readonly<Record<CompletenessSignalCode, (text: string) => boolean>> = {
+const SIGNAL_TESTS: Readonly<
+  Record<TextCompletenessSignalCode, (text: string) => boolean>
+> = {
   "ends-mid-sentence": endsMidSentence,
   "no-closing-block": hasNoClosingBlock,
   "implausibly-short": isImplausiblyShort,
+};
+
+/**
+ * A page that gave up no text is a page Redline did not read. In a PDF that is
+ * usually a scanned insert or a photographed page in an otherwise typed document,
+ * and it is exactly the cut a reader cannot see: the text reads as continuous
+ * prose and a whole clause is simply absent from it.
+ */
+function hasPagesWithoutText(pages: PagesRead): boolean {
+  return pages.pages > 0 && pages.pagesWithText < pages.pages;
+}
+
+const PAGE_SIGNAL_TESTS: Readonly<
+  Record<PageCompletenessSignalCode, (pages: PagesRead) => boolean>
+> = {
+  "pages-without-text": hasPagesWithoutText,
 };
 
 /**
@@ -168,11 +223,25 @@ function levelFor(signals: readonly CompletenessSignal[]): CompletenessLevel {
 /**
  * Reads the text and returns the assessment. Pure: the text is only measured,
  * never changed, and nothing outside this function is touched.
+ *
+ * `pages` is for text that came off pages, which today means a PDF. Leave it out
+ * and the page signals are not weighed and not reported, which is the truth for
+ * text a reader pasted.
  */
-export function assessCompleteness(text: string): CompletenessAssessment {
-  const signals = COMPLETENESS_SIGNAL_CODES.map((code) => ({
+export function assessCompleteness(
+  text: string,
+  pages?: PagesRead,
+): CompletenessAssessment {
+  const signals: CompletenessSignal[] = TEXT_COMPLETENESS_SIGNAL_CODES.map((code) => ({
     code,
     fired: SIGNAL_TESTS[code](text),
   }));
+
+  if (pages !== undefined) {
+    for (const code of PAGE_COMPLETENESS_SIGNAL_CODES) {
+      signals.push({ code, fired: PAGE_SIGNAL_TESTS[code](pages) });
+    }
+  }
+
   return { level: levelFor(signals), signals };
 }

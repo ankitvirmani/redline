@@ -25,6 +25,7 @@ import {
   completenessToKeep,
   reverifiedAnalysis,
 } from "@/src/library/stored";
+import type { SourceKind } from "@/src/extraction";
 import { accountState } from "@/src/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
     document: {
       text: asked.data.text,
       characterCount: asked.data.characterCount,
-      sourceKind: asked.data.sourceKind as "pasted",
+      sourceKind: asked.data.sourceKind as SourceKind,
       completeness,
     },
     analysis: held.analysis,

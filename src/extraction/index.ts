@@ -14,14 +14,22 @@
  * citation silently (ADR 0001). That is the failure this seam exists to prevent.
  *
  * `extract` is asynchronous because ticket 03 parses PDFs behind this same seam
- * and parsing a PDF is asynchronous. Making it so now means ticket 03 adds a
- * member to `ExtractionInput` rather than changing the signature of every caller.
+ * and parsing a PDF is asynchronous. Making it so then means PDF input arrived as
+ * a member of `ExtractionInput` rather than as a new signature for every caller.
+ *
+ * A PDF is refused rather than read when it has no text layer, or when it is a scan
+ * or a photograph. That refusal comes back as a reason, never as a document with
+ * empty text. `src/extraction/pdf.ts` holds the parsing and says what it can and
+ * cannot tell apart.
  */
 
 import { readBackPastedText } from "@/src/domain/text";
 
 import { assessCompleteness } from "./completeness";
+import { extractPdf } from "./pdf";
 import type { Extraction, ExtractionInput } from "./types";
+
+export { EXTRACTION_REJECTION_REASONS } from "./types";
 
 export type {
   CompletenessAssessment,
@@ -66,5 +74,7 @@ export async function extract(input: ExtractionInput): Promise<Extraction> {
   switch (input.kind) {
     case "pasted-text":
       return extractPastedText(input.text);
+    case "pdf":
+      return extractPdf(input.bytes);
   }
 }

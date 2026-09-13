@@ -55,6 +55,10 @@ const SIGNAL_SAYS: Readonly<
     fired: "It is shorter than these agreements usually run.",
     quiet: "It is about as long as these agreements usually run.",
   },
+  "pages-without-text": {
+    fired: "Redline found no text on one of the PDF's pages.",
+    quiet: "Redline found text on every page of the PDF.",
+  },
 };
 
 export default function CompletenessReading({

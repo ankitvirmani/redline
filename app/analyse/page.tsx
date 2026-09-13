@@ -4,13 +4,22 @@
 // root to the landing page and moved this surface here, one click from the landing
 // page's primary action and from the mark in its rail.
 //
-// Pasted text goes through the extraction seam, which hands back the text untouched,
-// and then to the analysis route, which is the only place a model is called, because
-// the key must never reach this browser. What comes back is flags that have already
-// been checked against the document: every one of them can show the sentence it was
-// drawn from, because a flag that could not never left the seam. It also comes back
-// with a summary of what the document is and what accepting it commits the reader to,
-// which the seam has already held to describing the document rather than judging it.
+// Two ways a document gets in, and pasting is the primary one, because terms of
+// service are web pages and subscription terms arrive in email (ADR 0006). A PDF
+// covers the case pasting cannot, which is the offer letter somebody was sent as a
+// document of its own. That PDF is opened and parsed in this browser and goes
+// nowhere: only the text in it crosses to the server, and only when the reading
+// runs. A PDF that is a scan, or that has no text layer at all, is refused with the
+// reason in plain words rather than read as a document of nothing.
+//
+// Either way the text goes through the extraction seam, which hands it back
+// untouched, and then to the analysis route, which is the only place a model is
+// called, because the key must never reach this browser. What comes back is flags
+// that have already been checked against the document: every one of them can show the
+// sentence it was drawn from, because a flag that could not never left the seam. It
+// also comes back with a summary of what the document is and what accepting it
+// commits the reader to, which the seam has already held to describing the document
+// rather than judging it.
 //
 // The reading itself is rendered by `components/Reading.tsx`, which is the same
 // component the library uses to reopen a document. Ranking happens there, in the
@@ -24,21 +33,29 @@
 // offers to keep the document. `tests/signed-out.test.ts` walks the import graph of
 // this file to keep it that way.
 
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 
 import KeepInLibrary from "@/components/KeepInLibrary";
 import Reading from "@/components/Reading";
+import { REFUSAL_SAYS } from "@/components/refusal-view";
 import Shell from "@/components/Shell";
 import { useAccount } from "@/components/use-account";
 import { useRedLines } from "@/components/use-red-lines";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
-import { extract, type ExtractedDocument } from "@/src/extraction";
+import {
+  extract,
+  type ExtractedDocument,
+  type ExtractionRejectionReason,
+} from "@/src/extraction";
 import "../analyse.css";
 
 /** What the screen is showing. */
 type Screen =
   | { readonly kind: "waiting" }
-  | { readonly kind: "nothing-pasted" }
+  /** There is no document to read, and this is why. Product copy, not an error state. */
+  | { readonly kind: "refused"; readonly reason: ExtractionRejectionReason }
+  /** A PDF is being read, here, in this browser. */
+  | { readonly kind: "opening-pdf" }
   | { readonly kind: "reading"; readonly document: ExtractedDocument }
   | {
       readonly kind: "read";
@@ -50,6 +67,10 @@ type Screen =
       readonly document: ExtractedDocument;
       readonly reason: AnalysisFailureReason;
     };
+
+/** What Redline says while it is getting the text out of a PDF, here, in this browser. */
+const OPENING_PDF_SAYS =
+  "Redline is reading the PDF in your browser. Nothing has gone anywhere yet.";
 
 /** What Redline says when a reading could not happen. Each one is a designed state. */
 const FAILURE_SAYS: Readonly<Record<AnalysisFailureReason, string>> = {
@@ -88,6 +109,8 @@ async function askForAnalysis(text: string): Promise<AnalysisAnswer> {
 export default function PastePage() {
   const fieldId = useId();
   const noteId = useId();
+  const pdfId = useId();
+  const pdfNoteId = useId();
   const field = useRef<HTMLTextAreaElement>(null);
 
   // The pasted text lives here and nowhere else: no localStorage, no
@@ -107,20 +130,16 @@ export default function PastePage() {
   const redLines = useRedLines(account);
 
   const openDocument =
-    screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
+    screen.kind === "reading" || screen.kind === "read" || screen.kind === "failed"
+      ? screen.document
+      : null;
   const analysis = screen.kind === "read" ? screen.analysis : null;
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const extraction = await extract({ kind: "pasted-text", text: pasted });
-    if (extraction.outcome === "rejected") {
-      setScreen({ kind: "nothing-pasted" });
-      field.current?.focus();
-      return;
-    }
-
-    const document = extraction.document;
+  /**
+   * The rest of the way, once there is a document: one path, whichever way the text
+   * arrived. Ranking, rendering and the question box know only the document.
+   */
+  async function read(document: ExtractedDocument) {
     setOpened((before) => before + 1);
     setScreen({ kind: "reading", document });
 
@@ -130,6 +149,44 @@ export default function PastePage() {
         ? { kind: "read", document, analysis: answer.analysis }
         : { kind: "failed", document, reason: answer.reason },
     );
+  }
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const extraction = await extract({ kind: "pasted-text", text: pasted });
+    if (extraction.outcome === "rejected") {
+      setScreen({ kind: "refused", reason: extraction.reason });
+      field.current?.focus();
+      return;
+    }
+
+    await read(extraction.document);
+  }
+
+  /**
+   * A PDF the reader picked. It is read into memory here and parsed here; there is no
+   * upload, no route, no temporary file, and nothing keeps it. The control is cleared
+   * straight away so that picking the same document a second time is still a change
+   * the browser reports, which matters after a refusal.
+   */
+  async function onPdfPicked(event: ChangeEvent<HTMLInputElement>) {
+    const picked = event.target.files?.[0];
+    event.target.value = "";
+    if (picked === undefined) return;
+
+    setScreen({ kind: "opening-pdf" });
+
+    const extraction = await extract({
+      kind: "pdf",
+      bytes: new Uint8Array(await picked.arrayBuffer()),
+    });
+    if (extraction.outcome === "rejected") {
+      setScreen({ kind: "refused", reason: extraction.reason });
+      return;
+    }
+
+    await read(extraction.document);
   }
 
   return (
@@ -180,14 +237,38 @@ export default function PastePage() {
           </div>
         </form>
 
+        {/* The other way in. A plain file input, styled to match, rather than a drop
+            zone: the browser already gives it a keyboard, a screen reader and the
+            operating system's own picker, and none of that is worth rebuilding. It
+            starts the reading on its own, because picking a document is not an
+            ambiguous thing to have done. */}
+        <div className="paste__pdf">
+          <label className="paste__label" htmlFor={pdfId}>Or a PDF of it</label>
+          <input
+            className="paste__file"
+            id={pdfId}
+            type="file"
+            accept="application/pdf,.pdf"
+            onChange={(event) => void onPdfPicked(event)}
+            aria-describedby={pdfNoteId}
+          />
+          <p className="paste__note" id={pdfNoteId}>
+            Redline opens the PDF in your browser and reads the text out of it. The PDF
+            itself never leaves your machine. A photograph of a page has no text in it,
+            and Redline will tell you that rather than guess at the words.
+          </p>
+        </div>
+
         <p className="said" role="status">
-          {screen.kind === "nothing-pasted"
-            ? "The box is empty. Paste a document first."
-            : screen.kind === "reading"
-              ? "Redline is reading your document. Give it a few seconds."
-              : screen.kind === "failed"
-                ? FAILURE_SAYS[screen.reason]
-                : ""}
+          {screen.kind === "refused"
+            ? REFUSAL_SAYS[screen.reason]
+            : screen.kind === "opening-pdf"
+              ? OPENING_PDF_SAYS
+              : screen.kind === "reading"
+                ? "Redline is reading your document. Give it a few seconds."
+                : screen.kind === "failed"
+                  ? FAILURE_SAYS[screen.reason]
+                  : ""}
         </p>
       </section>
 

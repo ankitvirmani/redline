@@ -3,3 +3,9 @@
 # exact substring match against them, so any end-of-line conversion or whitespace
 # trim breaks the suite silently. Keep them byte for byte.
 tests/fixtures/*.txt -text
+
+# The PDF fixtures are laid down byte by byte by scripts/make-pdf-fixtures.mjs and
+# the extraction test asserts their text layer character for character. One of them
+# is plain ASCII throughout, so git would take it for text and could rewrite its
+# line endings on a checkout. Treat them all as bytes.
+tests/fixtures/pdf/*.pdf -text -diff
