@@ -4,6 +4,7 @@ import { SEVERITY_BAND_READING, clauseTypeLabel } from "@/src/domain/clause-type
 import { timesInWords } from "@/src/domain/text";
 import type { RankedFlag } from "@/src/ranking";
 
+import RedLineMark from "./RedLineMark";
 import StandingStatement from "./StandingStatement";
 import { flagIds, inkFor } from "./flag-view";
 import "./flags.css";
@@ -44,6 +45,12 @@ import "./flags.css";
  * heading, so a screen reader says which is which rather than reading four paragraphs
  * in a row.
  *
+ * A flag that hit one of the reader's red lines carries a fifth thing, above those
+ * four: the mark saying which red line, in the words the reader wrote it in. It is not
+ * a severity signal and does not restyle anything that is: red lines change what the
+ * reader sees first and nothing else (ADR 0008), so the mark explains the flag's place
+ * in the list and says nothing about what the clause costs.
+ *
  * The standing statement sits above the first flag, once for the whole analysis. See
  * `StandingStatement.tsx` for why there and not on every flag.
  *
@@ -69,7 +76,7 @@ export default function FlagList({
       <StandingStatement />
 
       <ol className="flags">
-        {flags.map(({ rank, flag }, position) => {
+        {flags.map(({ rank, flag, matchedRedLines }, position) => {
           const ids = flagIds(base, flag.code);
           const isSelected = selected === flag.code;
           const band = SEVERITY_BAND_READING[flag.severity.band];
@@ -103,6 +110,13 @@ export default function FlagList({
                 </h3>
 
                 <div className="flag__body">
+                  {/* The mark, where this flag hit one of the reader's red lines. It
+                      leads the body because it is why the flag is where it is, and it
+                      is deliberately quieter than the severity word on the bar: a flag
+                      that hits a red line is the same clause read sooner, not a worse
+                      one. See `RedLineMark.tsx`. */}
+                  <RedLineMark redLines={matchedRedLines} headingId={ids.named} />
+
                   <p className="flag__consequence">{flag.consequence.fromTheDocument}</p>
 
                   <figure className="flag__src">

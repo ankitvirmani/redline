@@ -38,10 +38,10 @@ is the first ticket that spends money.
 | 07 | Clean document verdict | done |
 | 08 | Flag consequence, exit, neutrality | done |
 | 09 | Question box, grounded or refused | done |
-| 10 | Real OpenRouter client | not started, brief written, unblocked |
-| 11 | Sign in and the library | not started, brief written, unblocked |
-| 12 | Red lines promote and mark | not started, brief written, waits on 11 |
-| 13 | Tier-two eval suite | not started, brief written, waits on 10 |
+| 10 | Real OpenRouter client | done, and the real run found something |
+| 11 | Sign in and the library | done as written, nothing on the Supabase path verified |
+| 12 | Red lines promote and mark | not started, brief written, unblocked |
+| 13 | Tier-two eval suite | not started, brief written, unblocked |
 | 14 | Landing page | not started, brief written, unblocked |
 
 ## Decisions made in the owner's absence

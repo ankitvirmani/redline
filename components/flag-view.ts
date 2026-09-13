@@ -30,10 +30,11 @@ export function inkFor(position: number): FlagInk {
  * The ids that bind a flag to its sentence, both ways, and the ids that name the
  * blocks inside a flag's body.
  *
- * `external` and `exit` are here rather than generated in the component because they
- * label two regions a screen reader has to be able to tell apart from the consequence
- * and from each other: the fact from outside the document, and the way out the document
- * grants. Four related pieces of text in one flag, each announced as what it is.
+ * `external`, `exit` and `named` are here rather than generated in the component because
+ * they label regions a screen reader has to be able to tell apart from the consequence
+ * and from each other: the fact from outside the document, the way out the document
+ * grants, and the red line of the reader's own that this flag hit. Each one announced as
+ * what it is.
  */
 export function flagIds(base: string, code: string) {
   return {
@@ -43,6 +44,7 @@ export function flagIds(base: string, code: string) {
     sentence: `${base}-sentence-${code}`,
     external: `${base}-external-${code}`,
     exit: `${base}-exit-${code}`,
+    named: `${base}-named-${code}`,
   };
 }
 

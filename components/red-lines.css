@@ -1,0 +1,166 @@
+/* ============================================================
+   Redline: the reader's red lines
+   World: Modular Bars, in the Operate register.
+
+   The screen follows the rail's composition, which DESIGN.md
+   records: label-register section labels, hairline-ruled rows,
+   and the 0.5rem by 0.1875rem ink marker at the left of each
+   row, which is the bar motif at its smallest.
+
+   Three things had to be designed, because DESIGN.md has no
+   component for any of them: the field a red line is written in,
+   the boxes that say what it is checked against, and the two
+   row actions. All three are built out of what the system does
+   have. The field is the paste box at one line: white, 2px ink
+   keyline, zero radius, the label above it, the cyan caret and
+   the cyan focus outline. A box is a 2px ink keyline that fills
+   with ink when it is ticked. The row actions are the ghost
+   button DESIGN.md
+   records as defined and unused, at the small end of the action
+   register.
+
+   No disabled state anywhere, because there is none in this
+   build. A request in flight is on the label and on aria-busy.
+   Motion is state only, 150 to 250ms.
+   ============================================================ */
+
+.rl{padding:clamp(2.5rem,5vw,4rem) var(--pad)}
+.rl__h{
+  margin:0 0 1rem;max-width:26ch;
+  font-size:clamp(1.75rem,3.1vw,2.875rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.rl__lede{margin:0 0 1.25rem;max-width:58ch;font-size:1.0625rem;line-height:1.45;font-weight:500}
+.rl__limit{margin:0 0 2.5rem;max-width:58ch;font-size:.9375rem;line-height:1.5;color:var(--grey-text)}
+
+.rl__k{
+  display:block;margin:0 0 .75rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-text);
+}
+
+/* ── the list ───────────────────────────────────────────────── */
+
+.rl-list{margin:0 0 1.5rem;padding:0;list-style:none;max-width:46rem;border-top:2px solid var(--ink)}
+.rl-list__item{border-bottom:1px solid var(--grey-line)}
+
+.rl-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem 2rem;align-items:flex-start;
+  padding:1.125rem 0 1.125rem 1.25rem;position:relative;
+}
+.rl-row::before{
+  content:"";position:absolute;left:0;top:1.75rem;
+  width:.5rem;height:.1875rem;background:var(--ink);
+}
+.rl-row__says{
+  grid-column:1;margin:0;max-width:46ch;
+  font-size:1.0625rem;line-height:1.35;font-weight:600;
+  overflow-wrap:anywhere;
+}
+.rl-row__against,.rl-row__nothing{
+  grid-column:1;margin:0;max-width:52ch;
+  font-size:.8125rem;line-height:1.45;color:var(--grey-text);
+}
+.rl-row__k{
+  display:block;margin:0 0 .125rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+}
+/* A red line nothing is checked against. It is not styled as an alarm: it is the
+   same small prose as the line it replaces, saying what is missing and what to do
+   about it. There is no red text and no warning triangle in this system. */
+.rl-row__nothing{font-weight:600;color:var(--ink)}
+
+.rl-row__do{grid-row:1 / span 2;grid-column:2;display:flex;gap:.5rem;align-items:flex-start}
+/* The ghost button at the small end of the action register. Sized here rather than
+   as a new variant in the shared primitives, because it is this row's proportion. */
+.rl-row__btn{position:relative;padding:.4375rem .75rem;font-size:.75rem;letter-spacing:.06em}
+
+/* The half of a button's label that only a screen reader needs: which red line it
+   acts on. Off screen, never off the page. */
+.rl-which{
+  position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+}
+
+/* ── a reader with no red lines ─────────────────────────────────
+   A designed state, not a blank panel. It says what a red line is,
+   what naming one does, and what it does not do, which per ADR
+   0008 is the part a reader has no way to guess.
+   ------------------------------------------------------------ */
+.rl-none{max-width:52ch;border-top:2px solid var(--ink);padding-top:1.75rem;margin-bottom:1.5rem}
+.rl-none__k{
+  margin:0 0 .75rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
+}
+.rl-none__say{margin:0 0 1rem;font-size:1rem;line-height:1.55;font-weight:500}
+.rl-none__note{margin:0;font-size:.875rem;line-height:1.5;color:var(--grey-text)}
+
+/* ── what just happened ────────────────────────────────────── */
+
+.rl-undo{
+  padding:0;border:0;border-bottom:2px solid var(--ink);background:none;
+  font:inherit;font-weight:700;color:inherit;cursor:pointer;
+}
+.rl-undo:hover{background:var(--ink);color:var(--white);border-bottom-color:var(--ink)}
+
+/* ── writing one, and editing one ──────────────────────────── */
+
+.rl-add{max-width:32rem;margin-top:2.5rem;border-top:2px solid var(--ink);padding-top:1.75rem}
+.rl-add__h{
+  margin:0 0 1.25rem;
+  font-size:1.25rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;
+}
+.rl-add__go{margin-top:1.5rem;width:100%;justify-content:center}
+
+.rl-edit{padding:1.125rem 0 1.25rem;max-width:32rem}
+.rl-edit__do{display:flex;flex-wrap:wrap;gap:.625rem;margin-top:1.5rem}
+.rl-edit__do .btn{justify-content:center}
+
+.rl__label{
+  display:block;margin-bottom:.625rem;
+  font-size:.75rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--grey-text);
+}
+.rl__field{
+  display:block;width:100%;padding:.9375rem 1rem;
+  border:2px solid var(--ink);background:var(--white);color:var(--ink);
+  font:inherit;font-size:1rem;line-height:1.4;
+  caret-color:var(--cyan);
+}
+.rl__field::placeholder{color:var(--grey-text);opacity:1}
+.rl__field:focus{outline:3px solid var(--cyan);outline-offset:0}
+.rl__count{margin:.625rem 0 0;font-size:.8125rem;line-height:1.45;color:var(--grey-text)}
+
+.rl__types{margin:1.75rem 0 0;padding:0;border:0}
+.rl__legend{margin-bottom:.5rem;padding:0}
+.rl__note{margin:0 0 1rem;max-width:52ch;font-size:.8125rem;line-height:1.45;color:var(--grey-text)}
+
+.rl-types{margin:0;padding:0;list-style:none;border-top:1px solid var(--grey-line)}
+.rl-types li{border-bottom:1px solid var(--grey-line)}
+.rl-type{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.5625rem .25rem;
+  font-size:.875rem;line-height:1.3;font-weight:600;
+  cursor:pointer;
+}
+.rl-type:hover{background:var(--grey)}
+/* The box: the bar motif at its smallest, a square of ink inside a 2px ink keyline.
+   Zero radius, no tick glyph, no icon font. Whether it is ticked reaches a screen
+   reader from the input itself, so the fill is never the only thing saying so. */
+.rl-type input{
+  appearance:none;-webkit-appearance:none;
+  flex:none;width:1.125rem;height:1.125rem;margin:0;
+  border:2px solid var(--ink);background:var(--white);
+  cursor:pointer;
+  transition:background 150ms var(--ease);
+}
+/* Ticked is a solid square of ink. No inset shadow: box-shadow in this system is
+   only ever a zero-blur, zero-spread rectangle (DESIGN.md, The Flat-Field Rule). */
+.rl-type input:checked{background:var(--ink)}
+
+@media (max-width:640px){
+  .rl-row{grid-template-columns:minmax(0,1fr)}
+  .rl-row__do{grid-row:auto;grid-column:1;margin-top:.375rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rl-type input{transition:none}
+}

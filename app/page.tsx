@@ -29,6 +29,7 @@ import KeepInLibrary from "@/components/KeepInLibrary";
 import Reading from "@/components/Reading";
 import Shell from "@/components/Shell";
 import { useAccount } from "@/components/use-account";
+import { useRedLines } from "@/components/use-red-lines";
 import type { AnalysisFailureReason, DocumentAnalysis } from "@/src/analysis";
 import { extract, type ExtractedDocument } from "@/src/extraction";
 import "./analyse.css";
@@ -99,6 +100,10 @@ export default function PastePage() {
   const [opened, setOpened] = useState(0);
 
   const account = useAccount();
+  // The reader's red lines, which decide what they read first and nothing else. An
+  // empty list until the account is known, and an empty list for a reader who has
+  // none, which is the same path through ranking (ADR 0008).
+  const redLines = useRedLines(account);
 
   const openDocument =
     screen.kind === "waiting" || screen.kind === "nothing-pasted" ? null : screen.document;
@@ -198,6 +203,7 @@ export default function PastePage() {
           key={opened}
           document={openDocument}
           analysis={analysis}
+          redLines={redLines}
           waiting={screen.kind === "reading"}
           aside={
             analysis === null ? null : (

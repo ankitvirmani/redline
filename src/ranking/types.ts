@@ -6,9 +6,10 @@
  * hit, and the clean-document determination come out. No model call, no network call,
  * no database access, which is what makes all three cheap to assert.
  *
- * One ticket still lands in this seam: ticket 12 fills `RankedFlag.matchedRedLines`
- * and adds promotion, which is one more ordering key in front of the band rather than
- * a filter (ADR 0008).
+ * Red lines reach this seam and no other. They promote a matching flag, which is one
+ * more ordering key in front of the band, and they mark it with the reader's own
+ * words. They are never a filter, and nothing on the way out can carry a count, a
+ * score or a recommendation (ADR 0008).
  *
  * Ranking consumes severity and leverage; it computes neither. Both are properties
  * of the clause as written and were assigned during analysis, which is the whole
@@ -34,9 +35,16 @@ export type RankedFlag = {
   readonly rank: number;
   readonly flag: Flag;
   /**
-   * The reader's red lines this flag hit. Always empty here: matching is ticket 12's
-   * and this seam is given no way to decide it yet. Empty means none matched, never
-   * that nothing was checked.
+   * The reader's red lines this flag hit, in the order they wrote them.
+   *
+   * This is the mark, and it is the whole of what a red line adds to a flag: the
+   * reader's own words back, so the screen can say which one they named. Empty means
+   * none hit, never that nothing was checked, and a reader who set none gets an empty
+   * list on every flag, exactly as one whose red lines missed everything does.
+   *
+   * There is no count and no score beside it on purpose. How many red lines a
+   * document hit is not a thing this seam says, in any field, because saying it
+   * would be the verdict ADR 0007 refuses arriving as a number (ADR 0008).
    */
   readonly matchedRedLines: readonly RedLine[];
 };

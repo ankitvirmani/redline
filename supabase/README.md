@@ -27,10 +27,12 @@ reader so that the policies below are what decides what they can read.
 ```
 supabase/migrations/0001_documents.sql
 supabase/migrations/0002_red_lines.sql
+supabase/migrations/0003_red_line_clause_types.sql
 ```
 
 Paste each into the SQL editor, or run `supabase db push` against the project.
-Both are safe to run twice.
+All three are safe to run twice, and 0003 is safe to run against a `red_lines`
+table that 0002 already created.
 
 Check afterwards, in the table editor:
 
@@ -38,6 +40,8 @@ Check afterwards, in the table editor:
 - Each table has four policies, named after the sentence each enforces.
 - `documents.opening` is a generated column. The library list reads it instead of
   selecting whole contracts.
+- `red_lines.clause_types` is a `text[]` column. It holds the kinds of clause each
+  red line is checked against, and the app never writes an empty one.
 
 ## 3. Turn on email sign-in
 

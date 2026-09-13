@@ -12,8 +12,9 @@
  * would put a model back in front of the order.
  *
  * Every flag that goes in comes out. Ranking orders, and ordering is all it does:
- * red lines promote and mark (ticket 12), and neither of those removes a flag
- * either (ADR 0008).
+ * red lines promote and mark, and neither of those removes a flag either (ADR 0008).
+ * There is no field on the way out that could carry a count of red lines hit, a
+ * score, or a recommendation, and that is deliberate.
  *
  * The one thing it decides beyond the order is whether this is a clean document,
  * which is the same judgement seen from the other side: the seam holds the whole flag
@@ -22,7 +23,15 @@
  */
 
 import { cleanDocumentFor } from "./clean";
-import { compareFlags, leversRemovedCount, RANKING_KEYS } from "./order";
+import {
+  byRedLinesHit,
+  compareFlags,
+  compareFlagsBy,
+  leversRemovedCount,
+  RANKING_KEYS,
+  rankingKeysFor,
+} from "./order";
+import { redLinesHit, redLinesHitBy } from "./red-lines";
 import type { RankedFlag, Ranking, RankingRequest } from "./types";
 
 export type {
@@ -32,7 +41,15 @@ export type {
   RankingRequest,
   RedLine,
 } from "./types";
-export { compareFlags, leversRemovedCount, RANKING_KEYS };
+export {
+  byRedLinesHit,
+  compareFlags,
+  compareFlagsBy,
+  leversRemovedCount,
+  RANKING_KEYS,
+  rankingKeysFor,
+};
+export { redLinesHit, redLinesHitBy };
 export { cleanDocumentFor };
 export type { FlagOrdering } from "./order";
 
@@ -42,14 +59,24 @@ export type { FlagOrdering } from "./order";
  *
  * The input is copied before it is sorted, so the array handed in is left as it was
  * found, and each flag is carried across untouched rather than rebuilt.
+ *
+ * Red lines do two things here and nothing else. A flag that hits one is promoted,
+ * which is the first key the comparison asks, and it is marked with the red lines it
+ * hit, which is what the screen shows the reader in their own words. Every flag that
+ * went in still comes out, and a reader with no red lines takes this same path with a
+ * predicate that is false for every flag, so what was found does not depend on what
+ * they declared (ADR 0008).
  */
 export function rank(request: RankingRequest): Ranking {
-  const inTheReadersOrder = [...request.flags].sort(compareFlags);
+  const hits = redLinesHit(request.flags, request.redLines ?? []);
+  const hit = (flag: RankedFlag["flag"]) => (hits.get(flag) ?? []).length > 0;
+
+  const inTheReadersOrder = [...request.flags].sort(compareFlagsBy(rankingKeysFor(hit)));
 
   const flags: readonly RankedFlag[] = inTheReadersOrder.map((flag, position) => ({
     rank: position + 1,
     flag,
-    matchedRedLines: [],
+    matchedRedLines: hits.get(flag) ?? [],
   }));
 
   return {

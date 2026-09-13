@@ -15,6 +15,11 @@
  *
  * The question box works here too, and it answers from the stored text, which is the
  * same text every flag on the screen was checked against.
+ *
+ * What is not stored with the document is the reader's red lines. Those are read fresh,
+ * because they are the reader's as they stand today rather than as they stood when the
+ * document was kept, and all they do is decide what is read first. The flags, their
+ * severity and their source sentences are the stored reading, untouched.
  */
 
 import Gate from "@/components/Gate";
@@ -22,6 +27,7 @@ import Reading from "@/components/Reading";
 import Shell from "@/components/Shell";
 import { keptOn } from "@/src/library/entry";
 import { keptDocument } from "@/src/library/store";
+import { redLinesOf } from "@/src/red-lines/store";
 import { accountState } from "@/src/supabase/server";
 
 import "@/components/library.css";
@@ -77,6 +83,14 @@ export default async function KeptDocumentPage({
     );
   }
 
+  // The reader's red lines, read here rather than in the browser, because this screen is
+  // already on the server with the session cookie. They promote and mark, so a document
+  // reopened from the library reads in the same order a fresh one does. A reader whose
+  // red lines could not be read gets the reading with none, which is the same reading
+  // with a different order at the top and nothing missing from it (ADR 0008).
+  const listed = await redLinesOf(account.reader.id);
+  const redLines = listed.outcome === "listed" ? listed.redLines : [];
+
   const reading = kept.reading;
   const day = keptOn(reading.keptAt);
 
@@ -97,6 +111,7 @@ export default async function KeptDocumentPage({
       <Reading
         document={reading.document}
         analysis={reading.analysis}
+        redLines={redLines}
         aside={
           reading.flagsDropped > 0 ? (
             <p className="said">

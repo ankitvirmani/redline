@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import Gate, { NO_PROJECT_KEY } from "@/components/Gate";
 import { NOTHING_ASKED_YET_SAYS } from "@/components/question-view";
 import Rail from "@/components/Rail";
+import { NAMED_KEY } from "@/components/RedLineMark";
 import Reading from "@/components/Reading";
 import type { AccountState } from "@/src/account/state";
 import { analyse, type DocumentAnalysis } from "@/src/analysis";
@@ -160,6 +161,21 @@ describe("a reader with no account and no project reads the whole thing", () => 
     expect(screen).toContain(NOTHING_ASKED_YET_SAYS);
   });
 
+  it("reads the same thing with no red lines as with an empty list of them", () => {
+    // A reader with no account has no red lines, and the reading must not notice. Both
+    // ways through the seam are one path, so the screen comes out character for
+    // character the same (ADR 0008).
+    const withNone = renderToStaticMarkup(
+      createElement(Reading, { document, analysis, redLines: [] }),
+    );
+    const withoutTheProp = renderToStaticMarkup(
+      createElement(Reading, { document, analysis }),
+    );
+
+    expect(withNone).toBe(withoutTheProp);
+    expect(asText(withNone)).not.toContain(NAMED_KEY);
+  });
+
   it("made no network call to do any of it", () => {
     expect(fetchAttempts).toBe(0);
   });
@@ -184,6 +200,18 @@ describe("with no project, the account-gated surfaces say so", () => {
     expect(gate).toContain(NO_PROJECT_KEY);
     for (const name of SUPABASE_VARIABLES) expect(gate).toContain(name);
     // And it says the thing a reader on this screen most needs to know.
+    expect(gate).toContain("Reading a document");
+  });
+
+  it("says the same about the red lines, which need an account for the same reason", () => {
+    const gate = asText(
+      renderToStaticMarkup(
+        createElement(Gate, { account, heading: "Your red lines", what: "Your red lines" }),
+      ),
+    );
+
+    expect(gate).toContain(NO_PROJECT_KEY);
+    expect(gate).toContain("Your red lines");
     expect(gate).toContain("Reading a document");
   });
 
@@ -268,6 +296,10 @@ const ANALYSIS_PATH = [
   "app/layout.tsx",
   "components/Reading.tsx",
   "components/Shell.tsx",
+  // The reading surface asks a route for the reader's red lines rather than reading
+  // them itself, for exactly the reason this file exists. Seeded as well as reached, so
+  // the rule still holds if the paste screen ever stops importing it.
+  "components/use-red-lines.ts",
   "src/extraction/index.ts",
   "src/analysis/index.ts",
   "src/ranking/index.ts",
@@ -391,7 +423,7 @@ describe("every screen loads with both variables unset", () => {
   });
 
   it("loads the screens behind sign-in, which say so rather than failing to load", async () => {
-    for (const screen of ["@/app/library/page", "@/app/sign-in/page"]) {
+    for (const screen of ["@/app/library/page", "@/app/red-lines/page", "@/app/sign-in/page"]) {
       const module = (await import(screen)) as { readonly default?: unknown };
       expect(typeof module.default, screen).toBe("function");
     }
@@ -402,5 +434,22 @@ describe("every screen loads with both variables unset", () => {
     const library = (await import("@/app/api/library/route")) as { readonly POST?: unknown };
     expect(typeof account.GET).toBe("function");
     expect(typeof library.POST).toBe("function");
+  });
+
+  it("loads the red-lines route, which the reading surface asks and the screen writes to", async () => {
+    const redLines = (await import("@/app/api/red-lines/route")) as {
+      readonly GET?: unknown;
+      readonly POST?: unknown;
+      readonly PUT?: unknown;
+      readonly DELETE?: unknown;
+    };
+
+    for (const [name, handler] of Object.entries(redLines)) {
+      if (["GET", "POST", "PUT", "DELETE"].includes(name)) {
+        expect(typeof handler, name).toBe("function");
+      }
+    }
+    expect(typeof redLines.GET).toBe("function");
+    expect(typeof redLines.DELETE).toBe("function");
   });
 });

@@ -1,0 +1,42 @@
+/* ============================================================
+   Redline: the mark on a flag that hit a red line
+   World: Modular Bars, in the Operate register.
+
+   The tab-bar motif at the scale the flag body's other blocks
+   use: a 2.75rem by 0.5rem ink tab, a label-register key, then
+   the reader's own sentence. No ink of its own, no fill, no
+   border, no badge.
+
+   That restraint is the point. Severity is the word on the bar
+   and the place in the list, and colour identifies a flag and
+   never ranks it (DESIGN.md, The Identity-Not-Severity Rule).
+   A mark that took an ink or a field would read as a fourth
+   severity, and a flag that hits a red line is the same clause
+   as before, read sooner.
+   ============================================================ */
+
+.named{margin:0 0 1rem;padding-top:.75rem;position:relative}
+.named::before{
+  content:"";position:absolute;top:0;left:0;
+  width:2.75rem;height:.5rem;background:var(--ink);
+}
+.named__k{
+  display:block;margin:0 0 .25rem;
+  font-size:.6875rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey-text);
+}
+.named__say{margin:0 0 .5rem;max-width:52ch;font-size:.875rem;line-height:1.45;color:var(--grey-text)}
+
+/* The reader's words. Weight, not size: the two-register rule leaves nothing
+   between 1.125rem and 1.75rem, and this sits in the workmanlike register with
+   the rest of the body. Each one carries the small ink marker the rail uses on a
+   list row, which is the bar motif at its smallest. */
+.named__list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.375rem}
+.named__one{
+  position:relative;padding-left:1.125rem;
+  max-width:52ch;font-size:.9375rem;line-height:1.45;font-weight:600;
+}
+.named__one::before{
+  content:"";position:absolute;left:0;top:.5rem;
+  width:.5rem;height:.1875rem;background:var(--ink);
+}

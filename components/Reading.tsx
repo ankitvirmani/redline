@@ -12,8 +12,12 @@
  * source sentence was located in the stored text again before it got here.
  *
  * Ranking runs here rather than at either caller, and it runs in the browser: it
- * calls nothing and needs no key, so the order is decided from the flags alone. It is
- * also where the reader's red lines will be applied, which is ticket 12's.
+ * calls nothing and needs no key, so the order is decided from the flags alone. The
+ * reader's red lines are applied here too, by handing them to the same seam: a flag that
+ * hits one is read first and carries the reader's own words, and nothing else about the
+ * reading changes (ADR 0008). Where they come from differs by caller, which is why they
+ * arrive as a prop: the paste screen asks a route, because it must import no Supabase
+ * client, and the library reads them on the server where the session cookie already is.
  *
  * The questions live in this component's state and nowhere else: no storage, no
  * cookie. A new document gets a new instance, because an answer about one document
@@ -33,6 +37,7 @@ import QuestionBox from "@/components/QuestionBox";
 import type { Exchange } from "@/components/question-view";
 import StandingStatement from "@/components/StandingStatement";
 import type { DocumentAnalysis } from "@/src/analysis";
+import type { RedLine } from "@/src/domain/red-lines";
 import { countInWords, formatCharacterCount } from "@/src/domain/text";
 import type { ExtractedDocument } from "@/src/extraction";
 import type { QuestionReading } from "@/src/qa";
@@ -95,12 +100,19 @@ function flagCount(count: number): string {
 export default function Reading({
   document: read,
   analysis,
+  redLines,
   waiting = false,
   aside,
 }: {
   document: ExtractedDocument;
   /** The reading, or null while it is on its way or after it did not arrive. */
   analysis: DocumentAnalysis | null;
+  /**
+   * The reader's red lines. Omitted and empty are the same thing, which is what lets a
+   * signed-out reader, a reader who has named none, and a reader whose list has not
+   * arrived yet all take one path.
+   */
+  redLines?: readonly RedLine[];
   /** Whether a reading is still coming, so the summary can say so. */
   waiting?: boolean;
   /** What the screen wants beside the document: the action that keeps it, usually. */
@@ -118,9 +130,14 @@ export default function Reading({
   const [exchanges, setExchanges] = useState<readonly Exchange[]>([]);
 
   // The order the reader reads the flags in, and whether this is a clean document.
-  // Red lines are ticket 12's and there are none to give the seam yet, which it takes
-  // as the reader having set none. The document is marked from the same ordered list,
-  // so the ink on a bar is the ink its sentence lights up in.
+  // The red lines go to the seam, which promotes and marks a flag that hits one and
+  // does nothing else with them: the same flags come back either way. The document is
+  // marked from the same ordered list, so the ink on a bar is the ink its sentence
+  // lights up in.
+  //
+  // A list that arrives after the reading is read does reorder the flags once, which is
+  // the honest behaviour: the reader's own concerns belong at the top as soon as Redline
+  // knows about them. Nothing is added or removed when it happens.
   //
   // The clean verdict comes back from the seam and is not worked out here. The screen
   // hands over the clause types analysis says it checked and reads the answer back, so
@@ -130,6 +147,7 @@ export default function Reading({
     if (analysis === null) return null;
     const ranking = rank({
       flags: analysis.flags,
+      redLines,
       checkedClauseTypes: analysis.checkedClauseTypes,
     });
     return {
@@ -137,7 +155,7 @@ export default function Reading({
       ordered: ranking.flags.map(({ flag }) => flag),
       clean: ranking.cleanDocument,
     };
-  }, [analysis]);
+  }, [analysis, redLines]);
   const rankedFlags = reading?.ranked ?? [];
   const orderedFlags = reading?.ordered ?? [];
   const clean = reading?.clean ?? null;

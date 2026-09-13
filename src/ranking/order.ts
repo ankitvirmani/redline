@@ -6,6 +6,12 @@
  * document, the clause type, and the flag's code. It reads no clock, no model, no
  * network and no store, so the same set of flags always comes out in the same order.
  *
+ * **One key sits in front of those five, and only when the reader has red lines.** A
+ * flag that hits a red line the reader named is read first (ADR 0008). It is a key
+ * like the others and never a filter, so it moves a flag up the list and can do
+ * nothing else to it. See `byRedLinesHit` and `rankingKeysFor` at the foot of the
+ * file.
+ *
  * **The band leads.** Severity is a property of the clause as written and was
  * assigned during analysis (`PRD.md` section 5). Leverage lost breaks ties inside a
  * band; it does not outrank the band. That ordering is load-bearing rather than
@@ -97,12 +103,12 @@ const BY_CODE: FlagOrdering = (left, right) =>
   left.code < right.code ? -1 : left.code > right.code ? 1 : 0;
 
 /**
- * The keys, in the order they are asked.
+ * The keys every reading is ordered by, in the order they are asked.
  *
- * Ticket 12's promotion goes in front of `BY_SEVERITY_BAND`: a flag that hits a red
- * line the reader named is read first, and everything below it keeps working
- * unchanged. Promotion belongs here as a key and nowhere as a filter, because a red
- * line changes what the reader sees first and never what they are shown (ADR 0008).
+ * These five read a flag and nothing else, so they are the same for every reader.
+ * Promotion is the one key that is not: it depends on the red lines the reader wrote,
+ * so it cannot be a constant in this list and is built per reading by
+ * `rankingKeysFor`, which puts it in front of `BY_SEVERITY_BAND`.
  */
 export const RANKING_KEYS: readonly FlagOrdering[] = [
   BY_SEVERITY_BAND,
@@ -112,11 +118,46 @@ export const RANKING_KEYS: readonly FlagOrdering[] = [
   BY_CODE,
 ];
 
-/** Which of two flags the reader reads first. */
-export function compareFlags(left: Flag, right: Flag): number {
-  for (const key of RANKING_KEYS) {
-    const decided = key(left, right);
-    if (decided !== 0) return decided;
-  }
-  return 0;
+/**
+ * Promotion: a flag that hits a red line the reader named is read first.
+ *
+ * A key, and nowhere a filter. It decides which of two flags comes first and can do
+ * nothing else: it cannot drop a flag, cannot hide one, cannot collapse one, and
+ * cannot produce a number about the document, because an ordering returns -1, 0 or 1
+ * and there is nowhere in that to put a verdict (ADR 0008).
+ *
+ * It is asked first, so a promoted flag is above every flag that is not, whatever
+ * either one's band. Two promoted flags tie here and fall through to the keys below,
+ * which means the promoted group reads worst first on exactly the principle the rest
+ * of the list reads on: the band, then leverage lost, then the document. One ordering
+ * principle rather than two, and the reader's own concerns lifted to the top of it.
+ */
+export function byRedLinesHit(hit: (flag: Flag) => boolean): FlagOrdering {
+  return (left, right) => Number(hit(right)) - Number(hit(left));
 }
+
+/**
+ * The keys for one reading: promotion, then the five that read the flag alone.
+ *
+ * A reader who has set no red lines hands in a predicate that is false for every
+ * flag, the first key decides nothing, and the order is the one every reader gets.
+ * That is the same code path rather than a special case, which is why red lines
+ * cannot change what a reader without them is shown.
+ */
+export function rankingKeysFor(hit: (flag: Flag) => boolean): readonly FlagOrdering[] {
+  return [byRedLinesHit(hit), ...RANKING_KEYS];
+}
+
+/** Which of two flags the reader reads first, asking the given keys in order. */
+export function compareFlagsBy(keys: readonly FlagOrdering[]): FlagOrdering {
+  return (left, right) => {
+    for (const key of keys) {
+      const decided = key(left, right);
+      if (decided !== 0) return decided;
+    }
+    return 0;
+  };
+}
+
+/** Which of two flags the reader reads first, before any red line is considered. */
+export const compareFlags: FlagOrdering = compareFlagsBy(RANKING_KEYS);
