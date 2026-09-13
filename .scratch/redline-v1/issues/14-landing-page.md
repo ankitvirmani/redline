@@ -45,19 +45,19 @@ included: reader, not user.
 
 **Blocked by:** 01, 08.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A reader who has never used Redline can tell what it does from the first viewport.
-- [ ] The page states what makes Redline different from pasting a document into a chatbot, at mechanism level only, with no claim of being more accurate, more reliable, or better.
-- [ ] The paste box is reachable in one step from the page.
-- [ ] Every sentence on the page traces to an entry in the `PRODUCT.md` landing-page claims list.
-- [ ] Every external claim carries a citation that resolves to a real source stating that fact.
-- [ ] No accuracy figure, success rate, or performance benchmark appears anywhere in the copy.
-- [ ] No testimonial, customer name, user count, review, or case study appears, because none exist.
-- [ ] Product imagery shows real rendered output from ticket 08, never a mockup.
-- [ ] The landing page is served at the root route and the paste box has moved to its own.
-- [ ] The page states that Redline does not give legal advice and does not account for where the reader lives.
-- [ ] The page never tells a reader whether to sign, in words or by implication.
-- [ ] The page renders with no model call, no call to the analysis path, and no auth requirement.
-- [ ] Copy has been run through the humanizer skill before commit.
-- [ ] Meets WCAG 2.2 AA.
+- [x] A reader who has never used Redline can tell what it does from the first viewport.
+- [x] The page states what makes Redline different from pasting a document into a chatbot, at mechanism level only, with no claim of being more accurate, more reliable, or better.
+- [x] The paste box is reachable in one step from the page.
+- [x] Every sentence on the page traces to an entry in the `PRODUCT.md` landing-page claims list.
+- [x] Every external claim carries a citation that resolves to a real source stating that fact.
+- [x] No accuracy figure, success rate, or performance benchmark appears anywhere in the copy.
+- [x] No testimonial, customer name, user count, review, or case study appears, because none exist.
+- [x] Product imagery shows real rendered output from ticket 08, never a mockup.
+- [x] The landing page is served at the root route and the paste box has moved to its own.
+- [x] The page states that Redline does not give legal advice and does not account for where the reader lives.
+- [x] The page never tells a reader whether to sign, in words or by implication.
+- [x] The page renders with no model call, no call to the analysis path, and no auth requirement.
+- [x] Copy has been run through the humanizer skill before commit.
+- [x] Meets WCAG 2.2 AA. Contrast computed over all 85 text elements at 1440px, at 400px and with JavaScript off, zero failures. Focus order, keyboard operation, reflow and aria-hidden on decoration all checked in a real browser. Two pre-existing limits recorded rather than fixed: with JavaScript off only the first flag bar opens, and the rail heading precedes the fold heading in DOM order.

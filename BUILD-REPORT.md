@@ -42,7 +42,7 @@ is the first ticket that spends money.
 | 11 | Sign in and the library | done as written, nothing on the Supabase path verified |
 | 12 | Red lines promote and mark | done as written, persistence unverified |
 | 13 | Tier-two eval suite | done, and it produced real numbers |
-| 14 | Landing page | not started, brief written, unblocked |
+| 14 | Landing page | done |
 
 ## Decisions made in the owner's absence
 
@@ -96,10 +96,11 @@ landing page's static files stay at `landing/` untouched, because `DESIGN.md` is
 recorded from them and cites their paths, and they are the design source of record.
 They are no longer served.
 
-**Route order during the build.** Ticket 01 wants the paste box at the root and
-ticket 14 later takes the root for the landing page. So the ported landing page
-lives at `/landing` until ticket 14, which moves it to `/` and moves the paste box
-to its own route. Neither ticket had to be rewritten to accommodate the other.
+**Route order during the build.** Ticket 01 wanted the paste box at the root and
+ticket 14 later took the root for the landing page. The ported landing page lived at
+`/landing` for two commits until ticket 14 moved it to `/` and moved the paste box to
+`/analyse`. Neither ticket had to be rewritten to accommodate the other. `/landing` is
+gone with no redirect, because it was never linked and never deployed under that name.
 
 **Working directly on `main`.** The repository has no branch but `main` and every
 prior commit is on it. A long unattended run on a feature branch would leave the
