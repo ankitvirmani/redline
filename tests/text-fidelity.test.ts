@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
   countCharacters,
@@ -8,6 +8,27 @@ import {
   readBackPastedText,
   type PastedDocument,
 } from "@/src/domain/text";
+
+// The deterministic suite makes no network call, and this file is held to that too.
+// Asserted rather than assumed, the same way the seam suites do it: `fetch` is replaced
+// for the whole file with something that counts the attempt and then fails, so a call
+// would both break the test that made it and show up in the count at the end.
+
+let fetchAttempts = 0;
+const REAL_FETCH = globalThis.fetch;
+
+beforeAll(() => {
+  globalThis.fetch = ((...args: unknown[]) => {
+    fetchAttempts += 1;
+    void args;
+    throw new Error("The deterministic suite makes no network call.");
+  }) as unknown as typeof fetch;
+});
+
+afterAll(() => {
+  globalThis.fetch = REAL_FETCH;
+});
+
 
 /**
  * The convention these tests set, for every ticket after this one: assert what a
@@ -189,5 +210,11 @@ describe("a reader submits nothing", () => {
       kind: "document",
       document: { text: ".", characterCount: 1 },
     });
+  });
+});
+
+describe("the deterministic suite", () => {
+  it("made no network call reading this file", () => {
+    expect(fetchAttempts).toBe(0);
   });
 });

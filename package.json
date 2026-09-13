@@ -9,6 +9,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "smoke": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env.local --import ./scripts/module-resolution.mjs scripts/smoke.ts",
     "check:citations": "node --experimental-strip-types scripts/check-citations.mjs"
   },
   "dependencies": {

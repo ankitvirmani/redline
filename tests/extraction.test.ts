@@ -1,12 +1,33 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
   extract,
   type CompletenessSignalCode,
   type ExtractedDocument,
 } from "@/src/extraction";
+
+// The deterministic suite makes no network call, and this file is held to that too.
+// Asserted rather than assumed, the same way the seam suites do it: `fetch` is replaced
+// for the whole file with something that counts the attempt and then fails, so a call
+// would both break the test that made it and show up in the count at the end.
+
+let fetchAttempts = 0;
+const REAL_FETCH = globalThis.fetch;
+
+beforeAll(() => {
+  globalThis.fetch = ((...args: unknown[]) => {
+    fetchAttempts += 1;
+    void args;
+    throw new Error("The deterministic suite makes no network call.");
+  }) as unknown as typeof fetch;
+});
+
+afterAll(() => {
+  globalThis.fetch = REAL_FETCH;
+});
+
 
 /**
  * The extraction seam. No model call, no network, no key: the seam has none, and
@@ -266,5 +287,11 @@ describe("a low reading blocks nothing and hides nothing", () => {
     expect(document.completeness.level).toBe("partial");
     expect(document.text).toBe(A_PARAGRAPH);
     expect(document.sourceKind).toBe("pasted");
+  });
+});
+
+describe("the deterministic suite", () => {
+  it("made no network call reading this file", () => {
+    expect(fetchAttempts).toBe(0);
   });
 });

@@ -31,7 +31,7 @@ import { isClauseTypeSlug } from "@/src/domain/clause-types";
 import { readQuestionInput } from "@/src/qa/prompt";
 import type { ModelAnswerPayload } from "@/src/qa/schema";
 
-import { ModelCallError, type ModelClient, type ModelFailure, type ModelRequest } from "./client";
+import { ModelCallError, type ModelClient, type ModelFault, type ModelRequest } from "./client";
 
 const FIXTURES = new URL("../../tests/fixtures/", import.meta.url);
 
@@ -236,8 +236,13 @@ export type StubOptions = {
    * rejected.
    */
   readonly answer?: unknown | ((documentText: string) => unknown);
-  /** Fail the call instead of answering it. */
-  readonly fail?: ModelFailure;
+  /**
+   * Fail the call instead of answering it. A fault rather than a failure, so a test can
+   * ask for a family with the cause unstated ("unavailable") or for the exact thing that
+   * went wrong ("rate-limited"). The coarse names are faults too, so the tests written
+   * before the fine ones existed still say what they said.
+   */
+  readonly fail?: ModelFault;
 };
 
 /**
