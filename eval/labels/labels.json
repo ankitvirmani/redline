@@ -1,0 +1,79 @@
+{
+  "run": "eval-runs/2026-10-30T17-01-09-190Z.json",
+  "updatedAt": "2026-10-30T17:19:05.945Z",
+  "changesOfMind": 0,
+  "labels": {
+    "1": {
+      "label": "FAIL",
+      "note": "",
+      "labelledAt": "2026-10-30T17:16:59.232Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "2": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:17:07.348Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "3": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:17:19.537Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "4": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:17:29.117Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "5": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:17:40.030Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "6": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:17:56.189Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "7": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:18:17.017Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "8": {
+      "label": "PASS",
+      "note": "",
+      "labelledAt": "2026-10-30T17:18:30.832Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "9": {
+      "label": "FAIL",
+      "note": "",
+      "labelledAt": "2026-10-30T17:18:34.653Z",
+      "noteUpdatedAt": null,
+      "history": []
+    },
+    "10": {
+      "label": "FAIL",
+      "note": "",
+      "labelledAt": "2026-10-30T17:18:41.453Z",
+      "noteUpdatedAt": null,
+      "history": []
+    }
+  },
+  "reflection": "Nothing",
+  "reflectionUpdatedAt": "2026-10-30T17:19:05.945Z"
+}

@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flag labels</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --text: #1d1d1b;
+    --muted: #5f5e5a;
+    --line: #dddbd5;
+    --accent: #2f5bd3;
+    --mark: #fff0a8;
+    --mark-text: #1d1d1b;
+    --pass: #1f7a46;
+    --pass-soft: #e3f3e9;
+    --fail: #b3261e;
+    --fail-soft: #fbe7e5;
+    --warn-bg: #fff4d6;
+    --warn-line: #e5c66b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615;
+      --surface: #1f1f1d;
+      --text: #ecebe6;
+      --muted: #a3a29c;
+      --line: #383834;
+      --accent: #8aa8ff;
+      --mark: #5c4d12;
+      --mark-text: #fff6d1;
+      --pass: #6fd29a;
+      --pass-soft: #173524;
+      --fail: #ff8f86;
+      --fail-soft: #3d1c19;
+      --warn-bg: #3a3014;
+      --warn-line: #7a6424;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  header.top .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 12px; padding-bottom: 12px; }
+  header h1 { font-size: 1.05rem; margin: 0; font-weight: 650; }
+  #progress-text { color: var(--muted); font-size: 0.95rem; }
+  .dots { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+  .dot {
+    min-width: 30px; height: 30px; padding: 0 6px;
+    border: 1px solid var(--line); border-radius: 15px;
+    background: var(--surface); cursor: pointer;
+    font-size: 0.8rem; font-variant-numeric: tabular-nums;
+  }
+  .dot.labelled { border-color: var(--muted); font-weight: 650; }
+  .dot.current { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .dot.finish { padding: 0 10px; }
+
+  .banner { border: 1px solid var(--warn-line); background: var(--warn-bg); border-radius: 10px; padding: 12px 14px; margin: 16px 0 0; }
+  .banner p { margin: 0 0 8px; }
+  .banner textarea { width: 100%; min-height: 120px; margin-top: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; }
+  .done-strip { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 10px 14px; margin: 16px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .done-strip output { font-weight: 650; }
+
+  main { padding-bottom: 48px; }
+  details.guide { margin: 20px 0 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  details.guide > summary { cursor: pointer; padding: 12px 14px; font-weight: 600; }
+  details.guide > summary::-webkit-details-marker { color: var(--muted); }
+  .prd { padding: 12px 18px 8px; border-top: 1px solid var(--line); }
+  .prd h3 { font-size: 1.1rem; margin: 22px 0 8px; }
+  .prd h4 { font-size: 1rem; margin: 20px 0 6px; }
+  .prd p { margin: 0 0 12px; }
+  .prd a { color: var(--accent); }
+  .prd code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; }
+
+  .rule { margin: 16px 0 0; padding: 12px 14px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; }
+  .rule h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 4px; }
+  .rule p { margin: 0; }
+
+  .card { margin: 20px 0 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 20px; }
+  .card h2 { font-size: 1.2rem; margin: 0 0 12px; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 18px; margin: 0 0 16px; }
+  .facts div { min-width: 0; }
+  .facts dt { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .facts dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+  .facts dd small { display: block; font-weight: 400; color: var(--muted); }
+  .paragraph { margin: 0 0 18px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 1rem; line-height: 1.65; }
+  .paragraph mark { background: var(--mark); color: var(--mark-text); padding: 1px 0; border-radius: 2px; }
+
+  .verdict { display: flex; gap: 10px; margin: 0 0 14px; }
+  .verdict button {
+    flex: 1 1 0; padding: 12px 0; border-radius: 8px; cursor: pointer;
+    border: 1.5px solid var(--line); background: var(--surface); font-weight: 700; letter-spacing: 0.04em;
+  }
+  .verdict button.pass[aria-pressed="true"] { border-color: var(--pass); background: var(--pass-soft); color: var(--pass); }
+  .verdict button.fail[aria-pressed="true"] { border-color: var(--fail); background: var(--fail-soft); color: var(--fail); }
+  label.field { display: block; font-weight: 600; margin: 0 0 6px; }
+  input.note, textarea.reflection {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg);
+  }
+  textarea.reflection { min-height: 140px; resize: vertical; }
+  input.note:focus, textarea.reflection:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .status { min-height: 1.4em; margin: 8px 0 0; color: var(--muted); font-size: 0.88rem; }
+  .history { margin: 10px 0 0; color: var(--muted); font-size: 0.88rem; }
+  .history ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 16px 0 0; }
+  .pager button, .plain {
+    padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer;
+  }
+  .pager button:disabled { opacity: 0.45; cursor: default; }
+  #position { color: var(--muted); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+  .hint { color: var(--muted); font-size: 0.85rem; text-align: center; margin: 10px 0 0; }
+  .todo { color: var(--muted); }
+  .fatal { margin: 32px 0; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Label ten flags</h1>
+    <span id="progress-text" aria-live="polite"></span>
+    <nav class="dots" id="dots" aria-label="Jump to a flag"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="server-banner" class="banner" role="alert" hidden>
+    <p><strong>The labelling server has stopped.</strong> Your labels are still kept in this browser, and they go to eval/labels/labels.json as soon as you start it again with <code>npm run label</code>.</p>
+    <button type="button" class="plain" id="copy-labels">Copy my labels</button>
+    <span id="copy-labels-status" class="status"></span>
+    <textarea id="labels-fallback" readonly hidden aria-label="Your labels as JSON"></textarea>
+  </div>
+  <div id="run-banner" class="banner" role="alert" hidden>
+    <p><strong>labels.json was written for a different run.</strong> To keep it safe, this page will not save to it. Move it aside and reload the page to start labelling this run.</p>
+  </div>
+  <div id="done-strip" class="done-strip" hidden>
+    <span>All ten labelled. Paste this into the chat:</span>
+    <output id="result-line"></output>
+    <button type="button" class="plain" id="copy-line">Copy</button>
+    <span id="copy-line-status" class="status"></span>
+  </div>
+
+  <main id="main">
+    <details class="guide">
+      <summary>From PRD.md: what good looks like, and which clauses are flagged</summary>
+      <div class="prd" id="prd"><p>Loading…</p></div>
+    </details>
+
+    <section class="rule" aria-labelledby="rule-heading">
+      <h2 id="rule-heading">The rule</h2>
+      <p><strong>PASS</strong> if the quoted sentence really is the kind of clause the flag names and really costs the reader something. Otherwise <strong>FAIL</strong>.</p>
+    </section>
+
+    <section class="card" id="card" aria-live="polite"></section>
+
+    <nav class="pager" aria-label="Move between flags">
+      <button type="button" id="prev">← Previous</button>
+      <span id="position"></span>
+      <button type="button" id="next">Next →</button>
+    </nav>
+    <p class="hint">The left and right arrow keys move between flags too, unless you are typing in a box.</p>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_PREFIX = "redline-flag-labels:";
+  var HEARTBEAT_MS = 4000;
+  var NOTE_SAVE_DELAY_MS = 500;
+
+  var flags = [];
+  var run = "";
+  var state = null;
+  var at = 0;
+  var serverUp = true;
+  var dirty = false;
+  var saving = false;
+  var saveTimer = null;
+  var serverSaveBlocked = false;
+  var lastSavedWhere = "";
+
+  function $(id) { return document.getElementById(id); }
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (key) {
+        if (key === "text") node.textContent = attrs[key];
+        else if (key === "className") node.className = attrs[key];
+        else node.setAttribute(key, attrs[key]);
+      });
+    }
+    (children || []).forEach(function (child) {
+      node.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
+    });
+    return node;
+  }
+
+  function getJson(path) {
+    return fetch(path, { cache: "no-store" }).then(function (response) {
+      if (!response.ok) throw new Error(path + " answered " + response.status);
+      return response.json();
+    });
+  }
+
+  // ---- State ---------------------------------------------------------------
+
+  function emptyState() {
+    return { run: run, updatedAt: null, changesOfMind: 0, labels: {}, reflection: "" };
+  }
+
+  function countChangesOfMind(s) {
+    return Object.keys(s.labels).reduce(function (n, key) {
+      var entry = s.labels[key];
+      return n + (entry && Array.isArray(entry.history) ? entry.history.length : 0);
+    }, 0);
+  }
+
+  function entryFor(number) {
+    var key = String(number);
+    if (!state.labels[key]) state.labels[key] = { label: null, note: "", labelledAt: null, noteUpdatedAt: null, history: [] };
+    if (!Array.isArray(state.labels[key].history)) state.labels[key].history = [];
+    return state.labels[key];
+  }
+
+  function peek(number) { return state.labels[String(number)] || null; }
+
+  function isLabelled(number) { var e = peek(number); return !!(e && e.label); }
+
+  function hasNote(number) { var e = peek(number); return !!(e && e.note && e.note.trim()); }
+
+  function tally() {
+    var pass = 0, fail = 0, labelled = 0, noted = 0;
+    flags.forEach(function (f) {
+      var e = peek(f.number);
+      if (e && e.label) {
+        labelled++;
+        if (e.label === "PASS") pass++;
+        if (e.label === "FAIL") fail++;
+      }
+      if (hasNote(f.number)) noted++;
+    });
+    return { pass: pass, fail: fail, labelled: labelled, noted: noted, changes: countChangesOfMind(state) };
+  }
+
+  function mindPhrase(n) {
+    if (n === 0) return "never changed my mind";
+    if (n === 1) return "changed my mind once";
+    if (n === 2) return "changed my mind twice";
+    return "changed my mind " + n + " times";
+  }
+
+  function touch(delay) {
+    state.updatedAt = new Date().toISOString();
+    state.changesOfMind = countChangesOfMind(state);
+    saveLocal();
+    dirty = true;
+    scheduleSave(delay);
+  }
+
+  // ---- Saving --------------------------------------------------------------
+
+  function storageKey() { return STORAGE_PREFIX + run; }
+
+  function saveLocal() {
+    try { window.localStorage.setItem(storageKey(), JSON.stringify(state)); } catch (e) { /* storage blocked; the server copy still holds */ }
+  }
+
+  function loadLocal() {
+    try {
+      var text = window.localStorage.getItem(storageKey());
+      return text ? JSON.parse(text) : null;
+    } catch (e) { return null; }
+  }
+
+  function scheduleSave(delay) {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveToServer, delay || 0);
+  }
+
+  function saveToServer() {
+    if (serverSaveBlocked) { setStatus("Saved in this browser only."); return; }
+    if (!dirty) return;
+    if (saving) { scheduleSave(300); return; }
+    saving = true;
+    dirty = false;
+    fetch("/labels.json", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state)
+    }).then(function (response) {
+      if (!response.ok) throw new Error("save answered " + response.status);
+      setServer(true);
+      setStatus("Saved to eval/labels/labels.json.");
+    }).catch(function () {
+      dirty = true;
+      setServer(false);
+      setStatus("Saved in this browser only. The server is not answering.");
+    }).then(function () { saving = false; });
+  }
+
+  function setStatus(text) {
+    lastSavedWhere = text;
+    var node = $("save-status");
+    if (node) node.textContent = text;
+  }
+
+  function setServer(up) {
+    if (up === serverUp) return;
+    serverUp = up;
+    $("server-banner").hidden = up;
+    if (up && dirty) scheduleSave(0);
+  }
+
+  function heartbeat() {
+    fetch("/health", { cache: "no-store" })
+      .then(function (response) { setServer(response.ok); })
+      .catch(function () { setServer(false); });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    var area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.top = "0";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(area);
+    return ok;
+  }
+
+  // ---- PRD panel -----------------------------------------------------------
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function inlineMarkdown(text) {
+    return text.split(/(`[^`]+`)/).map(function (part) {
+      if (/^`[^`]+`$/.test(part)) return "<code>" + escapeHtml(part.slice(1, -1)) + "</code>";
+      var html = escapeHtml(part);
+      html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, function (m, label, url) {
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + "</a>";
+      });
+      html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      html = html.replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>");
+      return html;
+    }).join("");
+  }
+
+  function blockMarkdown(markdown) {
+    return markdown.split(/\n\s*\n/).map(function (block) {
+      var trimmed = block.replace(/^\n+|\n+$/g, "");
+      if (!trimmed) return "";
+      if (/^---\s*$/.test(trimmed)) return "<hr>";
+      var heading = /^(#{2,4}) (.*)$/.exec(trimmed);
+      if (heading && trimmed.indexOf("\n") === -1) {
+        var level = heading[1].length + 1;
+        return "<h" + level + ">" + inlineMarkdown(heading[2]) + "</h" + level + ">";
+      }
+      var lines = trimmed.split("\n");
+      if (lines.every(function (line, i) { return /^[-*] /.test(line) || (i > 0 && /^\s+\S/.test(line)); })) {
+        var items = [];
+        lines.forEach(function (line) {
+          if (/^[-*] /.test(line)) items.push(line.slice(2));
+          else items[items.length - 1] += "\n" + line.trim();
+        });
+        return "<ul>" + items.map(function (item) { return "<li>" + inlineMarkdown(item) + "</li>"; }).join("") + "</ul>";
+      }
+      return "<p>" + inlineMarkdown(trimmed) + "</p>";
+    }).join("");
+  }
+
+  function renderPrd(prd) {
+    var target = $("prd");
+    var sections = prd && Array.isArray(prd.sections) ? prd.sections : [];
+    if (sections.length === 0 || sections.some(function (s) { return typeof s !== "string"; })) {
+      target.innerHTML = "<p>These sections could not be found in PRD.md.</p>";
+      return;
+    }
+    target.innerHTML = sections.map(blockMarkdown).join("");
+  }
+
+  // ---- Rendering -----------------------------------------------------------
+
+  function severityWord(band) { return band ? band.charAt(0).toUpperCase() + band.slice(1) : ""; }
+
+  function formatTime(iso) {
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? iso : d.toLocaleString();
+  }
+
+  function renderDots() {
+    var nav = $("dots");
+    nav.textContent = "";
+    flags.forEach(function (f, i) {
+      var e = peek(f.number);
+      var label = e && e.label ? e.label : null;
+      var button = el("button", {
+        type: "button",
+        className: "dot" + (label ? " labelled" : "") + (i === at ? " current" : ""),
+        "aria-label": "Flag " + f.number + (label ? ", labelled " + label : ", not labelled yet"),
+        text: String(f.number) + (label ? " " + label.charAt(0) : "")
+      });
+      if (i === at) button.setAttribute("aria-current", "true");
+      button.addEventListener("click", function () { go(i); });
+      nav.appendChild(button);
+    });
+    var finish = el("button", { type: "button", className: "dot finish" + (at === flags.length ? " current" : ""), text: "Finish" });
+    finish.addEventListener("click", function () { go(flags.length); });
+    nav.appendChild(finish);
+  }
+
+  function renderProgress() {
+    var t = tally();
+    $("progress-text").textContent = t.labelled + " of " + flags.length + " labelled";
+    var complete = flags.length > 0 && flags.every(function (f) { return isLabelled(f.number); });
+    $("done-strip").hidden = !complete;
+    if (complete) $("result-line").textContent = t.pass + " PASS, " + t.fail + " FAIL, " + mindPhrase(t.changes);
+    renderDots();
+  }
+
+  function renderFlag(f) {
+    var card = $("card");
+    card.textContent = "";
+    var e = peek(f.number);
+
+    card.appendChild(el("h2", { text: "Flag " + f.number + " of " + flags.length }));
+
+    var facts = el("dl", { className: "facts" }, [
+      el("div", null, [el("dt", { text: "Document" }), el("dd", null, [f.documentTitle || f.document, el("small", { text: f.document })])]),
+      el("div", null, [el("dt", { text: "Clause type" }), el("dd", { text: f.clauseTypeLabel || f.clauseType })]),
+      el("div", null, [el("dt", { text: "Severity" }), el("dd", { text: severityWord(f.severity) })])
+    ]);
+    card.appendChild(facts);
+
+    var paragraph = el("div", { className: "paragraph" });
+    var start = f.paragraph.indexOf(f.quotedSentence);
+    if (start === -1) {
+      paragraph.appendChild(el("mark", { text: f.quotedSentence }));
+    } else {
+      paragraph.appendChild(document.createTextNode(f.paragraph.slice(0, start)));
+      paragraph.appendChild(el("mark", { text: f.quotedSentence }));
+      paragraph.appendChild(document.createTextNode(f.paragraph.slice(start + f.quotedSentence.length)));
+    }
+    card.appendChild(paragraph);
+
+    var verdict = el("div", { className: "verdict", role: "group", "aria-label": "Your label" });
+    ["PASS", "FAIL"].forEach(function (value) {
+      var button = el("button", {
+        type: "button",
+        className: value.toLowerCase(),
+        "aria-pressed": String(!!(e && e.label === value)),
+        text: value
+      });
+      button.addEventListener("click", function () { setLabel(f.number, value); });
+      verdict.appendChild(button);
+    });
+    card.appendChild(verdict);
+
+    var noteId = "note-" + f.number;
+    card.appendChild(el("label", { className: "field", "for": noteId, text: "One sentence on why (optional)" }));
+    var note = el("input", { type: "text", id: noteId, className: "note", autocomplete: "off", spellcheck: "true" });
+    note.value = e && e.note ? e.note : "";
+    note.addEventListener("input", function () {
+      var entry = entryFor(f.number);
+      entry.note = note.value;
+      entry.noteUpdatedAt = new Date().toISOString();
+      touch(NOTE_SAVE_DELAY_MS);
+      renderProgress();
+    });
+    note.addEventListener("blur", function () { if (dirty) scheduleSave(0); });
+    card.appendChild(note);
+
+    card.appendChild(el("p", { className: "status", id: "save-status", text: lastSavedWhere }));
+
+    if (e && e.history && e.history.length) {
+      var list = el("ul");
+      e.history.forEach(function (h) {
+        list.appendChild(el("li", { text: "Was " + h.label + (h.note ? " (“" + h.note + "”)" : "") + ", changed " + formatTime(h.changedAt) + "." }));
+      });
+      card.appendChild(el("div", { className: "history" }, ["You changed your mind on this flag:", list]));
+    }
+  }
+
+  function renderFinish() {
+    var card = $("card");
+    card.textContent = "";
+    var t = tally();
+    card.appendChild(el("h2", { text: "Finish" }));
+    card.appendChild(el("p", { text: t.labelled + " of " + flags.length + " labelled, " + t.noted + " with a note. Changes of mind so far: " + t.changes + "." }));
+
+    var missing = flags.filter(function (f) { return !isLabelled(f.number); }).map(function (f) { return f.number; });
+    if (missing.length) card.appendChild(el("p", { className: "todo", text: "Still to label: " + missing.join(", ") + "." }));
+
+    card.appendChild(el("label", { className: "field", "for": "reflection", text: "What changed in how you judge?" }));
+    var area = el("textarea", { id: "reflection", className: "reflection", spellcheck: "true" });
+    area.value = state.reflection || "";
+    area.addEventListener("input", function () {
+      state.reflection = area.value;
+      state.reflectionUpdatedAt = new Date().toISOString();
+      touch(NOTE_SAVE_DELAY_MS);
+    });
+    area.addEventListener("blur", function () { if (dirty) scheduleSave(0); });
+    card.appendChild(area);
+    card.appendChild(el("p", { className: "status", id: "save-status", text: lastSavedWhere }));
+  }
+
+  function render() {
+    if (at < flags.length) renderFlag(flags[at]); else renderFinish();
+    $("prev").disabled = at === 0;
+    $("next").disabled = at === flags.length;
+    $("position").textContent = at < flags.length ? (at + 1) + " / " + flags.length : "Finish";
+    renderProgress();
+  }
+
+  function go(index) {
+    var next = Math.max(0, Math.min(flags.length, index));
+    if (next === at) return;
+    at = next;
+    render();
+  }
+
+  function setLabel(number, value) {
+    var entry = entryFor(number);
+    if (entry.label === value) return;
+    var now = new Date().toISOString();
+    if (entry.label) {
+      entry.history.push({ label: entry.label, note: entry.note || "", labelledAt: entry.labelledAt, changedAt: now });
+    }
+    entry.label = value;
+    entry.labelledAt = now;
+    touch(0);
+    render();
+  }
+
+  // ---- Start ---------------------------------------------------------------
+
+  function newestOf(a, b) {
+    if (!a) return b;
+    if (!b) return a;
+    return String(b.updatedAt || "") > String(a.updatedAt || "") ? b : a;
+  }
+
+  function normalise(s) {
+    var out = emptyState();
+    if (s && typeof s === "object") {
+      out.updatedAt = s.updatedAt || null;
+      out.labels = s.labels && typeof s.labels === "object" ? s.labels : {};
+      out.reflection = typeof s.reflection === "string" ? s.reflection : "";
+      if (s.reflectionUpdatedAt) out.reflectionUpdatedAt = s.reflectionUpdatedAt;
+    }
+    out.changesOfMind = countChangesOfMind(out);
+    return out;
+  }
+
+  function start() {
+    Promise.all([
+      getJson("/flags.json"),
+      getJson("/labels.json"),
+      getJson("/prd.json").catch(function () { return null; })
+    ]).then(function (results) {
+      var flagsDoc = results[0];
+      var saved = results[1];
+      run = flagsDoc.run;
+      flags = flagsDoc.flags;
+
+      var local = loadLocal();
+      if (saved && saved.run && saved.run !== run) {
+        serverSaveBlocked = true;
+        $("run-banner").hidden = false;
+        saved = null;
+      }
+      var chosen = newestOf(saved, local);
+      state = normalise(chosen);
+      if (chosen && chosen === local && local !== saved && !serverSaveBlocked) {
+        dirty = true;
+        scheduleSave(0);
+      }
+      saveLocal();
+
+      var firstOpen = flags.findIndex(function (f) { return !isLabelled(f.number); });
+      at = firstOpen === -1 ? flags.length : firstOpen;
+
+      renderPrd(results[2]);
+      render();
+      setInterval(heartbeat, HEARTBEAT_MS);
+    }).catch(function (error) {
+      $("main").innerHTML = "";
+      $("main").appendChild(el("p", { className: "fatal", text: "The page could not load its flags (" + error.message + "). Start the server with npm run label and reload." }));
+    });
+  }
+
+  $("prev").addEventListener("click", function () { go(at - 1); });
+  $("next").addEventListener("click", function () { go(at + 1); });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    var target = event.target;
+    var tag = target && target.tagName ? target.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || tag === "select" || (target && target.isContentEditable)) return;
+    if (event.key === "ArrowLeft") { event.preventDefault(); go(at - 1); }
+    if (event.key === "ArrowRight") { event.preventDefault(); go(at + 1); }
+  });
+
+  $("copy-labels").addEventListener("click", function () {
+    var text = JSON.stringify(state, null, 2);
+    copyText(text).then(function (ok) {
+      $("copy-labels-status").textContent = ok ? "Copied." : "Your browser blocked copying. Select the text below and copy it.";
+      var fallback = $("labels-fallback");
+      if (!ok) { fallback.value = text; fallback.hidden = false; fallback.select(); }
+    });
+  });
+
+  $("copy-line").addEventListener("click", function () {
+    copyText($("result-line").textContent).then(function (ok) {
+      $("copy-line-status").textContent = ok ? "Copied." : "Select the line and copy it.";
+    });
+  });
+
+  window.addEventListener("pagehide", function () {
+    if (!dirty || serverSaveBlocked || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon("/labels.json", new Blob([JSON.stringify(state)], { type: "text/plain" })); } catch (e) { /* the browser copy still holds */ }
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>

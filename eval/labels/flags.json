@@ -1,0 +1,115 @@
+{
+  "run": "eval-runs/2026-10-30T17-01-09-190Z.json",
+  "flags": [
+    {
+      "number": 1,
+      "flag": "adhesion-contract#F-02",
+      "document": "adhesion-contract",
+      "documentTitle": "MERIDIAN ATHLETIC CLUB — MEMBER SERVICES AND INSTRUCTOR CERTIFICATION AGREEMENT",
+      "clauseType": "unilateral-modification",
+      "clauseTypeLabel": "Unilateral modification",
+      "severity": "critical",
+      "quotedSentence": "Meridian may amend the Club Rules, the Schedule of Fees, the hours of operation, the class timetable and the terms of this Agreement at any time by posting the amended version at the club or on the Meridian website, and the amended version applies to you from the date it is posted.",
+      "paragraph": "You agree to observe the rules posted at each location and in the Meridian mobile application (the “Club Rules”), which cover equipment use, reservation and cancellation of studio sessions, conduct towards staff and other members, and the sessions the timetable marks ‘members only’. Meridian may amend the Club Rules, the Schedule of Fees, the hours of operation, the class timetable and the terms of this Agreement at any time by posting the amended version at the club or on the Meridian website, and the amended version applies to you from the date it is posted. Your continued use of any facility after an amended version is posted is your acceptance of it."
+    },
+    {
+      "number": 2,
+      "flag": "adhesion-contract#F-03",
+      "document": "adhesion-contract",
+      "documentTitle": "MERIDIAN ATHLETIC CLUB — MEMBER SERVICES AND INSTRUCTOR CERTIFICATION AGREEMENT",
+      "clauseType": "non-compete",
+      "clauseTypeLabel": "Non-compete and restrictive covenants",
+      "severity": "critical",
+      "quotedSentence": "For twelve (12) months after your Program candidacy ends for any reason, you will not teach, coach or deliver group ﬁtness instruction or personal training, whether as an employee, as a contractor or on your own account, at any facility within ﬁfteen (15) miles of a Meridian location at which you taught or trained.",
+      "paragraph": "For twelve (12) months after your Program candidacy ends for any reason, you will not teach, coach or deliver group ﬁtness instruction or personal training, whether as an employee, as a contractor or on your own account, at any facility within ﬁfteen (15) miles of a Meridian location at which you taught or trained. You will not, during that period, solicit any Meridian member or candidate for instruction outside a Meridian location. You will return the coaching manual and any Meridian teaching materials in your possession within fourteen (14) days of the end of your candidacy."
+    },
+    {
+      "number": 3,
+      "flag": "internship-agreement#F-06",
+      "document": "internship-agreement",
+      "documentTitle": "LOWELL AND KERR LLP: SUMMER ANALYST PROGRAMME AGREEMENT",
+      "clauseType": "fee-escalators-and-late-fees",
+      "clauseTypeLabel": "Fee escalators and late fees",
+      "severity": "moderate",
+      "quotedSentence": "An item not returned within five working days is charged at the replacement cost shown in the Programme Handbook.",
+      "paragraph": "The laptop, the security token and the building pass issued to the Analyst remain the property of the Firm and are returned on the last day of the Programme. An item not returned within five working days is charged at the replacement cost shown in the Programme Handbook."
+    },
+    {
+      "number": 4,
+      "flag": "offer-letter#F-05",
+      "document": "offer-letter",
+      "documentTitle": "ARDENT BIOSCIENCES INC: OFFER OF EMPLOYMENT",
+      "clauseType": "fee-escalators-and-late-fees",
+      "clauseTypeLabel": "Fee escalators and late fees",
+      "severity": "moderate",
+      "quotedSentence": "If you resign or are terminated for cause within twelve (12) months of your start date, the full signing payment becomes repayable within thirty days of your last working day.",
+      "paragraph": "You will receive a one-time signing payment of $15,000 with your first pay cycle. If you resign or are terminated for cause within twelve (12) months of your start date, the full signing payment becomes repayable within thirty days of your last working day."
+    },
+    {
+      "number": 5,
+      "flag": "offer-letter#F-01",
+      "document": "offer-letter",
+      "documentTitle": "ARDENT BIOSCIENCES INC: OFFER OF EMPLOYMENT",
+      "clauseType": "unilateral-modification",
+      "clauseTypeLabel": "Unilateral modification",
+      "severity": "critical",
+      "quotedSentence": "Ardent may introduce, withdraw, interpret or amend any policy, handbook provision, benefit plan or term of employment described in this letter at any time and without your agreement, and the version in force on the Ardent intranet governs from the date it is published there.",
+      "paragraph": "Ardent may introduce, withdraw, interpret or amend any policy, handbook provision, benefit plan or term of employment described in this letter at any time and without your agreement, and the version in force on the Ardent intranet governs from the date it is published there."
+    },
+    {
+      "number": 6,
+      "flag": "phone-plan-terms#F-03",
+      "document": "phone-plan-terms",
+      "documentTitle": "CASCADE MOBILE: CONSUMER SERVICE AGREEMENT",
+      "clauseType": "non-compete",
+      "clauseTypeLabel": "Non-compete and restrictive covenants",
+      "severity": "critical",
+      "quotedSentence": "Cascade may introduce, increase or remove either charge on notice given with the bill in which the change ﬁrst appears.",
+      "paragraph": "Your bill includes a Regulatory Cost Recovery Charge and an Administrative Charge, neither of which is a tax or a charge required by any government, and Cascade may introduce, increase or remove either charge on notice given with the bill in which the change ﬁrst appears."
+    },
+    {
+      "number": 7,
+      "flag": "saas-subscription#F-02",
+      "document": "saas-subscription",
+      "documentTitle": "NORTHWIND STUDIO: SUBSCRIBER TERMS OF SERVICE",
+      "clauseType": "unilateral-modification",
+      "clauseTypeLabel": "Unilateral modification",
+      "severity": "critical",
+      "quotedSentence": "We may amend these terms, the pricing page and the Fee Schedule at any time, an amended version takes effect when we post it at northwindstudio.example/terms, and your continued use of the service after it is posted is your acceptance of the amended version.",
+      "paragraph": "We may amend these terms, the pricing page and the Fee Schedule at any time, an amended version takes effect when we post it at northwindstudio.example/terms, and your continued use of the service after it is posted is your acceptance of the amended version."
+    },
+    {
+      "number": 8,
+      "flag": "saas-subscription#F-01",
+      "document": "saas-subscription",
+      "documentTitle": "NORTHWIND STUDIO: SUBSCRIBER TERMS OF SERVICE",
+      "clauseType": "arbitration-and-class-action-waiver",
+      "clauseTypeLabel": "Arbitration and class-action waiver",
+      "severity": "critical",
+      "quotedSentence": "Any dispute between you and Northwind arising out of these terms or out of your use of the service will be settled by binding arbitration before a single arbitrator under the consumer rules of a recognised arbitration body, and you agree to bring any claim only in your individual capacity and not as a plaintiff or class member in any purported class, collective or representative proceeding.",
+      "paragraph": "Any dispute between you and Northwind arising out of these terms or out of your use of the service will be settled by binding arbitration before a single arbitrator under the consumer rules of a recognised arbitration body, and you agree to bring any claim only in your individual capacity and not as a plaintiff or class member in any purported class, collective or representative proceeding."
+    },
+    {
+      "number": 9,
+      "flag": "storage-unit-rental#F-02",
+      "document": "storage-unit-rental",
+      "documentTitle": "HARBOUR ROAD SELF STORAGE: UNIT RENTAL AGREEMENT",
+      "clauseType": "unilateral-modification",
+      "clauseTypeLabel": "Unilateral modification",
+      "severity": "high",
+      "quotedSentence": "The Operator may increase the monthly rent on not less than thirty (30) days written notice to the Occupant, and the increased rent is due on the first rent day falling after the notice period ends.",
+      "paragraph": "The Operator may increase the monthly rent on not less than thirty (30) days written notice to the Occupant, and the increased rent is due on the first rent day falling after the notice period ends."
+    },
+    {
+      "number": 10,
+      "flag": "storage-unit-rental#F-03",
+      "document": "storage-unit-rental",
+      "documentTitle": "HARBOUR ROAD SELF STORAGE: UNIT RENTAL AGREEMENT",
+      "clauseType": "unilateral-modification",
+      "clauseTypeLabel": "Unilateral modification",
+      "severity": "critical",
+      "quotedSentence": "Gate hours, the rules posted in the office, and the terms of this Agreement may be changed by the Operator on notice posted at the facility and sent to the Occupant's last known email address, and the changed version applies to the Occupant from the first day of the month after it is posted.",
+      "paragraph": "Gate hours, the rules posted in the office, and the terms of this Agreement may be changed by the Operator on notice posted at the facility and sent to the Occupant's last known email address, and the changed version applies to the Occupant from the first day of the month after it is posted."
+    }
+  ]
+}

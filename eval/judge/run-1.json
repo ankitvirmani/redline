@@ -1,0 +1,68 @@
+{
+  "run": 1,
+  "judgedAt": "2026-10-30T17:30:12+00:00",
+  "judge": "A fresh Claude Code subagent (general-purpose) with no tools used. Its prompt held the rubric and the ten flags and nothing else: no labels, notes, run record, gold set or conversation.",
+  "flags": "eval/labels/flags.json",
+  "flagFieldsShown": [
+    "number",
+    "document",
+    "clauseType",
+    "severity",
+    "quotedSentence",
+    "paragraph"
+  ],
+  "rubricSha256": "c7f535ce024afee037bea751147801dab65a31b326edd7aff2865e6f7ba931b0",
+  "rubric": "# Judge rubric\n\nYou are judging flags raised by Redline, a product that reads take-it-or-leave-it\ndocuments (terms of service, subscriptions, memberships, offer letters) and flags the\nclauses that could hurt the person signing. Each flag names a clause type and quotes one\nsentence from the document. You see that sentence inside the paragraph it came from.\n\nGive each flag PASS or FAIL under the rule below, and one sentence on why.\n\nTwo things are outside the rule. Ignore them:\n\n- **Severity.** Each flag carries a severity band. The rule does not ask whether the band\n  is right, so a flag neither passes nor fails because of its band.\n- **Whether the quote is real.** Code has already checked that every quoted sentence\n  appears in its document character for character. Take the quote as genuine.\n\n## The rule\n\nPASS if the quoted sentence really is the kind of clause the flag names and really costs\nthe reader something. Otherwise FAIL.\n\nBoth halves have to hold. A sentence that is the named kind of clause but costs the\nreader nothing fails. So does a sentence that costs the reader something but is a\ndifferent kind of clause from the one named.\n\nThe rule is about the quoted sentence. The paragraph is there so you can read the\nsentence in context.\n\n## The clause types\n\nThese are the seven types Redline flags, in the words of `PRD.md` section 5. A flag\nnames one of them.\n\n**Mandatory arbitration and class-action waiver** (`arbitration-and-class-action-waiver`)\n\n> You keep the contract and lose the remedy.\n\n**Unilateral modification** (`unilateral-modification`)\n\n> They may change the terms later without your agreement. This is the clause that makes\n> every other clause provisional: the document you read is not the document you are\n> bound by.\n\n**Non-compete and restrictive covenants** (`non-compete`)\n\n> Takes your ability to earn in your field after you leave. [...] In this segment it\n> appears in offer letters, and it is rarely labelled \"non-compete\" — usually folded\n> into \"Restrictive Covenants\" or \"Post-Termination Obligations,\" with scope defined in\n> a cross-referenced exhibit.\n\n**Auto-renewal and negative-option billing** (`auto-renewal`)\n\n> You can leave, but only if you act inside a window you probably didn't see. The\n> cancellation trigger is typically one date-math sentence in a \"Billing\" or \"Term\"\n> section, and the mechanism is often deferred to a portal the contract doesn't\n> describe.\n\n**Limitation of liability** (`limitation-of-liability`)\n\n> They owe you almost nothing when they fail. Caps are usually expressed by\n> cross-reference — \"fees paid in the preceding 12 months\" — rather than as a number,\n> so the reader cannot see the size of what they gave up without doing arithmetic.\n\n**Indemnification** (`indemnification`)\n\n> You may owe them for claims brought by third parties. Rarely triggered for a consumer\n> and catastrophic when it is. Whether the obligation is mutual, and whether carve-outs\n> exist, requires a market baseline a non-lawyer does not have.\n\n**Fee escalators and late fees** (`fee-escalators-and-late-fees`)\n\n> You can still leave; you just pay more than you expected to. [...] The figure is\n> often cross-referenced to a separate fee schedule, and escalator language requires\n> multi-year compounding to see the real cost.\n\n## What \"costs the reader something\" means\n\nThe labeller's notes are empty, so this section has nothing from them yet. Until it\ndoes, it rests on `PRD.md` alone.\n\nA clause costs the reader something when it takes away one of the things they could\notherwise do, or when it takes their money. From section 5:\n\n> Severity runs on leverage lost: how much of the reader's ability to sue, to leave, or\n> to refuse a change the clause takes away (ADR 0003).\n\n> You can still leave; you just pay more than you expected to.\n\nA sentence that is true and on topic but takes nothing from the reader does not meet\nthis half of the rule. From section 4:\n\n> A tool that manufactures a low-severity finding to look useful has failed this test\n> even though nothing it said was false.\n\n## Edge cases\n\nNone settled yet. The labeller's notes are empty, and asked what changed in how they\njudge, they answered \"Nothing\".\n\n## Answer\n\nFor each flag: its number, PASS or FAIL, and one sentence on why that names which half\nof the rule decided it.\n",
+  "verdicts": [
+    {
+      "number": 1,
+      "verdict": "PASS",
+      "reason": "Both halves hold: Meridian can rewrite the Agreement, fees and rules just by posting a new version, so this is a unilateral-modification clause, and it costs the reader the ability to refuse a change."
+    },
+    {
+      "number": 2,
+      "verdict": "PASS",
+      "reason": "Both halves hold: this is a post-termination restrictive covenant that bars the reader from teaching or training within 15 miles for 12 months, which takes away their ability to earn in their field."
+    },
+    {
+      "number": 3,
+      "verdict": "FAIL",
+      "reason": "The kind-of-clause half fails: charging replacement cost for firm property the reader keeps is payment for the item itself, not a late fee or a fee escalator, and it takes nothing from the reader beyond the value of what they kept."
+    },
+    {
+      "number": 4,
+      "verdict": "FAIL",
+      "reason": "The kind-of-clause half fails: the clause does cost the reader money, but it is a signing-bonus clawback triggered by leaving early, not a fee escalator or a late fee."
+    },
+    {
+      "number": 5,
+      "verdict": "PASS",
+      "reason": "Both halves hold: Ardent can amend any term of employment at any time without the reader's agreement, which is unilateral modification and takes away their ability to refuse a change."
+    },
+    {
+      "number": 6,
+      "verdict": "FAIL",
+      "reason": "The kind-of-clause half fails: a carrier's power to add or raise billing charges has nothing to do with a non-compete or a restrictive covenant on the reader's work."
+    },
+    {
+      "number": 7,
+      "verdict": "PASS",
+      "reason": "Both halves hold: Northwind can amend the terms and fee schedule just by posting, and continued use counts as acceptance, so this is unilateral modification that takes away the reader's ability to refuse a change."
+    },
+    {
+      "number": 8,
+      "verdict": "PASS",
+      "reason": "Both halves hold: the sentence forces binding individual arbitration and waives class proceedings, which takes away the reader's ability to sue in court or as part of a class."
+    },
+    {
+      "number": 9,
+      "verdict": "FAIL",
+      "reason": "The kind-of-clause half fails: the clause costs the reader money, but a stated power to raise rent on 30 days' notice is a price escalator written into the document, not a power to rewrite the agreement's terms, and clause 10 is that general power."
+    },
+    {
+      "number": 10,
+      "verdict": "PASS",
+      "reason": "Both halves hold: the Operator can change the Agreement's terms by posting notice, and the changed version binds the Occupant without their agreement, which takes away their ability to refuse a change."
+    }
+  ]
+}
