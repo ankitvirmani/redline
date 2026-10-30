@@ -22,6 +22,8 @@
  * severity and their source sentences are the stored reading, untouched.
  */
 
+import { cache } from "react";
+
 import Gate from "@/components/Gate";
 import Reading from "@/components/Reading";
 import Shell from "@/components/Shell";
@@ -32,7 +34,26 @@ import { accountState } from "@/src/supabase/server";
 
 import "@/components/library.css";
 
-export const metadata = { title: "A document you kept: Redline" };
+/**
+ * Asked twice per request, once for the tab title and once for the page, so each is
+ * memoised for the request rather than sent to Supabase twice.
+ */
+const accountOnce = cache(accountState);
+const keptOnce = cache(keptDocument);
+
+/** An address with nothing of the reader's at it is not named as a document they kept. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ readonly id: string }>;
+}) {
+  const account = await accountOnce();
+  if (account.kind === "signed-in") {
+    const kept = await keptOnce(account.reader.id, (await params).id);
+    if (kept.outcome !== "reopened") return { title: "Not in your library: Redline" };
+  }
+  return { title: "A document you kept: Redline" };
+}
 
 /** The document belongs to the reader asking for it, so it is never a cached page. */
 export const dynamic = "force-dynamic";
@@ -54,7 +75,7 @@ export default async function KeptDocumentPage({
 }: {
   params: Promise<{ readonly id: string }>;
 }) {
-  const account = await accountState();
+  const account = await accountOnce();
 
   if (account.kind !== "signed-in") {
     return (
@@ -65,13 +86,15 @@ export default async function KeptDocumentPage({
   }
 
   const { id } = await params;
-  const kept = await keptDocument(account.reader.id, id);
+  const kept = await keptOnce(account.reader.id, id);
 
   if (kept.outcome !== "reopened" || kept.reading.outcome === "unreadable") {
     return (
       <Shell place="library" account={account}>
         <section className="lib">
-          <h1 className="lib__h">A document you kept</h1>
+          <h1 className="lib__h">
+            {kept.outcome === "reopened" ? "A document you kept" : "Not in your library"}
+          </h1>
           <p className="said">
             <span>{kept.outcome === "reopened" ? UNREADABLE : NOT_FOUND}</span>
           </p>
